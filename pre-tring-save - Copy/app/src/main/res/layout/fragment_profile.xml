@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white_cotton"
+    tools:context=".view.profile.ProfileFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewpagerProfileImage"
+            android:layout_width="match_parent"
+            android:layout_height="440dp"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+
+        <TextView
+            android:id="@+id/textResidence"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:gravity="center"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:background="@drawable/button_corner_16_blue_gradient"
+            android:text="Test Word"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintTop_toBottomOf="@id/viewpagerProfileImage"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/textMannerScore"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:gravity="center"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:background="@drawable/button_corner_16_charcoal"
+            android:text="Test Word"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintTop_toBottomOf="@id/viewpagerProfileImage"
+            app:layout_constraintStart_toEndOf="@id/textResidence"
+            />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonEditProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:gravity="center"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/button_corner_16_white"
+            android:text="프로필 수정"
+            android:textColor="@color/charcoal"
+            android:textSize="12sp"
+            app:layout_constraintTop_toBottomOf="@id/viewpagerProfileImage"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/textNickAndAge"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:text="Laychel Queen, 25"
+            android:textColor="@color/charcoal"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/textResidence"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <TextView
+            android:id="@+id/text000"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginLeft="16dp"
+            android:text="보유노크: "
+            android:textColor="@color/gray_dark"
+            android:textSize="12sp"
+            app:layout_constraintTop_toBottomOf="@id/textNickAndAge"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <TextView
+            android:id="@+id/textKnock"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginLeft="4dp"
+            android:text="3회"
+            android:textColor="@color/blue_azure"
+            android:textSize="12sp"
+            app:layout_constraintTop_toBottomOf="@id/textNickAndAge"
+            app:layout_constraintStart_toEndOf="@id/text000"
+            />
+
+        <TextView
+            android:id="@+id/text001"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:paddingLeft="16dp"
+            android:gravity="center_vertical"
+            android:text="여행 스토리"
+            android:textColor="@color/charcoal"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/textKnock"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerMyProfile"
+            android:layout_width="match_parent"
+            android:layout_height="96dp"
+            app:layout_constraintTop_toBottomOf="@id/text001"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.64dp"
+            android:background="@color/gray_light"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            app:layout_constraintTop_toBottomOf="@id/recyclerMyProfile"
+            />
+
+        <TextView
+            android:id="@+id/text002"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="16dp"
+            android:paddingLeft="16dp"
+            android:gravity="center_vertical"
+            android:text="여행 위시"
+            android:textColor="@color/charcoal"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/recyclerMyProfile"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerTripWish"
+            android:layout_width="match_parent"
+            android:layout_height="96dp"
+            app:layout_constraintTop_toBottomOf="@id/text002"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.64dp"
+            android:background="@color/gray_light"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            app:layout_constraintTop_toBottomOf="@id/recyclerTripWish"
+            />
+
+        <TextView
+            android:id="@+id/text003"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="16dp"
+            android:paddingLeft="16dp"
+            android:gravity="center_vertical"
+            android:text="여행 스타일"
+            android:textColor="@color/charcoal"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/recyclerTripWish"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerTripStyle"
+            android:layout_width="match_parent"
+            android:layout_height="96dp"
+            app:layout_constraintTop_toBottomOf="@id/text003"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.64dp"
+            android:background="@color/gray_light"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            app:layout_constraintTop_toBottomOf="@id/recyclerTripStyle"
+            />
+
+        <TextView
+            android:id="@+id/text004"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="16dp"
+            android:paddingLeft="16dp"
+            android:gravity="center_vertical"
+            android:text="자기 소개"
+            android:textColor="@color/charcoal"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/recyclerTripStyle"
+            />
+
+        <TextView
+            android:id="@+id/textSelfIntroduction"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="16dp"
+            android:paddingLeft="16dp"
+            android:gravity="center_vertical"
+            android:text="~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+            android:textColor="@color/charcoal"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/text004"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            app:layout_constraintTop_toBottomOf="@id/textSelfIntroduction"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    
+    
+
+
+
+
+    
+
+
+
+
+
+
+</ScrollView>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="round_image">
+        <item name="cornerSize">49.9999999999999999998%</item>
+        <item name="cornerFamily">rounded</item>
+    </style>
+</resources>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".view.signup.SignInActivity">
+
+
+    <TextView
+        android:id="@+id/text000"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="56dp"
+        android:layout_marginLeft="16dp"
+        android:text="더 안전한 트링! \n개인 정보 보호를 위해 \n전화번호 인증을 진행합니다."
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/text001"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="16dp"
+        android:text="전화번호는 회원가입이외에 이용되지 않습니다."
+        android:textColor="@color/gray_light"
+        android:textSize="8sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/text000"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <Spinner
+        android:id="@+id/spinnerNationCode"
+        android:layout_width="136dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/view_corner_left_white"
+        app:layout_constraintTop_toBottomOf="@id/text001"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/editPhoneNumber"
+        app:layout_constraintHorizontal_chainStyle="packed"/>
+
+    <EditText
+        android:id="@+id/editPhoneNumber"
+        android:layout_width="184dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="32dp"
+        android:paddingLeft="16dp"
+        android:hint="000-0000-0000"
+        android:textColorHint="@color/blue_light"
+        android:textColor="@color/black"
+        android:background="@drawable/view_corner_right_white"
+        app:layout_constraintTop_toBottomOf="@id/text001"
+        app:layout_constraintStart_toEndOf="@id/spinnerNationCode"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.chaos.view.PinView
+        android:id="@+id/pinviewSmsCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:cursorVisible="true"
+        android:allowClickWhenDisabled="false"
+        android:textColor="@color/black"
+        android:inputType="number"
+        app:itemCount="6"
+        app:itemHeight="56dp"
+        app:itemRadius="8dp"
+        app:itemSpacing="4dp"
+        app:lineColor="@color/nero"
+        app:lineWidth="1.16dp"
+        app:layout_constraintTop_toBottomOf="@id/spinnerNationCode"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:visibility="gone"
+        android:text="test text"
+        android:textColor="@color/black"
+        android:textSize="9.6sp"
+        app:layout_constraintTop_toBottomOf="@id/pinviewSmsCode"
+        app:layout_constraintStart_toStartOf="@id/pinviewSmsCode"/>
+
+    <TextView
+        android:id="@+id/textNotice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:visibility="gone"
+        android:text="test text"
+        android:textColor="@color/black"
+        android:textSize="9.6sp"
+        app:layout_constraintTop_toBottomOf="@id/pinviewSmsCode"
+        app:layout_constraintEnd_toEndOf="@id/pinviewSmsCode"
+        />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonGetCode"
+        android:layout_width="304dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/button_corner_16_blue_gradient"
+        android:text="인증번호 받기"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/pinviewSmsCode"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonVerifyCode"
+        android:layout_width="304dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="4dp"
+        android:visibility="gone"
+        android:background="@drawable/button_corner_16_blue_gradient"
+        android:text="인증하기"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/buttonGetCode"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonReGetCode"
+        android:layout_width="304dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="4dp"
+        android:visibility="gone"
+        android:background="@drawable/button_corner_16_blue_gradient"
+        android:text="인증번호 다시받기"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/buttonVerifyCode"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

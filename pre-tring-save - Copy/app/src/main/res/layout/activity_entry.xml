@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/enrty_background"
+    tools:context=".view.signup.EntryActivity">
+
+    <ImageView
+        android:id="@+id/imageLogo"
+        android:layout_width="160dp"
+        android:layout_height="88dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/logo_large"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/text000"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="현지인 여행친구만들기, 트링!"
+        android:textColor="@color/white"
+        android:textSize="10.8sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/imageLogo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+
+    <TextView
+        android:id="@+id/text001"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="동의하고 시작하기를 누르시면"
+        android:textColor="@color/white"
+        android:textSize="10.4sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/textServiceTerms"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/textServiceTerms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="서비스 이용약관"
+        android:textColor="@color/blue_light"
+        android:textSize="10.4sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/text004"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/text002"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        />
+
+    <TextView
+        android:id="@+id/text002"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=", "
+        android:textColor="@color/white"
+        android:textSize="10.4sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/text004"
+        app:layout_constraintStart_toEndOf="@id/textServiceTerms"
+        app:layout_constraintEnd_toStartOf="@id/textPersonalInfoTerms"
+        />
+
+    <TextView
+        android:id="@+id/textPersonalInfoTerms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="개인정보 보호약관"
+        android:textColor="@color/blue_light"
+        android:textSize="10.4sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/text004"
+        app:layout_constraintStart_toEndOf="@id/text002"
+        app:layout_constraintEnd_toStartOf="@id/text003"
+        />
+    <TextView
+        android:id="@+id/text003"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=", "
+        android:textColor="@color/white"
+        android:textSize="10.4sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/text004"
+        app:layout_constraintStart_toEndOf="@id/textPersonalInfoTerms"
+        app:layout_constraintEnd_toStartOf="@id/textLocationTerms"
+        />
+    <TextView
+        android:id="@+id/textLocationTerms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="위치정보 이용약관"
+        android:textColor="@color/blue_light"
+        android:textSize="10.4sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/text004"
+        app:layout_constraintStart_toEndOf="@id/text003"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        />
+    <TextView
+        android:id="@+id/text004"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="에 자동으로 동의하게 됩니다."
+        android:textColor="@color/white"
+        android:textSize="10.4sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/buttonAgreeAndStart"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonAgreeAndStart"
+        android:layout_width="336dp"
+        android:layout_height="56dp"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/button_corner_16_blue_gradient"
+        android:text="동의하고 시작하기"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:onClick="onAgreeAndStart"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="OnClick" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "454541099858",
+    "firebase_url": "https://tring-2c450-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "tring-2c450",
+    "storage_bucket": "tring-2c450.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:454541099858:android:e06014718f9ac1bb90708b",
+        "android_client_info": {
+          "package_name": "com.versec.versecko"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "454541099858-q7oa7n72e45nos1spbvmagc7omq6mmi3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.versec.versecko",
+            "certificate_hash": "a94a24dd8fc043491cdee816ee4ee97c81aef819"
+          }
+        },
+        {
+          "client_id": "454541099858-jore06rjkhbcrkifji5pp7fq1akjqg3b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBt97Ech0V8sYbGr8vXwlLWo4wYCU6fJ2A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "454541099858-jore06rjkhbcrkifji5pp7fq1akjqg3b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

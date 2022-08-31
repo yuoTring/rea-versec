@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="64dp"
+    android:layout_height="88dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/imageProfile"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:src="@drawable/test_profileimage"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
+        app:shapeAppearanceOverlay="@style/round_image"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/textNickName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/textNickName"
+        android:layout_width="64dp"
+        android:layout_height="20dp"
+        android:gravity="center"
+        android:text="가가가가가가가가"
+        android:textColor="@color/nero"
+        android:textSize="8sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
