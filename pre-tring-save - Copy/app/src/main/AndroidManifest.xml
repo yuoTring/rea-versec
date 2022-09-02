@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.versec.versecko">
+    package="com.versec.versecko" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -16,15 +16,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar"
-        tools:targetApi="31">
+        tools:targetApi="31" >
+
         <activity
-            android:name=".SignInActivity"
-            android:exported="false" />
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
-            android:name=".view.signup.FillUserInfoActivity"
+            android:name=".view.profile.ProfileModifyActivity"
             android:exported="false" />
         <activity
             android:name=".view.MainScreenActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.signup.SignInActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.signup.FillUserInfoActivity"
             android:exported="false" />
         <activity
             android:name=".view.SplashActivity"
@@ -42,9 +50,6 @@
             android:name=".view.ChoosePlaceActivity"
             android:exported="false" />
         <activity
-            android:name=".view.signup.SignInActivity"
-            android:exported="false" />
-        <activity
             android:name=".view.UserTestActivity"
             android:exported="false" />
         <activity
@@ -52,7 +57,7 @@
             android:exported="false" />
         <activity
             android:name=".view.signup.EntryActivity"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

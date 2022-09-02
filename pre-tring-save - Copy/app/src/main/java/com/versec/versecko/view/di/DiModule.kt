@@ -4,6 +4,7 @@ import androidx.room.Room
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import com.versec.versecko.data.datasource.local.UserLocalDataSource
 import com.versec.versecko.data.datasource.local.UserLocalDataSourceImpl
 import com.versec.versecko.data.datasource.remote.UserRemoteDataSource
@@ -12,6 +13,8 @@ import com.versec.versecko.data.repository.UserRepository
 import com.versec.versecko.data.repository.UserRepositoryImpl
 import com.versec.versecko.data.room.AppDatabase
 import com.versec.versecko.data.room.UserEntityDAO
+import com.versec.versecko.viewmodel.ProfileModifyViewModel
+import com.versec.versecko.viewmodel.ProfileViewModel
 import com.versec.versecko.viewmodel.SignInViewModel
 import com.versec.versecko.viewmodel.UserViewModel
 import org.koin.android.ext.koin.androidApplication
@@ -38,13 +41,14 @@ val userRemoteDataSourceModule = module {
 
     single { Firebase.firestore }
     single { FirebaseAuth.getInstance() }
+    single { FirebaseStorage.getInstance() }
 
 }
 
 val repositoryModule = module {
 
     single<UserLocalDataSource> { UserLocalDataSourceImpl(get()) }
-    single<UserRemoteDataSource> { UserRemoteDataSourceImpl(get(), get()) }
+    single<UserRemoteDataSource> { UserRemoteDataSourceImpl(get(), get(), get()) }
     single<UserRepository> { UserRepositoryImpl(get(), get()) }
 
 
@@ -61,6 +65,8 @@ val userViewModelModule = module {
 
     viewModel { UserViewModel(get()) }
     viewModel { SignInViewModel(get()) }
+    viewModel { ProfileViewModel(get()) }
+    viewModel { ProfileModifyViewModel(get()) }
 }
 
 val signInModule = module {

@@ -8,5 +8,6 @@ interface UserLocalDataSource {
     fun getOwnUser () : Flow<UserEntity>
     fun getUserList (status : Int) : Flow<MutableList<UserEntity>>
     suspend fun insertUser (userEntity: UserEntity)
+    suspend fun updateUriList (uriList: MutableList<String>, status: Int)
 
 }

@@ -4,4 +4,11 @@
     <string name="emoji_smile">Hi &#128072; </string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string-array name="place_main">
+        <item>Seoul</item>
+        <item>Busan</item>
+        <item>Jaeju</item>
+    </string-array>
 </resources>

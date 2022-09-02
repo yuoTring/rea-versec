@@ -17,7 +17,10 @@ interface UserRepository {
     fun getLoungeUserList_Remote (status: Int) : Flow<MutableList<UserEntity>>
     suspend fun insertUser_Remote(userEntity: UserEntity)
 
-    fun signIn(credential: PhoneAuthCredential) : Flow<Results<Int>>
+    suspend fun signIn(credential: PhoneAuthCredential) : Results<Int>
+    //fun signIn(credential: PhoneAuthCredential) : Flow<Results<Int>>
+    suspend fun updateUriList (uriList: MutableList<String>, status: Int)
+
 
 
 }

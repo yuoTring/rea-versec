@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:gravity="center"
-        android:background="@color/white"
+        android:background="@color/gray_light"
         android:text="~~~"
         android:textColor="@color/blue"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -49,7 +49,7 @@
         app:layout_constraintBottom_toBottomOf="@id/textTopTitle"
         app:layout_constraintEnd_toStartOf="@id/buttonRight1"/>
 
-    <FrameLayout
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="624dp"

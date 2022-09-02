@@ -45,6 +45,13 @@ class UserRepositoryImpl (
         localDataSource.insertUser(userEntity)
     }
 
+    override suspend fun updateUriList(uriList: MutableList<String>, status: Int) {
+
+        localDataSource.updateUriList(uriList, status)
+    }
+
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
     override fun getOwnUser_Remote(): Flow<UserEntity> {
 
         return remoteDataSource.getOwnUser()
@@ -62,10 +69,12 @@ class UserRepositoryImpl (
 
     }
 
-    override fun signIn(credential: PhoneAuthCredential): Flow<Results<Int>> {
+    override suspend fun signIn(credential: PhoneAuthCredential): Results<Int> {
 
         return remoteDataSource.signIn(credential)
     }
+
+
 
 
 }

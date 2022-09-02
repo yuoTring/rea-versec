@@ -1,5 +1,6 @@
 package com.versec.versecko.view.signup
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -21,7 +22,9 @@ import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.versec.versecko.R
 import com.versec.versecko.util.Results
+import com.versec.versecko.view.SplashActivity
 import com.versec.versecko.viewmodel.SignInViewModel
+import kotlinx.coroutines.coroutineScope
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
@@ -83,6 +86,7 @@ class SignInActivity
                         textNotice.text = "Incorrect Code!"
                         textNotice.setTextColor(ContextCompat.getColor(this@SignInActivity, R.color.red))
                         buttonVerify.setBackgroundResource(R.drawable.button_corner_16_gray_light)
+                        buttonVerify.isClickable = true
                         //buttonVerify.isClickable = false
                     }
                 }
@@ -105,6 +109,8 @@ class SignInActivity
             }
 
             override fun onVerificationFailed(exception: FirebaseException) {
+                Log.d("sms-test", "onVerificationFailed: "+ exception.toString())
+
             }
 
 
@@ -114,6 +120,9 @@ class SignInActivity
             ) {
 
                 id = verificationId
+
+                Log.d("sms-test", "onCodeSent")
+
 
 
 
@@ -149,8 +158,44 @@ class SignInActivity
 
         buttonVerify.setOnClickListener {
 
+            Log.d("sms-test", "onClick")
+
+            Log.d("sms-test", "id: "+id)
+
+            verifyCode = pinView.text.toString()
+
+            Log.d("sms-test", "code: "+verifyCode)
+
+
             val credential = PhoneAuthProvider.getCredential(id, verifyCode)
-            signInViewModel.signIn(credential)
+            signInViewModel.signIn(credential).observe(this, Observer {
+                signInResult ->
+
+                if (signInResult.equals(Results.UidExist(2))) {
+                    Log.d("sms-test", signInResult.toString())
+
+                    startActivity(Intent(this, SplashActivity::class.java))
+
+                }
+                else if (signInResult.equals(Results.NoUid(3))) {
+                    Log.d("sms-test", signInResult.toString())
+
+                    startActivity(Intent(this, FillUserInfoActivity::class.java))
+                }
+                else if (signInResult.equals(Results.Success(1))) {
+                    Log.d("sms-test", signInResult.toString())
+
+                }
+                else {
+                    Log.d("sms-test", signInResult.toString())
+
+                }
+
+
+
+            })
+
+            //val signInResult = Results<Int> = async
 
         }
 
@@ -161,23 +206,6 @@ class SignInActivity
 
 
 
-        val signInRequestObserver = Observer<Results<Int>> { result ->
-
-
-            if (result.equals(1)) {
-
-                Toast.makeText(this, "signIn -success", Toast.LENGTH_SHORT).show()
-
-            }
-            else {
-
-                Toast.makeText(this, "signIn - fail", Toast.LENGTH_SHORT).show()
-
-            }
-
-        }
-
-        signInViewModel._signInRequest.observe(this, signInRequestObserver)
 
 
 

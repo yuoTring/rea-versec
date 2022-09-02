@@ -4,47 +4,51 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.widget.AppCompatButton
-import com.versec.versecko.R
+import com.versec.versecko.databinding.ActivityEntryBinding
+import com.versec.versecko.view.ChoosePlaceActivity
+import com.versec.versecko.view.MainScreenActivity
+import com.versec.versecko.view.UserTestActivity
 
 class EntryActivity : AppCompatActivity()
 {
 
-    private lateinit var textServiceTerms : TextView
-    private lateinit var textPersonalInfoTerms : TextView
-    private lateinit var textLocationTerms : TextView
-    private lateinit var buttonAgreeAndStart : AppCompatButton
-
+    private lateinit var binding: ActivityEntryBinding
+    private lateinit var view: View
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_entry)
+        binding = ActivityEntryBinding.inflate(layoutInflater)
+        view = binding.root
 
-        textServiceTerms = findViewById(R.id.textServiceTerms)
-        textPersonalInfoTerms = findViewById(R.id.textPersonalInfoTerms)
-        textLocationTerms = findViewById(R.id.textLocationTerms)
-        buttonAgreeAndStart = findViewById(R.id.buttonAgreeAndStart)
+        setContentView(view)
 
-        textServiceTerms.setOnClickListener {
+
+        binding.textServiceTerms.setOnClickListener {
+            Toast.makeText(this, "!!!", Toast.LENGTH_SHORT).show()
+
+        }
+
+        binding.textPersonalInfoTerms.setOnClickListener {
             Toast.makeText(this, "!!!", Toast.LENGTH_SHORT).show()
         }
 
-        textPersonalInfoTerms.setOnClickListener {
+        binding.textLocationTerms.setOnClickListener {
             Toast.makeText(this, "!!!", Toast.LENGTH_SHORT).show()
         }
 
-        textLocationTerms.setOnClickListener {
-            Toast.makeText(this, "!!!", Toast.LENGTH_SHORT).show()
-        }
+        binding.buttonAgreeAndStart.setOnClickListener {
+            val intent
+            //= Intent(this, SignInActivity::class.java)
+            //= Intent(this, MainScreenActivity::class.java)
+            //= Intent(this, UserTestActivity::class.java)
+            = Intent(this, ChoosePlaceActivity::class.java)
 
-        buttonAgreeAndStart.setOnClickListener {
-            val intent = Intent(this, SignInActivity::class.java)
+
             startActivity(intent)
         }
+
 
     }
 }

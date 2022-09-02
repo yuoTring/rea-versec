@@ -1,28 +1,33 @@
 package com.versec.versecko.data.datasource.remote
 
-import android.util.Log
-import com.google.android.gms.tasks.OnCompleteListener
+import android.graphics.Bitmap
 import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.UploadTask
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.util.Results
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.tasks.asDeferred
+import kotlinx.coroutines.tasks.await
+import java.io.ByteArrayOutputStream
 
 class UserRemoteDataSourceImpl (
 
     private val auth : FirebaseAuth,
-    private val fireStore : FirebaseFirestore
+    private val fireStore : FirebaseFirestore,
+    private val storage : FirebaseStorage
 
-): UserRemoteDataSource {
+        ) : UserRemoteDataSource {
 
-    override fun getOwnUser(): Flow<UserEntity>  = callbackFlow{
+    override fun getOwnUser(): Flow<UserEntity> = callbackFlow{
 
         val document = fireStore.collection("database/user/userList/")
             .document("testestestuiduiduid_____")
@@ -53,37 +58,80 @@ class UserRemoteDataSourceImpl (
         fireStore.collection("database/user/userList/")
             .document(userEntity.uid)
             .set(userEntity)
-            //.document(auth.uid.toString())
-            //.set(userEntity)
+        //.document(auth.uid.toString())
+        //.set(userEntity)
     }
 
+    override suspend fun signIn(credential: PhoneAuthCredential): Results<Int> {
 
 
+        lateinit var signInResult : Results<Int>
+
+        //1. sign in with phone number and sms code
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener {
+                task ->
+
+                if (task.isSuccessful) {
 
 
-    override fun signIn(credential: PhoneAuthCredential): Flow<Results<Int>> = callbackFlow {
+                }
+                else {
+
+                    signInResult = Results.Error(task.exception)
+                }
+            }.await()
 
 
-        val signInRequest = auth.signInWithCredential(credential)
+        //2. check whether a user already signed up
+        auth.currentUser?.let {
+            fireStore.collection("database/user/userList")
+                .document(it.uid)
+                .get()
+                .addOnCompleteListener { document ->
+                    if (document.isSuccessful) {
 
-        signInRequest.addOnCompleteListener { task ->
+                        if (document.getResult().exists()) {
+                            signInResult = Results.UidExist(2)
+                        } else {
+                            signInResult = Results.NoUid(3)
+                        }
+                    } else {
 
-            if (task.isSuccessful) {
+                        signInResult = Results.Error(document.exception)
 
-                Log.d("auth-firebase", task.getResult().user?.uid.toString())
-
-                trySend(Results.Success(1))
-            }
-            else {
-                Log.d("auth-firebase", "fail")
-                trySend(Results.Error(task.exception))
-
-            }
-
+                    }
+                }.await()
         }
 
 
+        return signInResult
+    }
 
+    override suspend fun insertImage(mutableList: MutableList<Bitmap>): Results<Int> {
+
+        val uid = auth.currentUser!!.uid
+
+        mutableList.forEachIndexed { index, bitmap ->
+
+
+            val baos = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+            val data = baos.toByteArray()
+
+            val reference = storage.reference.child("images/profileImages/"+ uid+"/"+index+"/")
+
+            val uploadTask : UploadTask = reference.putBytes(data)
+
+            
+
+
+        }
+        TODO("Not yet implemented")
+    }
+
+    override fun getImageUri(): Flow<String> {
+        TODO("Not yet implemented")
     }
 
 

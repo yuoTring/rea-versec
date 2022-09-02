@@ -1,13 +1,24 @@
 package com.versec.versecko.view.profile
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import com.versec.versecko.R
+import com.versec.versecko.data.entity.UserEntity
+import com.versec.versecko.databinding.FragmentProfileBinding
+import com.versec.versecko.viewmodel.ProfileViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ProfileFragment : Fragment() {
+
+    private val profileViewModel : ProfileViewModel by viewModel<ProfileViewModel>()
+    private lateinit var binding: FragmentProfileBinding
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,14 +32,47 @@ class ProfileFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_profile, container, false)
+
+        binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_profile,container,false)
+
+        binding.viewModel = profileViewModel
+
+
+        val view = binding.root
+
+
+
+        return view
+        //inflater.inflate(R.layout.fragment_profile, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+        val observer = Observer<UserEntity> { updatedUser ->
+
+            profileViewModel.userEntity= updatedUser
+            //binding.textResidence.setText(updatedUser.mainResidence)
+            //binding.textMannerScore.setText("매너 점수: "+updatedUser.mannerScore.toString())
+            //binding.textNickAndAge.setText(updatedUser.nickName+", "+updatedUser.age)
+        }
+
+        profileViewModel._user.observe(viewLifecycleOwner, observer)
+
+
+        binding.buttonEditProfile.setOnClickListener {
+            startActivity(Intent(activity, ProfileModifyActivity::class.java))
+        }
+
+
     }
 
     companion object {
 
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance() =
             ProfileFragment().apply {
                 arguments = Bundle().apply {
 

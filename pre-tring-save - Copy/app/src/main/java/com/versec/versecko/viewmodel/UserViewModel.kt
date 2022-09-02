@@ -20,7 +20,7 @@ class UserViewModel (
 
 
 
-    val _user : LiveData<UserEntity> = userRepository.getOwnUser_Remote().asLiveData()
+    val _user : LiveData<UserEntity> = userRepository.getOwnUser_Local().asLiveData()
         //userRepository.getUserList_Local(0).asLiveData()
 
         /**liveData {
@@ -48,7 +48,7 @@ class UserViewModel (
             Log.d("room-db-livedata", "insert : livedata")
 
             //userRepository.insertUser_Local(userEntity)
-            userRepository.insertUser_Remote(userEntity)
+            userRepository.insertUser_Local(userEntity)
         }
     }
 
