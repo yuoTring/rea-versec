@@ -128,9 +128,11 @@ class FillUserInfoActivity : AppCompatActivity()
 
         binding.buttonToNext.setOnClickListener {
 
-            user.nickName = binding.editNickName.text.toString()
-            user.birth = binding.editBirth.text.toString()
+            //user.nickName = binding.editNickName.text.toString()
+            //user.birth = binding.editBirth.text.toString()
             user.age = user.birth.substring(0,4).toInt() - Calendar.YEAR
+
+            //if (user.nickName != null && user.gender != null)
         }
 
         val layoutManagerResidence: RecyclerView.LayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
@@ -187,6 +189,7 @@ class FillUserInfoActivity : AppCompatActivity()
                 }
                 else {
                     binding.textCheckNickNameOverlap.setText("can")
+                    user.nickName = binding.editNickName.text.toString()
 
                 }
             })

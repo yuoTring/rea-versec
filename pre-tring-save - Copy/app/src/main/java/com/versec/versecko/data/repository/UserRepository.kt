@@ -23,6 +23,7 @@ interface UserRepository {
 
 
     suspend fun checkNickName (nickName : String) :Results<Int>
+    suspend fun getUsersWithGeoHash (latitude : Double, longitude : Double, radiusInMeter : Int) : List<UserEntity>
 
 
 

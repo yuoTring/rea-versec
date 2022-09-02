@@ -50,9 +50,7 @@ class UserRepositoryImpl (
         localDataSource.updateUriList(uriList, status)
     }
 
-    override suspend fun checkNickName(nickName: String): Results<Int> {
-        return remoteDataSource.checkNickName(nickName)
-    }
+
 
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -76,6 +74,19 @@ class UserRepositoryImpl (
     override suspend fun signIn(credential: PhoneAuthCredential): Results<Int> {
 
         return remoteDataSource.signIn(credential)
+    }
+
+    override suspend fun checkNickName(nickName: String): Results<Int> {
+        return remoteDataSource.checkNickName(nickName)
+    }
+
+    override suspend fun getUsersWithGeoHash(
+        latitude: Double,
+        longitude: Double,
+        radiusInMeter: Int
+    ): List<UserEntity> {
+
+        return remoteDataSource.getUsersWithGeoHash(latitude, longitude, radiusInMeter)
     }
 
 

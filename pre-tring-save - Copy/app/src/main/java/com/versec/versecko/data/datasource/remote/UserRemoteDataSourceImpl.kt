@@ -158,5 +158,15 @@ class UserRemoteDataSourceImpl (
         return result
     }
 
+    override suspend fun getUsersWithGeoHash(
+        latitude: Double,
+        longitude: Double,
+        radiusInMeter: Int
+    ): List<UserEntity>  {
+
+
+        TODO("Not yet implemented")
+    }
+
 
 }

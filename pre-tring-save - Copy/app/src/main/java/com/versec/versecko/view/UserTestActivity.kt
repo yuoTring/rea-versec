@@ -1,6 +1,7 @@
 package com.versec.versecko.view
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +22,11 @@ import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.databinding.ActivityUserTestBinding
 import com.versec.versecko.viewmodel.UserViewModel
 import com.yalantis.ucrop.UCrop
+import id.zelory.compressor.Compressor
+import id.zelory.compressor.constraint.format
+import id.zelory.compressor.constraint.quality
+import id.zelory.compressor.constraint.resolution
+import id.zelory.compressor.constraint.size
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.time.LocalDateTime
@@ -134,6 +140,13 @@ class UserTestActivity : AppCompatActivity()
         else if (requestCode == UCrop.REQUEST_CROP && resultCode == RESULT_OK)
         {
             Log.d("ucrop-test", "UCrop - completed")
+            /**
+            val resizedImage = Compressor.compress(this, ) {
+
+                resolution(640, 640)
+                quality(75)
+                format(Bitmap.CompressFormat.PNG)
+            }**/
 
         }
         else if (requestCode == UCrop.RESULT_ERROR)
