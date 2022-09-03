@@ -23,10 +23,23 @@ class MatchingViewModel (
                 val _userList = MutableLiveData<List<UserEntity>> ()
 
                 viewModelScope.launch {
+
+
                     _userList.postValue(repository.getUsersWithGeoHash(latitude, longitude, radiusInMeter))
                 }
 
                 return _userList
+            }
+
+
+            fun likeUser (userEntity: UserEntity) {
+
+                viewModelScope.launch {
+
+                    userEntity.loungeStatus = 1
+                    repository.likeUser(userEntity)
+
+                }
             }
 
 

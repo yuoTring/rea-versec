@@ -22,6 +22,8 @@ class PlaceAdapter(
             onClick(place)
         }
 
+
+
         }
     }
     //   class ViewHolder(binding: ItemRecyclerPlaceBinding) : RecyclerView.ViewHolder(binding.root)

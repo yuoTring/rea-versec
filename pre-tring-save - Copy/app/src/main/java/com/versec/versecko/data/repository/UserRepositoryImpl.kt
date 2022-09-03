@@ -89,7 +89,12 @@ class UserRepositoryImpl (
         return remoteDataSource.getUsersWithGeoHash(latitude, longitude, radiusInMeter)
     }
 
+    override suspend fun likeUser(userEntity: UserEntity) {
 
+        localDataSource.insertUser(userEntity)
+
+        remoteDataSource.likeUser(userEntity)
+    }
 
 
 }

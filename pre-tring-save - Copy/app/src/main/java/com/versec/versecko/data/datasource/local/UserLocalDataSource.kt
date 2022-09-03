@@ -10,4 +10,6 @@ interface UserLocalDataSource {
     suspend fun insertUser (userEntity: UserEntity)
     suspend fun updateUriList (uriList: MutableList<String>, status: Int)
 
+
+
 }

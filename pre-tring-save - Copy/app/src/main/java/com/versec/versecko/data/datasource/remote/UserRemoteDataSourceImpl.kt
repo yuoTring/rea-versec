@@ -1,9 +1,15 @@
 package com.versec.versecko.data.datasource.remote
 
 import android.graphics.Bitmap
+import com.firebase.geofire.GeoFireUtils
+import com.firebase.geofire.GeoLocation
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
@@ -164,8 +170,64 @@ class UserRemoteDataSourceImpl (
         radiusInMeter: Int
     ): List<UserEntity>  {
 
+        //val geoHash = GeoFireUtils.getGeoHashForLocation(GeoLocation(latitude, longitude))
 
-        TODO("Not yet implemented")
+        val center = GeoLocation(latitude, longitude)
+
+        val bounds = GeoFireUtils.getGeoHashQueryBounds(center, radiusInMeter.toDouble())
+
+        val tasks : MutableList<Task<QuerySnapshot>> = mutableListOf()
+
+        val boundSize : Int = bounds.size
+
+        var docs = mutableListOf<DocumentSnapshot>()
+        var userList = mutableListOf<UserEntity>()
+
+        bounds.forEach { geoQueryBounds ->
+
+            val query = fireStore.collection("database/user/userList")
+                .orderBy("geohash")
+                .startAt(geoQueryBounds.startHash)
+                .endAt(geoQueryBounds.endHash)
+
+            tasks.add(query.get())
+
+        }
+
+        Tasks.whenAllComplete(tasks)
+            .addOnCompleteListener {
+
+                tasks.forEach { task ->
+
+                    val snap = task.getResult()
+
+                    snap.forEach { doc ->
+                        docs.add(doc)
+                    }
+                }
+
+            }.await()
+
+
+        docs.forEach { document ->
+
+            val user : UserEntity? = document.toObject(UserEntity::class.java)
+
+            if (user != null) {
+                userList.add(user)
+            }
+        }
+
+        return userList
+
+    }
+
+    override suspend fun likeUser(userEntity: UserEntity) {
+
+        fireStore.collection("database/user/userList/"+ auth.currentUser!!.uid+"/likeList")
+            .document(userEntity.uid)
+            .set(userEntity)
+
     }
 
 

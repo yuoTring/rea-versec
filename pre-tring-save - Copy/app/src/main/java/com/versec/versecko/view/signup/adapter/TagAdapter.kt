@@ -24,6 +24,10 @@ class TagAdapter (
                 onClick(tag)
             }
 
+            binding.buttonDeleteTag.setOnClickListener {
+                onClick(tag)
+            }
+
 
         }
     }

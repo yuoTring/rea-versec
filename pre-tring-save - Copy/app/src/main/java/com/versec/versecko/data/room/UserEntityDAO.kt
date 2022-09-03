@@ -53,4 +53,6 @@ interface UserEntityDAO {
     @Query("UPDATE user SET uri_list = :uriList WHERE loungeStatus = :status")
     suspend fun updateUriList (uriList: MutableList<String>, status: Int)
 
+
+
 }

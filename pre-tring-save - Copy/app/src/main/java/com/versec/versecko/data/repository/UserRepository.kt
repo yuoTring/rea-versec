@@ -13,6 +13,8 @@ interface UserRepository {
     fun getUserList_Local (status : Int) : Flow<MutableList<UserEntity>>
     suspend fun insertUser_Local (userEntity: UserEntity)
 
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
     fun getOwnUser_Remote () : Flow<UserEntity>
     fun getLoungeUserList_Remote (status: Int) : Flow<MutableList<UserEntity>>
     suspend fun insertUser_Remote(userEntity: UserEntity)
@@ -24,6 +26,11 @@ interface UserRepository {
 
     suspend fun checkNickName (nickName : String) :Results<Int>
     suspend fun getUsersWithGeoHash (latitude : Double, longitude : Double, radiusInMeter : Int) : List<UserEntity>
+
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    suspend fun likeUser (userEntity: UserEntity)
+
+
 
 
 

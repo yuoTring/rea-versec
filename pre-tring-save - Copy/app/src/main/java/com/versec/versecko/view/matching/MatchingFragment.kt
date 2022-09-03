@@ -11,12 +11,21 @@ import androidx.lifecycle.Observer
 import com.versec.versecko.R
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.databinding.FragmentMatchingBinding
+import com.versec.versecko.view.matching.adapter.CardStackAdapter
 import com.versec.versecko.viewmodel.MatchingViewModel
+import com.yuyakaido.android.cardstackview.CardStackLayoutManager
+import com.yuyakaido.android.cardstackview.CardStackListener
+import com.yuyakaido.android.cardstackview.CardStackView
+import com.yuyakaido.android.cardstackview.Direction
 
-class MatchingFragment : Fragment()
-{
+class MatchingFragment : Fragment(), CardStackListener {
+
     private lateinit var binding : FragmentMatchingBinding
     private val viewModel : MatchingViewModel by viewModels<MatchingViewModel>()
+
+    private lateinit var cardStackView : CardStackView
+    private lateinit var cardStackLayoutManager: CardStackLayoutManager
+    private lateinit var adapter : CardStackAdapter
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -41,10 +50,28 @@ class MatchingFragment : Fragment()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getUsersWithGeoHash().observe(viewLifecycleOwner, Observer {
+
+        cardStackLayoutManager = CardStackLayoutManager(activity, this)
+
+
+
+
+        viewModel.getUsersWithGeoHash(37.4, 127.12, 5000).observe(viewLifecycleOwner, Observer {
             fetchedUserList ->
 
         })
+
+
+
+        binding.buttonLike.setOnClickListener {
+
+            //viewModel.likeUser(???)
+
+        }
+
+        binding.buttonSkip.setOnClickListener {
+
+        }
 
     }
 
@@ -59,5 +86,36 @@ class MatchingFragment : Fragment()
 
                 }
             }
+    }
+
+
+
+    override fun onCardDragging(direction: Direction?, ratio: Float) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onCardSwiped(direction: Direction?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onCardRewound() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onCardCanceled() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onCardAppeared(view: View?, position: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onCardDisappeared(view: View?, position: Int) {
+        TODO("Not yet implemented")
+    }
+
+    private fun cardStackViewInit () {
+
+
     }
 }
