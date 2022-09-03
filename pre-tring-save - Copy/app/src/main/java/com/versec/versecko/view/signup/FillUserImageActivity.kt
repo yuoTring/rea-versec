@@ -105,12 +105,14 @@ class FillUserImageActivity : AppCompatActivity()
 
             var count =0
             //var uriMap : MutableMap<Int, String> = mutableMapOf()
-            var uriMap : MutableMap<Int, Uri> = mutableMapOf()
+            var uriMap : MutableMap<String, Uri>
+            = mutableMapOf()
 
             emptyList.forEachIndexed { index, item ->
 
                 if (item.equals("image")) {
-                    uriMap.put(count++, imageList.get(index))
+                    uriMap.put(count.toString(), imageList.get(index))
+                    count++
                 }
 
             }
@@ -119,12 +121,7 @@ class FillUserImageActivity : AppCompatActivity()
 
                 Log.d("image-get", "uriMap: "+ uriMap.toString())
 
-                uriMap.forEach { int, uri ->
-
-                    //viewModel.uploadImage()
-
-
-                }
+                viewModel.uploadImage(uriMap)
 
 
 

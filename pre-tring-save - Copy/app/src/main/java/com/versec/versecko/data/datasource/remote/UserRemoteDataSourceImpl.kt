@@ -235,10 +235,11 @@ class UserRemoteDataSourceImpl (
 
     }
 
-    override suspend fun uploadImage(uriMap: MutableMap<Int,Uri>) {
+    override suspend fun uploadImage (uriMap: MutableMap<String, Uri>)
+    {
 
 
-        var uploadMap = mutableMapOf<Int, String>()
+        var uploadMap = mutableMapOf<String, String>()
 
         uriMap.forEach { entry ->
 
@@ -246,7 +247,7 @@ class UserRemoteDataSourceImpl (
             //    storage.reference.child("images/profileImages/"+"uid"+"_"+)
 
             val ref =
-                storage.reference.child("image/profileImages/"+"uid"+"_"+entry.key)
+                storage.reference.child("image/profileImages/"+"testestestuiduiduid_____"+"_"+entry.key)
 
             var uploadTask = ref.putFile(entry.value)
 
@@ -266,6 +267,8 @@ class UserRemoteDataSourceImpl (
                     .downloadUrl.addOnSuccessListener {
 
                         uploadMap.put(entry.key, it.toString())
+
+                        Log.d("uri-???", "key: "+ entry.key + "-----"+ it.toString())
 
                     }.addOnFailureListener {
 

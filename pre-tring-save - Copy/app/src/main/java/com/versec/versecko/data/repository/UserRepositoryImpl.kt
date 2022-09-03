@@ -92,10 +92,11 @@ class UserRepositoryImpl (
         return remoteDataSource.getUsersWithGeoHash(latitude, longitude, radiusInMeter)
     }
 
-    override suspend fun uploadImage(uriMap: MutableMap<Int, Uri>) {
+    override suspend fun uploadImage(uriMap: MutableMap<String, Uri>) {
 
         remoteDataSource.uploadImage(uriMap)
     }
+
 
     override suspend fun likeUser(userEntity: UserEntity) {
 

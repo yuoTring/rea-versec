@@ -30,7 +30,8 @@ interface UserRepository {
     suspend fun checkNickName (nickName : String) :Results<Int>
     suspend fun getUsersWithGeoHash (latitude : Double, longitude : Double, radiusInMeter : Int) : List<UserEntity>
 
-    suspend fun uploadImage (uriMap: MutableMap<Int, Uri>)
+    //suspend fun uploadImage (uriMap: MutableMap<Int, Uri>)
+    suspend fun uploadImage (uriMap: MutableMap<String, Uri>)
 
 
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

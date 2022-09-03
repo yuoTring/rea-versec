@@ -58,7 +58,7 @@ class UserViewModel (
 
         viewModelScope.launch {
 
-            userRepository.uploadImage(file)
+            //userRepository.uploadImage(file)
         }
 
     }

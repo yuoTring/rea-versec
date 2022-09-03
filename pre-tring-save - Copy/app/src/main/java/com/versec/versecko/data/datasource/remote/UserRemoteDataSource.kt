@@ -29,6 +29,6 @@ interface UserRemoteDataSource {
 
     suspend fun likeUser (userEntity: UserEntity)
 
-    suspend fun uploadImage (uriMap: MutableMap<Int,Uri>)
+    suspend fun uploadImage (uriMap: MutableMap<String, Uri>)
 
 }

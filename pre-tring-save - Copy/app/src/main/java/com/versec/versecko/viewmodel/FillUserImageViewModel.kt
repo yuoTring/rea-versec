@@ -1,5 +1,6 @@
 package com.versec.versecko.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.versec.versecko.data.repository.UserRepository
@@ -13,11 +14,12 @@ class FillUserImageViewModel (
         ) : ViewModel(){
 
 
-            fun uploadImage (file :File) {
+            fun uploadImage (uriMap : MutableMap<String, Uri>)
+            {
 
                 viewModelScope.launch {
 
-                    userRepository.uploadImage(file)
+                    userRepository.uploadImage(uriMap)
                 }
             }
 }
