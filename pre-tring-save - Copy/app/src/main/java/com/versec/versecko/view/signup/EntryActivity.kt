@@ -63,8 +63,8 @@ class EntryActivity : AppCompatActivity()
             //= Intent(this, MainScreenActivity::class.java)
             //= Intent(this, UserTestActivity::class.java)
             //= Intent(this, ChoosePlaceActivity::class.java)
-            //= Intent(this, FillUserInfoActivity::class.java)
-            = Intent(this, FillUserImageActivity::class.java)
+            = Intent(this, FillUserInfoActivity::class.java)
+            //= Intent(this, FillUserImageActivity::class.java)
 
 
 

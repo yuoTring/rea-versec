@@ -17,11 +17,12 @@ import com.yuyakaido.android.cardstackview.CardStackLayoutManager
 import com.yuyakaido.android.cardstackview.CardStackListener
 import com.yuyakaido.android.cardstackview.CardStackView
 import com.yuyakaido.android.cardstackview.Direction
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MatchingFragment : Fragment(), CardStackListener {
 
     private lateinit var binding : FragmentMatchingBinding
-    private val viewModel : MatchingViewModel by viewModels<MatchingViewModel>()
+    private val viewModel : MatchingViewModel by viewModel<MatchingViewModel>()
 
     private lateinit var cardStackView : CardStackView
     private lateinit var cardStackLayoutManager: CardStackLayoutManager
@@ -52,6 +53,7 @@ class MatchingFragment : Fragment(), CardStackListener {
 
 
         cardStackLayoutManager = CardStackLayoutManager(activity, this)
+
 
 
 

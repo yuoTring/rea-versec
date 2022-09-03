@@ -25,9 +25,9 @@ class UserLocalDataSourceImpl(
         appDatabase.userEntityDao().insertUser(userEntity)
     }
 
-    override suspend fun updateUriList(uriMap: MutableMap<Int, String>, status: Int) {
+    override suspend fun updateUriList(uriMap: MutableMap<String, String>, status: Int) {
 
-        appDatabase.userEntityDao().updateUriList(uriMap, status)
+        appDatabase.userEntityDao().updateUriList(uriMap,status)
     }
 
 

@@ -47,8 +47,7 @@ class UserRepositoryImpl (
         localDataSource.insertUser(userEntity)
     }
 
-    override suspend fun updateUriList(uriMap: MutableMap<Int, String>, status: Int) {
-
+    override suspend fun updateUriList(uriMap: MutableMap<String, String>, status: Int) {
         localDataSource.updateUriList(uriMap, status)
     }
 

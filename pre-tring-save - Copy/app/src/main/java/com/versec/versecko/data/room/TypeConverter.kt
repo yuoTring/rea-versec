@@ -18,15 +18,15 @@ class TypeConverter {
     }
 
     @TypeConverter
-    fun mutableMapToJson (value: MutableMap<Int, String>) : String {
+    fun mutableMapToJson (value: MutableMap<String, String>) : String {
         return Gson().toJson(value)
     }
 
     @TypeConverter
-    fun jsonToMutableMap (value: String) : MutableMap<Int, String> {
+    fun jsonToMutableMap (value: String) : MutableMap<String, String> {
 
         val gson = Gson()
-        val mapType = object : TypeToken<MutableMap<Int,String>>() {}.type
+        val mapType = object : TypeToken<MutableMap<String, String>>() {}.type
 
         return Gson().fromJson(value, mapType)
     }

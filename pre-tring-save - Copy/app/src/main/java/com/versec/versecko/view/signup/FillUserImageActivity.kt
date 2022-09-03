@@ -6,14 +6,18 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.widget.addTextChangedListener
+import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.databinding.ActivityFillUserImageBinding
+import com.versec.versecko.view.MainScreenActivity
 import com.versec.versecko.view.signup.adapter.ImageAdapter
 import com.versec.versecko.viewmodel.FillUserImageViewModel
 import com.yalantis.ucrop.UCrop
@@ -43,11 +47,14 @@ class FillUserImageActivity : AppCompatActivity()
     {
         super.onCreate(savedInstanceState)
 
+        var intent = intent
+        userEntity= intent.getSerializableExtra("user") as UserEntity
+        userEntity.uriMap = mutableMapOf()
+
         binding = ActivityFillUserImageBinding.inflate(layoutInflater)
         view = binding.root
         setContentView(view)
 
-        userEntity = UserEntity()
         emptyList = mutableListOf("empty","empty","empty","empty","empty","empty")
         imageList = mutableListOf(Uri.parse("---"),Uri.parse("---"),Uri.parse("---"),Uri.parse("---"),Uri.parse("---"),Uri.parse("---"))
 
@@ -79,6 +86,24 @@ class FillUserImageActivity : AppCompatActivity()
 
 
 
+        binding.editSelfIntroduction.doAfterTextChanged {
+            text ->
+
+            var textCount = "0/200"
+
+            if (text.toString().length>20) {
+
+            }
+            else
+            {
+
+                textCount=
+                text.toString().length.toString() + "/200"
+                binding.textCheckLength.setText(textCount)
+            }
+
+
+        }
 
 
 
@@ -121,7 +146,13 @@ class FillUserImageActivity : AppCompatActivity()
 
                 Log.d("image-get", "uriMap: "+ uriMap.toString())
 
+                userEntity.uid = "test!!!!!"
+                userEntity.selfIntroduction = binding.editSelfIntroduction.text.toString()
                 viewModel.uploadImage(uriMap)
+                viewModel.insertUser(userEntity)
+
+
+                startActivity(Intent(this, CongratsActivity::class.java))
 
 
 

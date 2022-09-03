@@ -51,7 +51,9 @@ interface UserEntityDAO {
     suspend fun insertUser (userEntity: UserEntity)
 
     @Query("UPDATE user SET uri_Map= :uri_Map WHERE loungeStatus = :status")
-    suspend fun updateUriList (uri_Map : MutableMap<Int,String>, status: Int)
+    suspend fun updateUriList (uri_Map : MutableMap<String,String>, status: Int)
+
+//suspend fun updateUriList (uri_Map : MutableMap<String,String>, status: Int)
 
 
 

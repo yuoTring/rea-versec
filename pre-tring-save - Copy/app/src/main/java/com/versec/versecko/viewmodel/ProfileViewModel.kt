@@ -13,8 +13,9 @@ class ProfileViewModel (
         ) : ViewModel() {
 
 
-                //private
-                val _user : LiveData<UserEntity> = repository.getOwnUser_Local().asLiveData()
+        val _userLcoal : LiveData<UserEntity> = repository.getOwnUser_Local().asLiveData()
+        val _userRemote : LiveData<UserEntity> = repository.getOwnUser_Remote().asLiveData()
+
         var userEntity = UserEntity()
 
 

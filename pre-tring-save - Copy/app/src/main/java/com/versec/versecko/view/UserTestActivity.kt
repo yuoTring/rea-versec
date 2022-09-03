@@ -89,7 +89,7 @@ class UserTestActivity : AppCompatActivity()
                 tripWish = mutableListOf("!!!","!!?"),
                 tripStyle = mutableListOf("!!!","!!?"),
                 selfIntroduction = "hi -_-",
-                uriMap = mutableMapOf<Int, String>(),
+                uriMap = mutableMapOf(),
                 //uriList = mutableListOf("!!!","!!?"),
                 geohash = "none",
                 latitude = 37.455,

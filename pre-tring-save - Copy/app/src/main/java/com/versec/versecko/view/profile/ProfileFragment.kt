@@ -2,7 +2,6 @@ package com.versec.versecko.view.profile
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -50,7 +49,7 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        val observer = Observer<UserEntity> { updatedUser ->
+        val observer_local = Observer<UserEntity> { updatedUser ->
 
             profileViewModel.userEntity= updatedUser
             //binding.textResidence.setText(updatedUser.mainResidence)
@@ -58,7 +57,15 @@ class ProfileFragment : Fragment() {
             //binding.textNickAndAge.setText(updatedUser.nickName+", "+updatedUser.age)
         }
 
-        profileViewModel._user.observe(viewLifecycleOwner, observer)
+        profileViewModel._userLcoal.observe(viewLifecycleOwner, observer_local)
+
+        val observer_remote = Observer<UserEntity> { updatedUser ->
+
+            profileViewModel.userEntity = updatedUser
+
+        }
+
+        profileViewModel._userRemote.observe(viewLifecycleOwner, observer_remote)
 
 
         binding.buttonEditProfile.setOnClickListener {
@@ -70,8 +77,7 @@ class ProfileFragment : Fragment() {
 
     companion object {
 
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
+         @JvmStatic
         fun newInstance() =
             ProfileFragment().apply {
                 arguments = Bundle().apply {

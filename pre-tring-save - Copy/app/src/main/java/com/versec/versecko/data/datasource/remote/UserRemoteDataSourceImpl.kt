@@ -247,7 +247,7 @@ class UserRemoteDataSourceImpl (
             //    storage.reference.child("images/profileImages/"+"uid"+"_"+)
 
             val ref =
-                storage.reference.child("image/profileImages/"+"testestestuiduiduid_____"+"_"+entry.key)
+                storage.reference.child("image/profileImages/"+"test!!!!!"+"/"+"test!!!!!"+"_"+entry.key)
 
             var uploadTask = ref.putFile(entry.value)
 
@@ -263,7 +263,7 @@ class UserRemoteDataSourceImpl (
         uriMap.forEach { entry ->
 
             val downloadRef =
-                storage.reference.child("image/profileImages/"+"testestestuiduiduid_____"+"_"+entry.key)
+                storage.reference.child("image/profileImages/"+"test!!!!!"+"/"+"test!!!!!"+"_"+entry.key)
                     .downloadUrl.addOnSuccessListener {
 
                         uploadMap.put(entry.key, it.toString())
@@ -277,7 +277,7 @@ class UserRemoteDataSourceImpl (
 
 
         fireStore.collection("database/user/userList")
-            .document("testestestuiduiduid_____")
+            .document("test!!!!!")
             .update("uriMap",uploadMap)
 
 

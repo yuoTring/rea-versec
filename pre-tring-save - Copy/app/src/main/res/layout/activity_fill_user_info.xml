@@ -66,6 +66,7 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="4dp"
                 android:hint="특수문자 입력 불가능, 최대 16자"
+                android:textColor="@color/black"
                 android:textColorHint="@color/gray_light"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toStartOf="@id/buttonCheckOverlap"

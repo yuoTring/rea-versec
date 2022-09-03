@@ -10,8 +10,12 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
+import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.firebase.geofire.GeoFireUtils
+import com.firebase.geofire.GeoLocation
+import com.versec.versecko.AppContext
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.databinding.ActivityFillUserInfoBinding
 import com.versec.versecko.util.Results
@@ -38,6 +42,11 @@ class FillUserInfoActivity : AppCompatActivity()
     private lateinit var residenceList : MutableList<String>
     private lateinit var tripList: MutableList<String>
     private lateinit var styleList: MutableList<String>
+
+    private var checkNickname : Boolean = false
+    private var checkBirth : Boolean = false
+    private var checkGender : Boolean = false
+
 
 
     companion object {
@@ -76,6 +85,7 @@ class FillUserInfoActivity : AppCompatActivity()
 
 
             user.gender = "male"
+            checkGender =true
         }
         binding.buttonGenderFemale.setOnClickListener {
 
@@ -85,48 +95,35 @@ class FillUserInfoActivity : AppCompatActivity()
             binding.buttonGenderMale.setTextColor(ContextCompat.getColor(this@FillUserInfoActivity, R.color.gray))
 
             user.gender = "female"
+            checkGender =true
         }
 
-        binding.editBirth.addTextChangedListener { object : TextWatcher {
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+        binding.editBirth.doAfterTextChanged { text ->
+
+            val valid = checkValidBirth(text.toString())
+
+
+
+            if (valid)
+            {
+                binding.textCheckBirth.setText("valid")
+                binding.textCheckBirth.setTextColor(ContextCompat.getColor(this@FillUserInfoActivity,R.color.blue))
+                user.birth = text.toString()
+                checkBirth =true
+            }
+            else
+            {
+                binding.textCheckBirth.setText("invalid")
+                binding.textCheckBirth.setTextColor(ContextCompat.getColor(this@FillUserInfoActivity,R.color.red))
+                checkBirth =false
             }
 
-            override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-                val valid = checkValidBirth(text.toString())
-
-                Toast.makeText(this@FillUserInfoActivity, "valid: "+valid,Toast.LENGTH_SHORT).show()
 
 
-                if (valid)
-                {
-                    binding.textCheckBirth.setText("valid")
-                    binding.textCheckBirth.setTextColor(ContextCompat.getColor(this@FillUserInfoActivity,R.color.blue))
-                }
-                else
-                {
-                    binding.textCheckBirth.setText("invalid")
-                    binding.textCheckBirth.setTextColor(ContextCompat.getColor(this@FillUserInfoActivity,R.color.red))
-                }
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-        } }
-
-
-
-
-        binding.buttonToNext.setOnClickListener {
-
-            //user.nickName = binding.editNickName.text.toString()
-            //user.birth = binding.editBirth.text.toString()
-            user.age = user.birth.substring(0,4).toInt() - Calendar.YEAR
-
-            //if (user.nickName != null && user.gender != null)
         }
+
+
 
         val layoutManagerResidence: RecyclerView.LayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         val layoutManagerTrip
@@ -179,15 +176,52 @@ class FillUserInfoActivity : AppCompatActivity()
                 if (result.equals(Results.Exist(1))) {
 
                     binding.textCheckNickNameOverlap.setText("can not")
+                    binding.textCheckNickNameOverlap.setTextColor(ContextCompat.getColor(this, R.color.red))
+                    checkNickname = false
                 }
                 else {
                     binding.textCheckNickNameOverlap.setText("can")
                     user.nickName = binding.editNickName.text.toString()
+                    binding.textCheckNickNameOverlap.setTextColor(ContextCompat.getColor(this, R.color.blue))
+                    checkNickname = true
 
                 }
             })
         }
 
+
+        binding.buttonToNext.setOnClickListener {
+
+            //user.nickName = binding.editNickName.text.toString()
+            //user.birth = binding.editBirth.text.toString()
+
+            //if (user.nickName != null && user.gender != null)
+            styleList.addAll(mutableListOf("!!!","???"))
+
+
+            if (checkNickname && checkBirth && checkGender && residenceList.size>1 && tripList.size>1 && styleList.size>1) {
+
+                /**
+                 *
+                 */
+                user.age = user.birth.substring(0,4).toInt() - Calendar.YEAR
+                user.mainResidence = residenceList.get(1)
+                user.tripWish.addAll(tripList)
+                user.tripStyle.addAll(styleList)
+
+                user.latitude = AppContext.latitude
+                user.longitude = AppContext.longitude
+                user.geohash = GeoFireUtils.getGeoHashForLocation(GeoLocation(user.latitude, user.longitude))
+
+                var intent = Intent(this, FillUserImageActivity::class.java)
+                intent.putExtra("user", user)
+                startActivity(intent)
+
+            } else {
+
+                Toast.makeText(this, "please fill in all info to push next button!", Toast.LENGTH_SHORT).show()
+            }
+        }
 
 
     }
@@ -223,11 +257,9 @@ class FillUserInfoActivity : AppCompatActivity()
             adapterResidence.updateTagList(residenceList)
             adapterResidence.notifyDataSetChanged()
 
-            user.mainResidence = residenceList.get(1)
         }
         else if (requestCode == RESIDENCE && data == null) {
 
-            Toast.makeText(this, "1", Toast.LENGTH_SHORT).show()
 
         }
         else if (requestCode == TRIP && data != null) {
@@ -238,15 +270,12 @@ class FillUserInfoActivity : AppCompatActivity()
             adapterTrip.updateTagList(tripList)
             adapterTrip.notifyDataSetChanged()
 
-            user.tripWish.addAll(tripList)
 
         }
         else if (requestCode == TRIP && data == null) {
-            Toast.makeText(this, "3", Toast.LENGTH_SHORT).show()
 
         }
         else {
-            Toast.makeText(this, "4", Toast.LENGTH_SHORT).show()
 
         }
 

@@ -22,10 +22,8 @@ interface UserRepository {
     suspend fun insertUser_Remote(userEntity: UserEntity)
 
     suspend fun signIn(credential: PhoneAuthCredential) : Results<Int>
-    //fun signIn(credential: PhoneAuthCredential) : Flow<Results<Int>>
-    //suspend fun updateUriList (uriList: MutableList<String>, status: Int)
-    suspend fun updateUriList (uriMap: MutableMap<Int,String>, status: Int)
 
+    suspend fun updateUriList (uriMap: MutableMap<String, String>, status: Int)
 
     suspend fun checkNickName (nickName : String) :Results<Int>
     suspend fun getUsersWithGeoHash (latitude : Double, longitude : Double, radiusInMeter : Int) : List<UserEntity>
