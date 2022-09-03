@@ -6,6 +6,7 @@ import com.versec.versecko.data.datasource.remote.UserRemoteDataSource
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.util.Results
 import kotlinx.coroutines.flow.Flow
+import java.io.File
 
 class UserRepositoryImpl (
     private val localDataSource : UserLocalDataSource,
@@ -87,6 +88,11 @@ class UserRepositoryImpl (
     ): List<UserEntity> {
 
         return remoteDataSource.getUsersWithGeoHash(latitude, longitude, radiusInMeter)
+    }
+
+    override suspend fun uploadImage(file: File) {
+
+        remoteDataSource.uploadImage(file)
     }
 
     override suspend fun likeUser(userEntity: UserEntity) {

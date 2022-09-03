@@ -2,6 +2,7 @@ package com.versec.versecko.view
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -22,13 +23,13 @@ import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.databinding.ActivityUserTestBinding
 import com.versec.versecko.viewmodel.UserViewModel
 import com.yalantis.ucrop.UCrop
-import id.zelory.compressor.Compressor
-import id.zelory.compressor.constraint.format
-import id.zelory.compressor.constraint.quality
-import id.zelory.compressor.constraint.resolution
-import id.zelory.compressor.constraint.size
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.time.LocalDateTime
 
 class UserTestActivity : AppCompatActivity()
@@ -137,16 +138,32 @@ class UserTestActivity : AppCompatActivity()
             Log.d("ucrop-test", "!!!"+data.toString())
 
         }
-        else if (requestCode == UCrop.REQUEST_CROP && resultCode == RESULT_OK)
+        else if (requestCode == UCrop.REQUEST_CROP && resultCode == RESULT_OK && data != null)
         {
-            Log.d("ucrop-test", "UCrop - completed")
-            /**
-            val resizedImage = Compressor.compress(this, ) {
 
-                resolution(640, 640)
-                quality(75)
-                format(Bitmap.CompressFormat.PNG)
+            val croppedImageUri = UCrop.getOutput(data)
+
+            if (croppedImageUri != null) {
+
+                userViewModel.uploadImage(File(croppedImageUri.path))
+            }
+
+
+
+            /**
+            if (croppedImageUri != null) {
+
+
+                val file = compressImage(File(croppedImageUri.path))
+
+                if (file != null) {
+                    Log.d("file-size", "file-size-resized: "+ file.length()/1024)
+                }
+
             }**/
+
+
+
 
         }
         else if (requestCode == UCrop.RESULT_ERROR)
@@ -157,6 +174,59 @@ class UserTestActivity : AppCompatActivity()
         {
             Log.d("ucrop-test", "else")
         }
+    }
+
+    fun compressImage(file: File) : File? {
+
+        try {
+
+            val options : BitmapFactory.Options = BitmapFactory.Options()
+            options.inJustDecodeBounds = true
+            options.inSampleSize = 6
+
+            var inputStream = FileInputStream(file)
+
+            BitmapFactory.decodeStream(inputStream, null, options)
+            inputStream.close()
+
+            val REQUIRED_SIZE = 67
+            var scale =1
+            //val scale : Int = 1
+
+            while (options.outWidth/scale/2 >= REQUIRED_SIZE &&
+                options.outHeight / scale / 2 >= REQUIRED_SIZE) {
+
+                scale *= 2
+            }
+
+            val anotherOption : BitmapFactory.Options = BitmapFactory.Options()
+
+            anotherOption.inSampleSize = scale
+
+            inputStream = FileInputStream(file)
+
+            val chosenBitmap =
+                BitmapFactory.decodeStream(inputStream, null, anotherOption)
+
+            inputStream.close()
+
+            file.createNewFile()
+            val outputStream = FileOutputStream(file)
+
+            if (chosenBitmap != null) {
+                chosenBitmap.compress(Bitmap.CompressFormat.PNG, 75, outputStream)
+            }
+
+            return file
+
+        }
+        catch (exception : Exception) {
+
+            return null
+        }
+
+
+
     }
 
 

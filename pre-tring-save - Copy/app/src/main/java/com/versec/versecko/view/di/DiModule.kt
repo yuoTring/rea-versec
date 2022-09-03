@@ -64,7 +64,8 @@ val userViewModelModule = module {
     viewModel { SignInViewModel(get()) }
     viewModel { ProfileViewModel(get()) }
     viewModel { ProfileModifyViewModel(get()) }
-    viewModel { FillInUserInfoViewModel(get()) }
+    viewModel { FillUserInfoViewModel(get()) }
+    viewModel { FillUserImageViewModel(get()) }
     viewModel { MatchingViewModel(get()) }
 }
 

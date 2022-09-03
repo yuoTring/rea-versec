@@ -8,7 +8,7 @@ import com.versec.versecko.data.repository.UserRepository
 import com.versec.versecko.util.Results
 import kotlinx.coroutines.launch
 
-class FillInUserInfoViewModel (
+class FillUserInfoViewModel (
 
     private val repository: UserRepository
 

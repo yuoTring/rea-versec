@@ -60,15 +60,17 @@
         <entry key="..\:/Users/cours/AndroidStudioProjects/versecko/app/src/main/res/menu/menu_bottom.xml" value="0.34074074074074073" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/drawable-v24/button_corner_8_black.xml" value="0.292" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/drawable-v24/edit_line_bottom.xml" value="0.292" />
+        <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/drawable/button_add.xml" value="0.294" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/drawable/button_back.xml" value="0.269" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/drawable/button_corner_12_black.xml" value="0.292" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/drawable/button_corner_16_blue_gradient.xml" value="0.269" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/drawable/button_corner_16_charcoal.xml" value="0.269" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/drawable/button_corner_16_gray.xml" value="0.269" />
+        <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/drawable/icon_add.xml" value="0.294" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/drawable/overlay.xml" value="0.33" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/layout/activity_choose_style.xml" value="0.3944746376811594" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/layout/activity_entry.xml" value="0.2828125" />
-        <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/layout/activity_fill_user_image.xml" value="0.5234375" />
+        <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/layout/activity_fill_user_image.xml" value="0.34513274336283184" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/layout/activity_fill_user_info.xml" value="0.1" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/layout/activity_image_test.xml" value="0.2828125" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/layout/activity_main_screen.xml" value="0.2828125" />
@@ -81,7 +83,7 @@
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/layout/fragment_story_feed.xml" value="0.5234375" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/layout/item_cardstack_user.xml" value="0.5" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/layout/item_recycler_chatroom.xml" value="0.5234375" />
-        <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/layout/item_recycler_image.xml" value="0.416213768115942" />
+        <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/layout/item_recycler_image.xml" value="0.75" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/layout/item_recycler_lounge_profile.xml" value="0.5234375" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/layout/item_recycler_place.xml" value="0.2630208333333333" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/layout/item_recycler_story.xml" value="0.5234375" />

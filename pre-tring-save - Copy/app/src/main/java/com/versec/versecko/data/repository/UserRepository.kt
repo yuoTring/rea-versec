@@ -5,6 +5,7 @@ import com.versec.domain.model.UserModel
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.util.Results
 import kotlinx.coroutines.flow.Flow
+import java.io.File
 
 interface UserRepository {
 
@@ -26,6 +27,9 @@ interface UserRepository {
 
     suspend fun checkNickName (nickName : String) :Results<Int>
     suspend fun getUsersWithGeoHash (latitude : Double, longitude : Double, radiusInMeter : Int) : List<UserEntity>
+
+    suspend fun uploadImage (file: File)
+
 
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     suspend fun likeUser (userEntity: UserEntity)

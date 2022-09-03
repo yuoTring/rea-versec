@@ -1,5 +1,6 @@
 package com.versec.versecko.viewmodel
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
 import com.versec.domain.model.UserModel
@@ -8,6 +9,7 @@ import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.data.repository.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
 
 class UserViewModel (
     //var getUserUseCase: GetUserUseCase ,
@@ -50,6 +52,15 @@ class UserViewModel (
             //userRepository.insertUser_Local(userEntity)
             userRepository.insertUser_Local(userEntity)
         }
+    }
+
+    fun uploadImage (file: File) {
+
+        viewModelScope.launch {
+
+            userRepository.uploadImage(file)
+        }
+
     }
 
 

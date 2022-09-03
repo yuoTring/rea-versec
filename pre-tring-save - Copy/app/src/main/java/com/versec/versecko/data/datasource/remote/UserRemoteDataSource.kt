@@ -5,6 +5,7 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.util.Results
 import kotlinx.coroutines.flow.Flow
+import java.io.File
 
 interface UserRemoteDataSource {
 
@@ -26,5 +27,7 @@ interface UserRemoteDataSource {
     suspend fun getUsersWithGeoHash (latitude : Double, longitude : Double, radiusInMeter : Int) : List<UserEntity>
 
     suspend fun likeUser (userEntity: UserEntity)
+
+    suspend fun uploadImage (file: File)
 
 }

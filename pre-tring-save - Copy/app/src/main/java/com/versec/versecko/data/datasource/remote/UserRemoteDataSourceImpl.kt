@@ -1,6 +1,8 @@
 package com.versec.versecko.data.datasource.remote
 
 import android.graphics.Bitmap
+import android.net.Uri
+import android.util.Log
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
 import com.google.android.gms.tasks.Task
@@ -20,6 +22,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import java.io.ByteArrayOutputStream
+import java.io.File
 
 class UserRemoteDataSourceImpl (
 
@@ -27,7 +30,7 @@ class UserRemoteDataSourceImpl (
     private val fireStore : FirebaseFirestore,
     private val storage : FirebaseStorage
 
-        ) : UserRemoteDataSource {
+) : UserRemoteDataSource {
 
     override fun getOwnUser(): Flow<UserEntity> = callbackFlow{
 
@@ -72,7 +75,7 @@ class UserRemoteDataSourceImpl (
         //1. sign in with phone number and sms code
         auth.signInWithCredential(credential)
             .addOnCompleteListener {
-                task ->
+                    task ->
 
                 if (task.isSuccessful) {
 
@@ -121,11 +124,12 @@ class UserRemoteDataSourceImpl (
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
             val data = baos.toByteArray()
 
-            val reference = storage.reference.child("images/profileImages/"+ uid+"/"+index+"/")
+            val reference =
+                storage.reference.child("images/profileImages/"+ uid+"/"+index+"/")
 
             val uploadTask : UploadTask = reference.putBytes(data)
 
-            
+
 
 
         }
@@ -227,6 +231,51 @@ class UserRemoteDataSourceImpl (
         fireStore.collection("database/user/userList/"+ auth.currentUser!!.uid+"/likeList")
             .document(userEntity.uid)
             .set(userEntity)
+
+    }
+
+    override suspend fun uploadImage(file: File) {
+
+        val uri = Uri.fromFile(file)
+
+        val ref =
+            storage.reference.child("images/profileImages/"+"test"+"/${uri.lastPathSegment}")
+
+        val uploadTask = ref.putFile(uri)
+
+        uploadTask.addOnSuccessListener {
+            Log.d("file-upload",  "metadata: "+ it.metadata)
+
+            val uriTask =uploadTask.continueWithTask {
+                task ->
+                if (!task.isSuccessful) {
+                    task.exception?.let {
+                        throw it
+                    }
+                }
+                ref.downloadUrl
+            }.addOnCompleteListener {
+                task ->
+                if (task.isSuccessful) {
+
+                    val downloadUri = task.result
+
+                    fireStore.collection("database/user/userList/")
+                        .document("testestestuiduiduid_____")
+                        //.update("uriList")
+
+                } else {
+
+                }
+            }
+
+
+
+        }
+            .addOnFailureListener {
+                Log.d("file-upload", "error: "+ it.toString())
+            }
+
 
     }
 

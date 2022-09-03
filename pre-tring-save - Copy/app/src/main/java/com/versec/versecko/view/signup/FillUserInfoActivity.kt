@@ -7,15 +7,9 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.widget.AppCompatButton
-import androidx.appcompat.widget.AppCompatImageButton
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
-import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.versec.versecko.data.entity.UserEntity
@@ -23,15 +17,14 @@ import com.versec.versecko.databinding.ActivityFillUserInfoBinding
 import com.versec.versecko.util.Results
 import com.versec.versecko.view.ChoosePlaceActivity
 import com.versec.versecko.view.signup.adapter.TagAdapter
-import com.versec.versecko.viewmodel.FillInUserInfoViewModel
+import com.versec.versecko.viewmodel.FillUserInfoViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 class FillUserInfoActivity : AppCompatActivity()
 {
 
-    private val viewModel : FillInUserInfoViewModel by viewModel<FillInUserInfoViewModel>()
+    private val viewModel : FillUserInfoViewModel by viewModel<FillUserInfoViewModel>()
 
     private lateinit var user : UserEntity
 

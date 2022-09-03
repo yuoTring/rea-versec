@@ -29,8 +29,6 @@ class EntryActivity : AppCompatActivity()
     private lateinit var binding: ActivityEntryBinding
     private lateinit var view: View
 
-    //private lateinit var fusedLocationClient: FusedLocationProviderClient
-
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?)
@@ -40,9 +38,6 @@ class EntryActivity : AppCompatActivity()
         view = binding.root
 
         setContentView(view)
-
-
-        //fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         LocationPermission.requestLocationPermission(this)
 
@@ -68,7 +63,9 @@ class EntryActivity : AppCompatActivity()
             //= Intent(this, MainScreenActivity::class.java)
             //= Intent(this, UserTestActivity::class.java)
             //= Intent(this, ChoosePlaceActivity::class.java)
-            = Intent(this, FillUserInfoActivity::class.java)
+            //= Intent(this, FillUserInfoActivity::class.java)
+            = Intent(this, FillUserImageActivity::class.java)
+
 
 
 

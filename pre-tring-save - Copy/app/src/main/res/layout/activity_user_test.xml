@@ -30,10 +30,7 @@
             android:layout_width="104dp"
             android:layout_height="104dp"
             android:layout_margin="16dp"
-            android:text="+"
-            android:textColor="@color/black"
-            android:textSize="40sp"
-            android:background="@drawable/button_corner_16_gray_light"
+            android:background="@drawable/button_add"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
 
