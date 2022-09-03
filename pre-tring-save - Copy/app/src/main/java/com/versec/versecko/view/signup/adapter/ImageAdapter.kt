@@ -49,7 +49,7 @@ class ImageAdapter (
                 Glide
                     .with(holder.binding.root)
                     .load(imageList.get(position))
-                    .apply(RequestOptions.bitmapTransform(RoundedCorners(8)))
+                    .apply(RequestOptions.bitmapTransform(RoundedCorners(16)))
                     .into(holder.binding.buttonAddImage)
             }
 

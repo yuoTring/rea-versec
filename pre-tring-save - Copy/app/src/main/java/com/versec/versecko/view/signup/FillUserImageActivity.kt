@@ -8,12 +8,16 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.databinding.ActivityFillUserImageBinding
 import com.versec.versecko.view.signup.adapter.ImageAdapter
+import com.versec.versecko.viewmodel.FillUserImageViewModel
 import com.yalantis.ucrop.UCrop
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.time.LocalDateTime
 
@@ -24,6 +28,8 @@ class FillUserImageActivity : AppCompatActivity()
     private lateinit var binding : ActivityFillUserImageBinding
     private lateinit var view : View
 
+    private val viewModel : FillUserImageViewModel by viewModel<FillUserImageViewModel>()
+
     private lateinit var layoutManager: RecyclerView.LayoutManager
     private lateinit var imageAdapter: ImageAdapter
 
@@ -32,6 +38,7 @@ class FillUserImageActivity : AppCompatActivity()
 
     private var onClickImagePosition : Int = 0
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
@@ -96,6 +103,37 @@ class FillUserImageActivity : AppCompatActivity()
 
             }**/
 
+            var count =0
+            //var uriMap : MutableMap<Int, String> = mutableMapOf()
+            var uriMap : MutableMap<Int, Uri> = mutableMapOf()
+
+            emptyList.forEachIndexed { index, item ->
+
+                if (item.equals("image")) {
+                    uriMap.put(count++, imageList.get(index))
+                }
+
+            }
+
+            if (checkImageReadyOrNot){
+
+                Log.d("image-get", "uriMap: "+ uriMap.toString())
+
+                uriMap.forEach { int, uri ->
+
+                    //viewModel.uploadImage()
+
+
+                }
+
+
+
+            }
+            else
+            {
+                Toast.makeText(this,"nonono", Toast.LENGTH_SHORT).show()
+            }
+
 
 
 
@@ -129,6 +167,9 @@ class FillUserImageActivity : AppCompatActivity()
             if (croppedImageUri != null) {
                 imageList.set(onClickImagePosition, croppedImageUri)
                 emptyList.set(onClickImagePosition, "image")
+                Log.d("image-get", "emptyList: "+ emptyList.toString())
+                Log.d("image-get", "imageList: "+ imageList.toString())
+
                 imageAdapter.updateList(emptyList, imageList)
                 imageAdapter.notifyDataSetChanged()
             }

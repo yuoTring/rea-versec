@@ -19,7 +19,7 @@ class UserMapper {
             tripStyle = userEntity.tripStyle,
             selfIntroduction = userEntity.selfIntroduction,
 
-            uriList = userEntity.uriList,
+            //uriList = userEntity.uriMap,
             geohash = userEntity.geohash,
             latitude = userEntity.latitude,
             longitude = userEntity.longitude,
@@ -45,7 +45,7 @@ class UserMapper {
             tripStyle = userModel.tripStyle,
             selfIntroduction = userModel.selfIntroduction,
 
-            uriList = userModel.uriList,
+            //uriList = userModel.uriList,
             geohash = userModel.geohash,
             latitude = userModel.latitude,
             longitude = userModel.longitude,

@@ -1,6 +1,7 @@
 package com.versec.versecko.data.datasource.remote
 
 import android.graphics.Bitmap
+import android.net.Uri
 import com.google.firebase.auth.PhoneAuthCredential
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.util.Results
@@ -28,6 +29,6 @@ interface UserRemoteDataSource {
 
     suspend fun likeUser (userEntity: UserEntity)
 
-    suspend fun uploadImage (file: File)
+    suspend fun uploadImage (uriMap: MutableMap<Int,Uri>)
 
 }

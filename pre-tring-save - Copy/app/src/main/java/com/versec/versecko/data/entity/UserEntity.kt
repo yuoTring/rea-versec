@@ -19,7 +19,8 @@ data class UserEntity(
     @ColumnInfo(name = "trip_style") var tripStyle : MutableList<String> = mutableListOf("!!!","!!?"),
     @ColumnInfo(name = "self_introduction") var selfIntroduction : String = "Hi",
 
-    @ColumnInfo(name = "uri_list") var uriList : MutableList<String> = mutableListOf("!!!","!!?"),
+    //@ColumnInfo(name = "uri_list") var uriList : MutableList<String> = mutableListOf("!!!","!!?"),
+    @ColumnInfo(name = "uri_Map") var uriMap : MutableMap<Int, String> = mutableMapOf(),
     @ColumnInfo(name = "geohash") var geohash : String = "",
     @ColumnInfo(name = "latitude") var latitude : Double = 37.75,
     @ColumnInfo(name = "longitude") var longitude : Double = 124.5,

@@ -1,5 +1,6 @@
 package com.versec.versecko.data.repository
 
+import android.net.Uri
 import com.google.firebase.auth.PhoneAuthCredential
 import com.versec.versecko.data.datasource.local.UserLocalDataSource
 import com.versec.versecko.data.datasource.remote.UserRemoteDataSource
@@ -46,10 +47,11 @@ class UserRepositoryImpl (
         localDataSource.insertUser(userEntity)
     }
 
-    override suspend fun updateUriList(uriList: MutableList<String>, status: Int) {
+    override suspend fun updateUriList(uriMap: MutableMap<Int, String>, status: Int) {
 
-        localDataSource.updateUriList(uriList, status)
+        localDataSource.updateUriList(uriMap, status)
     }
+
 
 
 
@@ -90,9 +92,9 @@ class UserRepositoryImpl (
         return remoteDataSource.getUsersWithGeoHash(latitude, longitude, radiusInMeter)
     }
 
-    override suspend fun uploadImage(file: File) {
+    override suspend fun uploadImage(uriMap: MutableMap<Int, Uri>) {
 
-        remoteDataSource.uploadImage(file)
+        remoteDataSource.uploadImage(uriMap)
     }
 
     override suspend fun likeUser(userEntity: UserEntity) {

@@ -50,8 +50,8 @@ interface UserEntityDAO {
     @Insert(onConflict = REPLACE)
     suspend fun insertUser (userEntity: UserEntity)
 
-    @Query("UPDATE user SET uri_list = :uriList WHERE loungeStatus = :status")
-    suspend fun updateUriList (uriList: MutableList<String>, status: Int)
+    @Query("UPDATE user SET uri_Map= :uri_Map WHERE loungeStatus = :status")
+    suspend fun updateUriList (uri_Map : MutableMap<Int,String>, status: Int)
 
 
 

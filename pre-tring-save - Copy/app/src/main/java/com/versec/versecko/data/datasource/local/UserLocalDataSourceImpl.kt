@@ -25,11 +25,11 @@ class UserLocalDataSourceImpl(
         appDatabase.userEntityDao().insertUser(userEntity)
     }
 
-    override suspend fun updateUriList(uriList: MutableList<String>, status: Int) {
-        TODO("Not yet implemented")
+    override suspend fun updateUriList(uriMap: MutableMap<Int, String>, status: Int) {
 
-        appDatabase.userEntityDao().updateUriList(uriList,status)
+        appDatabase.userEntityDao().updateUriList(uriMap, status)
     }
+
 
 
 

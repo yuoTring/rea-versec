@@ -10,6 +10,7 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.toObject
@@ -234,47 +235,54 @@ class UserRemoteDataSourceImpl (
 
     }
 
-    override suspend fun uploadImage(file: File) {
-
-        val uri = Uri.fromFile(file)
-
-        val ref =
-            storage.reference.child("images/profileImages/"+"test"+"/${uri.lastPathSegment}")
-
-        val uploadTask = ref.putFile(uri)
-
-        uploadTask.addOnSuccessListener {
-            Log.d("file-upload",  "metadata: "+ it.metadata)
-
-            val uriTask =uploadTask.continueWithTask {
-                task ->
-                if (!task.isSuccessful) {
-                    task.exception?.let {
-                        throw it
-                    }
-                }
-                ref.downloadUrl
-            }.addOnCompleteListener {
-                task ->
-                if (task.isSuccessful) {
-
-                    val downloadUri = task.result
-
-                    fireStore.collection("database/user/userList/")
-                        .document("testestestuiduiduid_____")
-                        //.update("uriList")
-
-                } else {
-
-                }
-            }
+    override suspend fun uploadImage(uriMap: MutableMap<Int,Uri>) {
 
 
+        var uploadMap = mutableMapOf<Int, String>()
+
+        uriMap.forEach { entry ->
+
+            //val ref =
+            //    storage.reference.child("images/profileImages/"+"uid"+"_"+)
+
+            val ref =
+                storage.reference.child("image/profileImages/"+"uid"+"_"+entry.key)
+
+            var uploadTask = ref.putFile(entry.value)
+
+            uploadTask.addOnSuccessListener {
+
+
+            }.addOnFailureListener {
+
+            }.await()
 
         }
-            .addOnFailureListener {
-                Log.d("file-upload", "error: "+ it.toString())
-            }
+
+        uriMap.forEach { entry ->
+
+            val downloadRef =
+                storage.reference.child("image/profileImages/"+"testestestuiduiduid_____"+"_"+entry.key)
+                    .downloadUrl.addOnSuccessListener {
+
+                        uploadMap.put(entry.key, it.toString())
+
+                    }.addOnFailureListener {
+
+                    }.await()
+        }
+
+
+        fireStore.collection("database/user/userList")
+            .document("testestestuiduiduid_____")
+            .update("uriMap",uploadMap)
+
+
+
+
+
+
+
 
 
     }
