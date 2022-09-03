@@ -2,6 +2,7 @@ package com.versec.versecko.view.profile
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -55,6 +56,9 @@ class ProfileFragment : Fragment() {
             //binding.textResidence.setText(updatedUser.mainResidence)
             //binding.textMannerScore.setText("매너 점수: "+updatedUser.mannerScore.toString())
             //binding.textNickAndAge.setText(updatedUser.nickName+", "+updatedUser.age)
+            Log.d("profile-user", "local: "+updatedUser.toString())
+            //binding.textNickAndAge.setText(updatedUser.nickName+", " +updatedUser.age)
+
         }
 
         profileViewModel._userLcoal.observe(viewLifecycleOwner, observer_local)
@@ -62,6 +66,9 @@ class ProfileFragment : Fragment() {
         val observer_remote = Observer<UserEntity> { updatedUser ->
 
             profileViewModel.userEntity = updatedUser
+            Log.d("profile-user", "remote: "+updatedUser.toString())
+
+            profileViewModel.insertUser_Local(updatedUser)
 
         }
 

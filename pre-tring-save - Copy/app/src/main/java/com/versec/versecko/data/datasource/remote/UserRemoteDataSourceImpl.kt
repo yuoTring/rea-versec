@@ -36,7 +36,7 @@ class UserRemoteDataSourceImpl (
     override fun getOwnUser(): Flow<UserEntity> = callbackFlow{
 
         val document = fireStore.collection("database/user/userList/")
-            .document("testestestuiduiduid_____")
+            .document("test!!!!!")
 
         val subscription = document.addSnapshotListener { snapshot,_ ->
 
