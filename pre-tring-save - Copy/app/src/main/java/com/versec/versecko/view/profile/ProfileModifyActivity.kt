@@ -9,6 +9,7 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -75,6 +76,7 @@ class ProfileModifyActivity : AppCompatActivity() {
         viewModel._user.observe(this, Observer { updatedUser ->
 
             userEntity = updatedUser
+            Log.d("profile-modify", updatedUser.toString())
 
 
 
@@ -91,6 +93,14 @@ class ProfileModifyActivity : AppCompatActivity() {
                 emptyList.set(entry.key.toInt(), "image")
 
             }
+
+            imageAdapter.updateList(emptyList, imageList)
+            adapterResidence.updateTagList(residenceList)
+            adapterTrip.updateTagList(tripList)
+
+            imageAdapter.notifyDataSetChanged()
+            adapterResidence.notifyDataSetChanged()
+            adapterTrip.notifyDataSetChanged()
 
 
         })
@@ -146,6 +156,25 @@ class ProfileModifyActivity : AppCompatActivity() {
             adapterResidence.updateTagList(residenceList)
             adapterResidence.notifyDataSetChanged()
 
+
+
+        }
+
+        binding.editSelfIntroduction.doAfterTextChanged {
+                text ->
+
+            var textCount = "0/200"
+
+            if (text.toString().length>20) {
+
+            }
+            else
+            {
+
+                textCount=
+                    text.toString().length.toString() + "/200"
+                binding.textCheckLength.setText(textCount)
+            }
 
 
         }

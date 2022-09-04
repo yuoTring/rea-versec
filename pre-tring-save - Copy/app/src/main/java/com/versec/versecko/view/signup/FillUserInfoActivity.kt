@@ -206,8 +206,8 @@ class FillUserInfoActivity : AppCompatActivity()
                  */
                 user.age = Calendar.YEAR - user.birth.substring(0,4).toInt()
                 user.mainResidence = residenceList.get(1)
-                user.tripWish.addAll(tripList)
-                user.tripStyle.addAll(styleList)
+                user.tripWish.addAll(tripList.subList(1, tripList.size))
+                user.tripStyle.addAll(styleList.subList(1, styleList.size))
 
                 user.latitude = AppContext.latitude
                 user.longitude = AppContext.longitude

@@ -19,10 +19,6 @@ interface UserRemoteDataSource {
 //suspend fun signIn(credential: PhoneAuthCredential) : Results<Int>
 
 
-
-    suspend fun insertImage(mutableList: MutableList<Bitmap>) : Results<Int>
-    fun getImageUri () : Flow<String>
-
     suspend fun checkNickName (nickName : String) :Results<Int>
 
     suspend fun getUsersWithGeoHash (latitude : Double, longitude : Double, radiusInMeter : Int) : List<UserEntity>

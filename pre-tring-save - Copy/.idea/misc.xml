@@ -59,6 +59,7 @@
         <entry key="..\:/Users/cours/AndroidStudioProjects/versecko/app/src/main/res/layout/page_searching.xml" value="0.5" />
         <entry key="..\:/Users/cours/AndroidStudioProjects/versecko/app/src/main/res/menu/menu_bottom.xml" value="0.34074074074074073" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/drawable-v24/button_corner_8_black.xml" value="0.292" />
+        <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/drawable-v24/dot_selected.xml" value="0.332" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/drawable-v24/edit_line_bottom.xml" value="0.292" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/drawable/button_add.xml" value="0.294" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/drawable/button_back.xml" value="0.269" />
@@ -66,8 +67,10 @@
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/drawable/button_corner_16_blue_gradient.xml" value="0.269" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/drawable/button_corner_16_charcoal.xml" value="0.269" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/drawable/button_corner_16_gray.xml" value="0.269" />
+        <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/drawable/dot_default.xml" value="0.332" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/drawable/icon_add.xml" value="0.294" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/drawable/overlay.xml" value="0.33" />
+        <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/drawable/tab_selector.xml" value="0.328" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/layout/activity_choose_style.xml" value="0.3944746376811594" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/layout/activity_congrats.xml" value="0.33489583333333334" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/layout/activity_entry.xml" value="0.2828125" />
@@ -79,6 +82,7 @@
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/layout/activity_sign_in.xml" value="0.5" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/layout/activity_splash.xml" value="0.5234375" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/layout/activity_user_test.xml" value="0.2828125" />
+        <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/layout/fragment_chat.xml" value="0.4192708333333333" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/layout/fragment_matching.xml" value="0.5" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/layout/fragment_profile.xml" value="0.33" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/layout/fragment_story_feed.xml" value="0.5234375" />
@@ -91,6 +95,7 @@
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/layout/item_recycler_style.xml" value="0.5234375" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/layout/item_recycler_style_contents.xml" value="0.5234375" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/layout/item_recycler_tag.xml" value="0.9" />
+        <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/layout/item_viewpager.xml" value="0.3161231884057971" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/layout/page_searching.xml" value="0.5234375" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/menu/menu_bottom.xml" value="0.5168539325842697" />
       </map>
@@ -101,5 +106,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.33" />
+      </ProjectState>
+    </option>
   </component>
 </project>

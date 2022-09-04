@@ -9,9 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import com.google.android.material.tabs.TabLayoutMediator
 import com.versec.versecko.R
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.databinding.FragmentProfileBinding
+import com.versec.versecko.view.profile.adapter.ViewPagerAdapter
 import com.versec.versecko.viewmodel.ProfileViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -19,6 +21,8 @@ class ProfileFragment : Fragment() {
 
     private val profileViewModel : ProfileViewModel by viewModel<ProfileViewModel>()
     private lateinit var binding: FragmentProfileBinding
+
+    private lateinit var adapter: ViewPagerAdapter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,8 +53,23 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        var uriList = mutableListOf<String>()
+
+        adapter = ViewPagerAdapter(uriList)
+
+        binding.viewpagerProfileImage.adapter = adapter
+
+        TabLayoutMediator(binding.tabLayout, binding.viewpagerProfileImage) {
+            tab, position ->
+
+
+
+        }.attach()
+
 
         val observer_local = Observer<UserEntity> { updatedUser ->
+
+            uriList.removeAll(uriList)
 
             profileViewModel.userEntity= updatedUser
             //binding.textResidence.setText(updatedUser.mainResidence)
@@ -58,6 +77,16 @@ class ProfileFragment : Fragment() {
             //binding.textNickAndAge.setText(updatedUser.nickName+", "+updatedUser.age)
             Log.d("profile-user", "local: "+updatedUser.toString())
             //binding.textNickAndAge.setText(updatedUser.nickName+", " +updatedUser.age)
+
+            updatedUser.uriMap.forEach { entry ->
+
+                //uriList.set(entry.key.toInt(), entry.value)
+                uriList.add(entry.key.toInt(), entry.value)
+            }
+
+            adapter.updateImages(uriList)
+            adapter.notifyDataSetChanged()
+        //binding.viewpagerProfileImage.adapter.notifyDataSetChanged()
 
         }
 

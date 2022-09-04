@@ -44,9 +44,10 @@
             android:id="@+id/scroll"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@id/buttonComplete"
             app:layout_constraintTop_toBottomOf="@id/text000"
-            app:layout_constraintBottom_toTopOf="@id/buttonToNext"
-            >
+            app:layout_constraintVertical_bias="0.0"
+            tools:layout_editor_absoluteX="-42dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -62,23 +63,21 @@
                     android:textColor="@color/black"
                     android:textSize="14sp"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/text002"
                     android:layout_width="wrap_content"
                     android:layout_height="28dp"
-                    android:gravity="center_vertical"
                     android:layout_marginTop="4dp"
+                    android:gravity="center_vertical"
                     android:paddingLeft="20dp"
                     android:text="사진 설정"
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@id/text001"
                     app:layout_constraintStart_toStartOf="parent"
-                    />
-
+                    app:layout_constraintTop_toBottomOf="@id/text001" />
 
 
                 <TextView
@@ -91,8 +90,7 @@
                     android:textColor="@color/gray"
                     android:textSize="9.2sp"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@id/text002"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/text002" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerChosenImages"
@@ -100,8 +98,7 @@
                     android:layout_height="256dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
-                    app:layout_constraintTop_toBottomOf="@id/text003"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/text003" />
 
                 <TextView
                     android:id="@+id/text004"
@@ -113,78 +110,79 @@
                     android:textColor="@color/gray"
                     android:textSize="9.2sp"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@id/recyclerChosenImages"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/recyclerChosenImages" />
 
                 <TextView
                     android:id="@+id/text005"
                     android:layout_width="wrap_content"
                     android:layout_height="28dp"
-                    android:gravity="center_vertical"
                     android:layout_marginTop="28dp"
+                    android:gravity="center_vertical"
                     android:paddingLeft="20dp"
                     android:text="자기 소개"
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@id/text004"
                     app:layout_constraintStart_toStartOf="parent"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/text004" />
 
 
                 <EditText
                     android:id="@+id/editSelfIntroduction"
                     android:layout_width="match_parent"
                     android:layout_height="160dp"
-                    android:background="@drawable/view_corner_white"
-                    android:layout_marginTop="4dp"
                     android:layout_marginLeft="16dp"
+                    android:layout_marginTop="4dp"
                     android:layout_marginRight="16dp"
-                    app:layout_constraintTop_toBottomOf="@id/text005"/>
+                    android:paddingLeft="8dp"
+                    android:paddingTop="8dp"
+                    android:background="@drawable/view_corner_white"
+                    android:gravity="start|top"
+                    android:maxLength="200"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    app:layout_constraintTop_toBottomOf="@id/text005" />
 
                 <TextView
                     android:id="@+id/textCheckLength"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
                     android:layout_marginRight="8dp"
+                    android:layout_marginBottom="8dp"
                     android:text="0/200"
                     android:textColor="@color/gray"
                     android:textSize="8sp"
                     app:layout_constraintBottom_toBottomOf="@id/editSelfIntroduction"
-                    app:layout_constraintEnd_toEndOf="@id/editSelfIntroduction"/>
-
+                    app:layout_constraintEnd_toEndOf="@id/editSelfIntroduction" />
 
 
                 <TextView
                     android:id="@+id/text006"
                     android:layout_width="wrap_content"
                     android:layout_height="28dp"
-                    android:gravity="center_vertical"
                     android:layout_marginTop="36dp"
+                    android:gravity="center_vertical"
                     android:paddingLeft="20dp"
                     android:text="주거지역 설정"
                     android:textColor="@color/black"
                     android:textSize="12sp"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@id/editSelfIntroduction"
                     app:layout_constraintStart_toStartOf="parent"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/editSelfIntroduction" />
 
                 <TextView
                     android:id="@+id/text007"
                     android:layout_width="wrap_content"
                     android:layout_height="28dp"
-                    android:gravity="center_vertical"
                     android:layout_marginTop="36dp"
+                    android:gravity="center_vertical"
                     android:paddingLeft="4dp"
                     android:text="(최대 1개)"
                     android:textColor="@color/black"
                     android:textSize="8sp"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@id/editSelfIntroduction"
                     app:layout_constraintStart_toEndOf="@id/text006"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/editSelfIntroduction" />
 
                 <TextView
                     android:id="@+id/text008"
@@ -195,8 +193,7 @@
                     android:textColor="@color/gray"
                     android:textSize="8sp"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@id/text006"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/text006" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerChosenResidence"
@@ -204,38 +201,35 @@
                     android:layout_height="48dp"
                     android:orientation="horizontal"
                     android:paddingLeft="16dp"
-                    app:layout_constraintTop_toBottomOf="@id/text008"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/text008" />
 
                 <TextView
                     android:id="@+id/text009"
                     android:layout_width="wrap_content"
                     android:layout_height="28dp"
-                    android:gravity="center_vertical"
                     android:layout_marginTop="36dp"
+                    android:gravity="center_vertical"
                     android:paddingLeft="20dp"
                     android:text="가고 싶은 여행지역 설정"
                     android:textColor="@color/black"
                     android:textSize="12sp"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@id/recyclerChosenResidence"
                     app:layout_constraintStart_toStartOf="parent"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/recyclerChosenResidence" />
 
                 <TextView
                     android:id="@+id/text010"
                     android:layout_width="wrap_content"
                     android:layout_height="28dp"
-                    android:gravity="center_vertical"
                     android:layout_marginTop="36dp"
+                    android:gravity="center_vertical"
                     android:paddingLeft="4dp"
                     android:text="(최대 5개)"
                     android:textColor="@color/black"
                     android:textSize="8sp"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@id/recyclerChosenResidence"
                     app:layout_constraintStart_toEndOf="@id/text009"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/recyclerChosenResidence" />
 
                 <TextView
                     android:id="@+id/text0101"
@@ -246,8 +240,7 @@
                     android:textColor="@color/gray"
                     android:textSize="8sp"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@id/text009"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/text009" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerChosenTripWish"
@@ -255,38 +248,35 @@
                     android:layout_height="48dp"
                     android:orientation="horizontal"
                     android:paddingLeft="16dp"
-                    app:layout_constraintTop_toBottomOf="@id/text0101"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/text0101" />
 
                 <TextView
                     android:id="@+id/text012"
                     android:layout_width="wrap_content"
                     android:layout_height="28dp"
-                    android:gravity="center_vertical"
                     android:layout_marginTop="36dp"
+                    android:gravity="center_vertical"
                     android:paddingLeft="20dp"
                     android:text="여행 스타일 설정"
                     android:textColor="@color/black"
                     android:textSize="12sp"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@id/recyclerChosenTripWish"
                     app:layout_constraintStart_toStartOf="parent"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/recyclerChosenTripWish" />
 
                 <TextView
                     android:id="@+id/text013"
                     android:layout_width="wrap_content"
                     android:layout_height="28dp"
-                    android:gravity="center_vertical"
                     android:layout_marginTop="36dp"
+                    android:gravity="center_vertical"
                     android:paddingLeft="4dp"
                     android:text="(최대 5개)"
                     android:textColor="@color/black"
                     android:textSize="8sp"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@id/recyclerChosenTripWish"
                     app:layout_constraintStart_toEndOf="@id/text012"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/recyclerChosenTripWish" />
 
                 <TextView
                     android:id="@+id/text014"
@@ -297,8 +287,7 @@
                     android:textColor="@color/gray"
                     android:textSize="8sp"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@id/text012"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/text012" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerChosenStyle"
@@ -306,18 +295,13 @@
                     android:layout_height="48dp"
                     android:orientation="horizontal"
                     android:paddingLeft="16dp"
-                    app:layout_constraintTop_toBottomOf="@id/text014"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/text014" />
 
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="96dp"
-                    app:layout_constraintTop_toBottomOf="@id/recyclerChosenStyle"
-                    />
-
-
-
+                    app:layout_constraintTop_toBottomOf="@id/recyclerChosenStyle" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

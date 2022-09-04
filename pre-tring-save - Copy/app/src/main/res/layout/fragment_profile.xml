@@ -26,6 +26,15 @@
                 android:layout_height="440dp"
                 app:layout_constraintTop_toTopOf="parent"/>
 
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                app:tabBackground="@drawable/tab_selector"
+                app:tabGravity="center"
+                app:tabIndicatorHeight="0dp"
+                app:layout_constraintBottom_toBottomOf="@id/viewpagerProfileImage"/>
+
 
             <TextView
                 android:id="@+id/textResidence"

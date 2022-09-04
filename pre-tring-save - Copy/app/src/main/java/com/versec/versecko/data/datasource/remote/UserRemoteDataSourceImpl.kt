@@ -114,32 +114,7 @@ class UserRemoteDataSourceImpl (
         return signInResult
     }
 
-    override suspend fun insertImage(mutableList: MutableList<Bitmap>): Results<Int> {
 
-        val uid = auth.currentUser!!.uid
-
-        mutableList.forEachIndexed { index, bitmap ->
-
-
-            val baos = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-            val data = baos.toByteArray()
-
-            val reference =
-                storage.reference.child("images/profileImages/"+ uid+"/"+index+"/")
-
-            val uploadTask : UploadTask = reference.putBytes(data)
-
-
-
-
-        }
-        TODO("Not yet implemented")
-    }
-
-    override fun getImageUri(): Flow<String> {
-        TODO("Not yet implemented")
-    }
 
     override suspend fun checkNickName(nickName: String): Results<Int> {
 
@@ -261,8 +236,6 @@ class UserRemoteDataSourceImpl (
         }
 
         uriMap.forEach { entry ->
-
-            val downloadRef =
                 storage.reference.child("image/profileImages/"+"test!!!!!"+"/"+"test!!!!!"+"_"+entry.key)
                     .downloadUrl.addOnSuccessListener {
 
