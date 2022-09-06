@@ -18,6 +18,10 @@ class AppContext : Application() {
 
         fun getInstance() : Application {
 
+//            if (appContext == null)
+
+                AppContext.appContext = Application().applicationContext as Application
+
             return AppContext.appContext
         }
 
