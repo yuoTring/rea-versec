@@ -66,6 +66,7 @@ val userViewModelModule = module {
     viewModel { FillUserInfoViewModel(get()) }
     viewModel { FillUserImageViewModel(get()) }
     viewModel { MatchingViewModel(get()) }
+    viewModel { ChatViewModel(get()) }
 
 }
 

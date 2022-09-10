@@ -245,12 +245,43 @@ class UserRemoteDataSourceImpl (
     }
 
 
-    override suspend fun likeUser(userEntity: UserEntity) {
+    override fun likeUser(userEntity: UserEntity, ownUser: UserEntity) {
 
-        fireStore.collection("database/user/userList/"+ auth.currentUser!!.uid+"/likeList")
+        val uid = "test!!!!!"
+        //ownUser.uid
+
+        fireStore.collection("database/user/userList/"+uid+"/lounge/loungeHistory/likeUserList")
             .document(userEntity.uid)
             .set(userEntity)
 
+        fireStore.collection("database/user/userList/"+userEntity.uid+"/lounge/loungeHistory/likedUserList")
+            .document(uid)
+            .set(ownUser)
+
+        fireStore.collection("database/user/userList/"+userEntity.uid+"/lounge/loungeInformation/likedUserList")
+            .document(uid)
+            .set(ownUser)
+
+
+        fireStore.collection("database/user/userList/"+userEntity.uid+"/lounge/loungeInformation")
+            .document()
+            .update("likedCounter", FieldValue.increment(1.0))
+
+
+
+
+
+
+
+    }
+
+    override fun skipUser(otherUserEntity: UserEntity, ownUser: UserEntity) {
+
+        val uid = "test!!!!!"
+
+        fireStore.collection("database/user/userList/"+uid+"lounge/loungeHistory/skipList")
+            .document(otherUserEntity.uid)
+            .set(otherUserEntity)
     }
 
     override suspend fun uploadImage (uriMap: MutableMap<String, Uri>)

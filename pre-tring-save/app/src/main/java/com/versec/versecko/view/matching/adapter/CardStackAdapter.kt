@@ -25,6 +25,7 @@ class CardStackAdapter (
 
 ) : RecyclerView.Adapter<CardStackAdapter.ViewHolder>() {
 
+
     inner class ViewHolder (val binding: ItemCardstackUserBinding) :
         RecyclerView.ViewHolder(binding.root) {}
 
@@ -51,12 +52,6 @@ class CardStackAdapter (
             tempUriList.add(entry.key.toInt(), entry.value)
         }
 
-        //Log.d("uri", "size-> "+tempUriList.size)
-        //Log.d("uri", "uri-list-> "+ tempUriList.toString())
-
-        Log.d("uri-check", "size -> "+tempUriList.size)
-        Log.d("uri-check", "size -> "+tempUriList.toString())
-
 
         val cardViewPagerAdapter = CardViewPagerAdapter(tempUriList) {
 
@@ -80,6 +75,8 @@ class CardStackAdapter (
                 var intent = Intent(activity, UserProfileActivity::class.java)
                 intent.putExtra("user", user)
                 activity.startActivity(intent)
+
+                Log.d("user-get", user.toString())
 
             }
 

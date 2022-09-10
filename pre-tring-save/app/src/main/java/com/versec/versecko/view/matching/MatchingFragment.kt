@@ -6,10 +6,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateInterpolator
 import android.view.animation.LinearInterpolator
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.versec.versecko.AppContext
 import com.versec.versecko.R
 import com.versec.versecko.data.entity.UserEntity
@@ -27,10 +31,16 @@ class MatchingFragment : Fragment(), CardStackListener {
     private lateinit var cardStackLayoutManager: CardStackLayoutManager
     private lateinit var cardStackAdapter: CardStackAdapter
 
+    private lateinit var ownUser : UserEntity
+    private lateinit var otherUserList : MutableList<UserEntity>
+    private var currentPosition = 0
+
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
         arguments?.let {}
+
+        currentPosition = 0
     }
 
     override fun onCreateView (
@@ -51,21 +61,33 @@ class MatchingFragment : Fragment(), CardStackListener {
         super.onViewCreated(view, savedInstanceState)
 
 
-        val testUserList = mutableListOf<UserEntity>()
+        otherUserList = mutableListOf()
 
 
         cardStackLayoutManager = CardStackLayoutManager(activity, this)
-        cardStackAdapter = CardStackAdapter(requireActivity(), testUserList)
+        cardStackAdapter = CardStackAdapter(requireActivity(), otherUserList)
 
         cardStackViewInit()
 
-        val radius = 2000
+
+        viewModel._ownUser.observe(viewLifecycleOwner, Observer { ownUser = it })
+
+
+
+        val radius = 2250
+            //1750
+            //1500
 
         viewModel.getUsersWithGeoHash(37.39373713, 126.963231, radius)
             .observe(viewLifecycleOwner, Observer {
                     users ->
 
                 Log.d("user-getwithhash", "size -> "+ users.size)
+
+                if (!otherUserList.isEmpty())
+                otherUserList.removeAll(otherUserList)
+
+                otherUserList.addAll(users)
 
                 cardStackAdapter.updateUserList(users)
                 cardStackAdapter.notifyDataSetChanged()
@@ -75,12 +97,36 @@ class MatchingFragment : Fragment(), CardStackListener {
 
         binding.buttonLike.setOnClickListener {
 
-            //viewModel.likeUser(???)
+            Toast.makeText(requireActivity(), "@@@", Toast.LENGTH_SHORT).show()
+
+            val setting = SwipeAnimationSetting.Builder()
+                .setDirection(Direction.Left)
+                .setDuration(Duration.Slow.duration)
+                //.setInterpolator(AccelerateInterpolator())
+                .build()
+
+            cardStackLayoutManager.setSwipeAnimationSetting(setting)
+
+            binding.cardUserList.swipe()
+
+            viewModel.likeUser(otherUserList.get(currentPosition), ownUser)
+
 
         }
 
         binding.buttonSkip.setOnClickListener {
 
+            val setting = SwipeAnimationSetting.Builder()
+                .setDirection(Direction.Right)
+                .setDuration(Duration.Slow.duration)
+                //.setInterpolator(AccelerateInterpolator())
+                .build()
+
+
+            cardStackLayoutManager.setSwipeAnimationSetting(setting)
+            binding.cardUserList.swipe()
+
+            viewModel.skipUser(otherUserList.get(currentPosition), ownUser)
         }
 
     }
@@ -88,7 +134,6 @@ class MatchingFragment : Fragment(), CardStackListener {
     companion object
     {
 
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance() =
             MatchingFragment().apply {
@@ -115,8 +160,7 @@ class MatchingFragment : Fragment(), CardStackListener {
     override fun onCardAppeared(view: View?, position: Int) {
     }
 
-    override fun onCardDisappeared(view: View?, position: Int) {
-    }
+    override fun onCardDisappeared(view: View?, position: Int) { currentPosition++ }
 
     private fun cardStackViewInit () {
 
@@ -129,7 +173,7 @@ class MatchingFragment : Fragment(), CardStackListener {
         cardStackLayoutManager.setDirections(Direction.HORIZONTAL)
         cardStackLayoutManager.setCanScrollHorizontal(true)
         cardStackLayoutManager.setCanScrollVertical(false)
-        cardStackLayoutManager.setSwipeableMethod(SwipeableMethod.Manual)
+        cardStackLayoutManager.setSwipeableMethod(SwipeableMethod.AutomaticAndManual)
         cardStackLayoutManager.setOverlayInterpolator(LinearInterpolator())
 
         binding.cardUserList.layoutManager = cardStackLayoutManager

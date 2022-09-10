@@ -25,7 +25,8 @@ interface UserRemoteDataSource {
     suspend fun getUsersWithGeoHash (latitude : Double, longitude : Double, radiusInMeter : Int) : List<UserEntity>
     fun getUsers(latitude: Double, longitude: Double, radiusInMeter: Int) : Flow<MutableList<DocumentSnapshot>>
 
-    suspend fun likeUser (userEntity: UserEntity)
+    fun likeUser (otherUserEntity: UserEntity, ownUser : UserEntity)
+    fun skipUser (otherUserEntity: UserEntity, ownUser: UserEntity)
 
     suspend fun uploadImage (uriMap: MutableMap<String, Uri>)
 

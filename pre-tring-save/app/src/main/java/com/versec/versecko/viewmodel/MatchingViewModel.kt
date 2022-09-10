@@ -1,9 +1,7 @@
 package com.versec.versecko.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import android.util.Log
+import androidx.lifecycle.*
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.data.repository.UserRepository
 import kotlinx.coroutines.launch
@@ -17,11 +15,16 @@ class MatchingViewModel (
 
 
 
+    val _ownUser : LiveData<UserEntity> = userRepository.getOwnUser_Local().asLiveData()
+
+
             fun getUsersWithGeoHash (latitude: Double,
                                      longitude: Double,
                                      radiusInMeter: Int) : LiveData<List<UserEntity>> {
 
                 val _userList = MutableLiveData<List<UserEntity>> ()
+
+
 
                 viewModelScope.launch {
 
@@ -32,14 +35,16 @@ class MatchingViewModel (
                 return _userList
             }
 
+            fun likeUser (otherUserEntity: UserEntity, ownUserEntity: UserEntity) {
 
-            fun like (userEntity: UserEntity) {
+                userRepository.likeUser(otherUserEntity, ownUserEntity)
 
-                viewModelScope.launch {
+            }
 
-                    userEntity.loungeStatus = 1
-                    userRepository.likeUser(userEntity)
-                }
+            fun skipUser (otherUserEntity: UserEntity, ownUserEntity: UserEntity) {
+
+                userRepository.skipUser(otherUserEntity, ownUserEntity)
+
             }
 
 

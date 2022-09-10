@@ -5,10 +5,27 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.RecyclerView
 import com.versec.versecko.R
+import com.versec.versecko.data.entity.UserEntity
+import com.versec.versecko.databinding.FragmentChatBinding
+import com.versec.versecko.view.chat.adapter.LoungeAdapter
+import com.versec.versecko.viewmodel.ChatViewModel
 
 
 class ChatFragment : Fragment() {
+
+
+
+    private lateinit var loungeUserList : MutableList<UserEntity>
+    private lateinit var binding : FragmentChatBinding
+    private val viewModel : ChatViewModel by viewModels<ChatViewModel>()
+
+    private lateinit var loungeAdapter: LoungeAdapter
+    private lateinit var loungeLayoutManager: RecyclerView.LayoutManager
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,7 +39,20 @@ class ChatFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_chat, container, false)
+
+
+        binding = DataBindingUtil.inflate(layoutInflater,R.layout.fragment_chat,container,false)
+        val view = binding.root
+
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        loungeUserList = mutableListOf()
+
+
     }
 
     companion object {

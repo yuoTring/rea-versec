@@ -99,12 +99,14 @@ class UserRepositoryImpl (
         remoteDataSource.uploadImage(uriMap)
     }
 
+    override fun likeUser(otherUserEntity: UserEntity, ownUser: UserEntity) {
 
-    override suspend fun likeUser(userEntity: UserEntity) {
+        remoteDataSource.likeUser(otherUserEntity, ownUser)
+    }
 
-        localDataSource.insertUser(userEntity)
+    override fun skipUser(otherUserEntity: UserEntity, ownUser: UserEntity) {
 
-        remoteDataSource.likeUser(userEntity)
+        remoteDataSource.skipUser(otherUserEntity, ownUser)
     }
 
     override suspend fun checkLoungeCount(status: Int, localCount: Int): Int {

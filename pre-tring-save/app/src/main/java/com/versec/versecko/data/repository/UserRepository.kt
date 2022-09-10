@@ -35,7 +35,8 @@ interface UserRepository {
 
 
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    suspend fun likeUser (userEntity: UserEntity)
+    fun likeUser (otherUserEntity: UserEntity, ownUser : UserEntity)
+    fun skipUser(otherUserEntity: UserEntity, ownUser: UserEntity)
 
     suspend fun checkLoungeCount(status: Int, localCount : Int) : Int
     suspend fun getNewLoungeUser(status: Int, newCount : Int) : MutableList<UserEntity>
