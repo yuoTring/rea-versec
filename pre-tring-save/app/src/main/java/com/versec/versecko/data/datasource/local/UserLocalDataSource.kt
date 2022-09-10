@@ -10,6 +10,11 @@ interface UserLocalDataSource {
     suspend fun insertUser (userEntity: UserEntity)
     suspend fun updateUriList (uriMap: MutableMap<String,String>, status: Int)
 
+    suspend fun checkLoungeCount (status: Int) : Int
+
+
+    suspend fun getAllUser () : MutableList<UserEntity>
+
 
 
 }

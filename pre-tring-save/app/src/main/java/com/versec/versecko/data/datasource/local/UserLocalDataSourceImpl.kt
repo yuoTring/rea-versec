@@ -30,7 +30,14 @@ class UserLocalDataSourceImpl(
         appDatabase.userEntityDao().updateUriList(uriMap, status)
     }
 
+    override suspend fun checkLoungeCount(status: Int): Int {
+        return appDatabase.userEntityDao().checkLoungeCount(status)
+    }
 
+    override suspend fun getAllUser(): MutableList<UserEntity> {
+
+        return appDatabase.userEntityDao().getAllUser()
+    }
 
 
 }

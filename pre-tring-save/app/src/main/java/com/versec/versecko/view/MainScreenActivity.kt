@@ -9,6 +9,7 @@ import androidx.fragment.app.commit
 import com.google.android.material.navigation.NavigationBarView
 import com.versec.versecko.R
 import com.versec.versecko.databinding.ActivityMainScreenBinding
+import com.versec.versecko.view.chat.ChatFragment
 import com.versec.versecko.view.matching.MatchingFragment
 import com.versec.versecko.view.profile.ProfileFragment
 
@@ -27,6 +28,8 @@ class MainScreenActivity : AppCompatActivity() {
     private lateinit var view : View
     private lateinit var matchingFragment: MatchingFragment
     private lateinit var profileFragment: ProfileFragment
+    private lateinit var chatFragment : ChatFragment
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +47,8 @@ class MainScreenActivity : AppCompatActivity() {
                 add(R.id.fragmentContainer, MatchingFragment.newInstance(),"matching")
                 addToBackStack(null)
                 add(R.id.fragmentContainer, ProfileFragment.newInstance(), "profile")
+                addToBackStack(null)
+                add(R.id.fragmentContainer, ChatFragment.newInstance(), "chat")
                 addToBackStack(null)
 
 
@@ -70,6 +75,7 @@ class MainScreenActivity : AppCompatActivity() {
 
 
                             show(matchingFragment)
+                            hide(chatFragment)
                             hide(profileFragment)
                         }
 
@@ -88,6 +94,14 @@ class MainScreenActivity : AppCompatActivity() {
                     R.id.page_chat -> {
                         Toast.makeText(this@MainScreenActivity, "!!!", Toast.LENGTH_SHORT).show()
 
+                        supportFragmentManager.commit {
+                            setReorderingAllowed(true)
+
+                            show(chatFragment)
+                            hide(matchingFragment)
+                            hide(profileFragment)
+                        }
+
                     }
 
                     R.id.page_profile -> {
@@ -97,6 +111,7 @@ class MainScreenActivity : AppCompatActivity() {
 
                             show(profileFragment)
                             hide(matchingFragment)
+                            hide(chatFragment)
                         }
 
 
@@ -117,5 +132,6 @@ class MainScreenActivity : AppCompatActivity() {
 
         matchingFragment = supportFragmentManager.findFragmentByTag("matching") as MatchingFragment
         profileFragment = supportFragmentManager.findFragmentByTag("profile") as ProfileFragment
+        chatFragment = supportFragmentManager.findFragmentByTag("chat") as ChatFragment
     }
 }

@@ -44,7 +44,7 @@ interface UserEntityDAO {
     @Query ("SELECT * FROM user WHERE loungeStatus = 0")
     fun getOwnUser () : Flow<UserEntity>
 
-    @Query ("SELECT * FROM user WHERE loungeStatus = (:status)")
+    @Query ("SELECT * FROM user WHERE loungeStatus = :status")
     fun getUserList (status: Int) :Flow<MutableList<UserEntity>>
 
     @Insert(onConflict = REPLACE)
@@ -52,6 +52,13 @@ interface UserEntityDAO {
 
     @Query("UPDATE user SET uri_Map= :uri_Map WHERE loungeStatus = :status")
     suspend fun updateUriList (uri_Map : MutableMap<String,String>, status: Int)
+
+    @Query("SELECT COUNT(*) FROM user WHERE loungeStatus =:status")
+    suspend fun checkLoungeCount(status: Int) : Int
+
+
+    @Query("SELECT * FROM user")
+    suspend fun getAllUser() : MutableList<UserEntity>
 
 
 

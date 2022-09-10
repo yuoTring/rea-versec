@@ -54,7 +54,14 @@ class UserRepositoryImpl (
         localDataSource.updateUriList(uriMap, status)
     }
 
+    override suspend fun checkLocalLoungeCount(status: Int): Int {
+        return localDataSource.checkLoungeCount(status)
+    }
 
+    override suspend fun getAllUser(): MutableList<UserEntity> {
+
+        return localDataSource.getAllUser()
+    }
 
 
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

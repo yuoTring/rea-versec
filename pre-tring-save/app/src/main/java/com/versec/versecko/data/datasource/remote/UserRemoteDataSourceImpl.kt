@@ -263,9 +263,13 @@ class UserRemoteDataSourceImpl (
             .set(ownUser)
 
 
-        fireStore.collection("database/user/userList/"+userEntity.uid+"/lounge/loungeInformation")
-            .document()
-            .update("likedCounter", FieldValue.increment(1.0))
+        val doc : DocumentReference =
+        fireStore.collection("database/user/userList/"+userEntity.uid+"/lounge")
+            .document("loungeInformation")
+
+        doc.update("likedCounter", FieldValue.increment(1.0))
+
+
 
 
 
@@ -377,6 +381,8 @@ class UserRemoteDataSourceImpl (
     override suspend fun getNewLoungeUser(status: Int, newCount: Int): MutableList<UserEntity> {
 
         lateinit var newUserList : MutableList<UserEntity>
+
+        newUserList = mutableListOf()
 
         val uid = "test!!!!!"
 

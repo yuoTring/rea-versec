@@ -70,7 +70,10 @@ class MatchingFragment : Fragment(), CardStackListener {
         cardStackViewInit()
 
 
-        viewModel._ownUser.observe(viewLifecycleOwner, Observer { ownUser = it })
+        viewModel._ownUser.observe(viewLifecycleOwner, Observer { ownUser = it
+
+            Log.d("own-user", ownUser.toString())
+        })
 
 
 
@@ -109,8 +112,8 @@ class MatchingFragment : Fragment(), CardStackListener {
 
             binding.cardUserList.swipe()
 
-            viewModel.likeUser(otherUserList.get(currentPosition), ownUser)
-
+            //viewModel.likeUser(otherUserList.get(currentPosition), ownUser)
+            viewModel.likeUser(ownUser, ownUser)
 
         }
 

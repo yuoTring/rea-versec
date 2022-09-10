@@ -9,15 +9,27 @@ import com.versec.versecko.databinding.ItemRecyclerLoungeProfileBinding
 
 class LoungeAdapter (
 
-    private var userList : MutableList<UserEntity>
+    private var userList : MutableList<UserEntity>,
+    private val onProfileClick : (UserEntity?) -> Unit
 
         ) : RecyclerView.Adapter<LoungeAdapter.ViewHolder>() {
 
-    inner class ViewHolder (val binding : ItemRecyclerLoungeProfileBinding) : RecyclerView.ViewHolder(binding.root)
+    inner class ViewHolder (val binding : ItemRecyclerLoungeProfileBinding) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bind (profile: UserEntity, onProfileClick: (UserEntity?) -> Unit) {
+
+            binding.root.setOnClickListener {
+
+                this@LoungeAdapter.onProfileClick(profile)
+            }
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
         val binding = ItemRecyclerLoungeProfileBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+
+
 
         return ViewHolder(binding)
     }
@@ -25,6 +37,8 @@ class LoungeAdapter (
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         var user = userList.get(position)
+
+        holder.bind(user, onProfileClick)
 
         holder.binding.textNickName.setText(user.nickName)
         Glide
@@ -39,4 +53,6 @@ class LoungeAdapter (
 
         return userList.size
     }
+
+    fun updateUsers(userList: MutableList<UserEntity>) { this.userList.addAll(userList)}
 }

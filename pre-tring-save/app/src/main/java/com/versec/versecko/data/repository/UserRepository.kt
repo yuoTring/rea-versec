@@ -15,6 +15,11 @@ interface UserRepository {
     fun getUserList_Local (status : Int) : Flow<MutableList<UserEntity>>
     suspend fun insertUser_Local (userEntity: UserEntity)
 
+    suspend fun checkLocalLoungeCount (status: Int) : Int
+
+    suspend fun getAllUser () : MutableList<UserEntity>
+
+
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     fun getOwnUser_Remote () : Flow<UserEntity>

@@ -1,9 +1,7 @@
 package com.versec.versecko.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
+import android.util.Log
+import androidx.lifecycle.*
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.data.repository.UserRepository
 import kotlinx.coroutines.launch
@@ -24,6 +22,27 @@ class ProfileViewModel (
                 viewModelScope.launch {
 
                         userRepository.insertUser_Local(userEntity)
+                }
+        }
+
+
+
+        val _allUser : LiveData<MutableList<UserEntity>> = liveData {
+
+                val data = userRepository.getAllUser()
+
+                Log.d("lounge-users", data.toString())
+        }
+
+        fun allUser() {
+                viewModelScope.launch {
+
+                        val users =
+                        userRepository.getAllUser()
+
+                        Log.d("lounge-get", users.toString())
+
+
                 }
         }
 
