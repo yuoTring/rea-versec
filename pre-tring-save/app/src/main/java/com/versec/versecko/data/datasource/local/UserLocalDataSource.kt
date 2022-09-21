@@ -16,5 +16,8 @@ interface UserLocalDataSource {
     suspend fun getAllUser () : MutableList<UserEntity>
 
 
+    fun saveDuplicateUser (uid : String)
+
+
 
 }

@@ -106,14 +106,20 @@ class UserRepositoryImpl (
         remoteDataSource.uploadImage(uriMap)
     }
 
+    override fun deleteImages(indexes: MutableList<Int>) {
+        remoteDataSource.deleteImages(indexes)
+    }
+
     override fun likeUser(otherUserEntity: UserEntity, ownUser: UserEntity) {
 
         remoteDataSource.likeUser(otherUserEntity, ownUser)
+        localDataSource.saveDuplicateUser(otherUserEntity.uid)
     }
 
     override fun skipUser(otherUserEntity: UserEntity, ownUser: UserEntity) {
 
         remoteDataSource.skipUser(otherUserEntity, ownUser)
+        localDataSource.saveDuplicateUser(otherUserEntity.uid)
     }
 
     override suspend fun checkLoungeCount(status: Int, localCount: Int): Int {
@@ -131,7 +137,10 @@ class UserRepositoryImpl (
         return remoteDataSource.updateLoungeUser(status)
     }
 
-    
+    override fun likeBack(otherUser: UserEntity, ownUser: UserEntity) {
+
+        remoteDataSource.likeBack(otherUser, ownUser)
+    }
 
 
 }

@@ -49,4 +49,10 @@
         <item>s4_test003</item>
     </string-array>
 
+
+    <string-array name="lounge_status">
+        <item>받은 좋아요</item>
+        <item>매칭</item>
+    </string-array>
+
 </resources>

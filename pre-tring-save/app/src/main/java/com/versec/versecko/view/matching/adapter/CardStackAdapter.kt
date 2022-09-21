@@ -44,7 +44,9 @@ class CardStackAdapter (
 
         holder.binding.textNickAndAge.setText(user.nickName+", "+user.age)
         holder.binding.textResidence.setText(user.mainResidence)
-        holder.binding.textMannerScore.setText(user.mannerScore.toString())
+        holder.binding.textMannerScore.setText("매너 점수: "+ user.mannerScore)
+
+
 
         var tempUriList : MutableList<String> = mutableListOf()
 

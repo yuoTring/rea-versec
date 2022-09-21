@@ -1,6 +1,7 @@
 package com.versec.versecko.view.chat.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -29,12 +30,11 @@ class LoungeAdapter (
 
         val binding = ItemRecyclerLoungeProfileBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
-
-
         return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
 
         var user = userList.get(position)
 
@@ -47,6 +47,7 @@ class LoungeAdapter (
             .into(holder.binding.imageProfile)
 
 
+
     }
 
     override fun getItemCount(): Int {
@@ -54,5 +55,5 @@ class LoungeAdapter (
         return userList.size
     }
 
-    fun updateUsers(userList: MutableList<UserEntity>) { this.userList.addAll(userList)}
+    fun changeUsers(userList: MutableList<UserEntity>) { this.userList = userList}
 }

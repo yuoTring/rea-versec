@@ -37,14 +37,17 @@ class EntryActivity : AppCompatActivity()
         LocationPermission.requestLocationPermission(this)
 
 
-        viewModel._userRemote.observe(this, Observer {
+
+
+        viewModel.userRemote.observe(this, Observer {
 
             it.loungeStatus = 0
             viewModel.insertUser_Local(it)
 
+            Toast.makeText(this, "@@@", Toast.LENGTH_SHORT).show()
+
         })
 
-        viewModel.allUser()
 
 
 
@@ -69,9 +72,9 @@ class EntryActivity : AppCompatActivity()
         binding.buttonAgreeAndStart.setOnClickListener {
             val intent
             //= Intent(this, SignInActivity::class.java)
-            = Intent(this, MainScreenActivity::class.java)
+            //= Intent(this, MainScreenActivity::class.java)
             //= Intent(this, ChoosePlaceActivity::class.java)
-            //= Intent(this, FillUserInfoActivity::class.java)
+            = Intent(this, FillUserInfoActivity::class.java)
             //= Intent(this, FillUserImageActivity::class.java)
             //= Intent(this, ChooseStyleActivity::class.java)
 

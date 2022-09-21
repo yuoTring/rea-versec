@@ -21,7 +21,7 @@ data class UserEntity(
     @ColumnInfo(name = "self_introduction") var selfIntroduction : String = "Hi",
 
     //@ColumnInfo(name = "uri_list") var uriList : MutableList<String> = mutableListOf("!!!","!!?"),
-    @ColumnInfo(name = "uri_Map") var uriMap : MutableMap<String,String> = mutableMapOf(),
+    @ColumnInfo(name = "uri_Map") var uriMap : MutableMap<String,String> = mutableMapOf("0" to "---", "1" to "---"),
     @ColumnInfo(name = "geohash") var geohash : String = "",
     @ColumnInfo(name = "latitude") var latitude : Double = 37.75,
     @ColumnInfo(name = "longitude") var longitude : Double = 124.5,
@@ -30,12 +30,16 @@ data class UserEntity(
     @ColumnInfo(name = "premium") var premiumOrNot : Boolean = false,
     @ColumnInfo(name = "knock") var knock : Int = 0,
 
-    @ColumnInfo(name ="loungeStatus") var loungeStatus : Int = 0
+    @ColumnInfo(name ="loungeStatus") var loungeStatus : Int = 0,
     /**
      * 0 -> OwnUser
      * 1 -> users who I send a like to
      * 2 -> users who send me a like
      * 3 -> users who was matched with me
      */
+
+    @ColumnInfo(name = "phoneNumber") var phoneNumber : String = "010-0000-0000"
+
+
 
 ) : Serializable

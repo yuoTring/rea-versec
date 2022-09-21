@@ -1,5 +1,8 @@
 package com.versec.versecko.view.signup
 
+import com.versec.versecko.R
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -37,10 +40,10 @@ class FillUserImageActivity : AppCompatActivity()
     private lateinit var layoutManager: RecyclerView.LayoutManager
     private lateinit var imageAdapter: ImageAdapter
 
-    private lateinit var emptyList: MutableList<String>
     private lateinit var imageList: MutableList<Uri>
 
     private var onClickImagePosition : Int = 0
+    private var imageCount : Int = 0
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?)
@@ -55,7 +58,6 @@ class FillUserImageActivity : AppCompatActivity()
         view = binding.root
         setContentView(view)
 
-        emptyList = mutableListOf("empty","empty","empty","empty","empty","empty")
         imageList = mutableListOf(Uri.parse("---"),Uri.parse("---"),Uri.parse("---"),Uri.parse("---"),Uri.parse("---"),Uri.parse("---"))
 
         layoutManager = GridLayoutManager(this,3,RecyclerView.VERTICAL, false)
@@ -64,17 +66,36 @@ class FillUserImageActivity : AppCompatActivity()
 
         val resourceId = resources.getIdentifier("button_add","drawable", packageName)
 
-        imageAdapter = ImageAdapter(emptyList, imageList, resourceId) { item, position ->
+        imageAdapter = ImageAdapter(imageList, resourceId) { item, position ->
 
             // add a new image
-            if (emptyList.get(position) == "empty") {
+            if (imageList.get(position).toString().equals("---")) {
 
-                onClickImagePosition = position
+
                 startActivityForResult(Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI), 100)
 
             }
             // already image added
             else {
+
+                val builder = AlertDialog.Builder(this)
+
+                builder.setItems(arrayOf("delete"), DialogInterface.OnClickListener { dialogInterface, index ->
+
+                    imageList.set(position, Uri.parse("---"))
+                    imageCount --
+
+                    imageList.removeAt(position)
+                    imageList.add(Uri.parse("---"))
+
+
+                    imageAdapter.updateList(imageList)
+                    imageAdapter.notifyDataSetChanged()
+
+                })
+
+                builder.create().show()
+
 
             }
 
@@ -116,30 +137,21 @@ class FillUserImageActivity : AppCompatActivity()
 
             var checkImageReadyOrNot = false
 
-            emptyList.forEach {
-                if (it == "image")
-                    checkImageReadyOrNot = true
-            }
+            if (!imageList.get(0).toString().equals("---"))
+                checkImageReadyOrNot = true
 
-            /**
-            imageList.forEachIndexed { index, uri ->
 
-                if (it == Uri.parse("---"))
 
-            }**/
 
-            var count =0
-            //var uriMap : MutableMap<Int, String> = mutableMapOf()
-            var uriMap : MutableMap<String, Uri>
+
+            val uriMap : MutableMap<String, Uri>
             = mutableMapOf()
 
-            emptyList.forEachIndexed { index, item ->
 
-                if (item.equals("image")) {
-                    uriMap.put(count.toString(), imageList.get(index))
-                    count++
-                }
+            imageList.forEachIndexed { index, uri ->
 
+                if (!uri.toString().equals("---"))
+                    uriMap.put(index.toString(), imageList.get(index))
             }
 
             if (checkImageReadyOrNot){
@@ -193,12 +205,12 @@ class FillUserImageActivity : AppCompatActivity()
             val croppedImageUri = UCrop.getOutput(data)
 
             if (croppedImageUri != null) {
-                imageList.set(onClickImagePosition, croppedImageUri)
-                emptyList.set(onClickImagePosition, "image")
-                Log.d("image-get", "emptyList: "+ emptyList.toString())
+                imageList.set(imageCount, croppedImageUri)
+                imageCount++
+
                 Log.d("image-get", "imageList: "+ imageList.toString())
 
-                imageAdapter.updateList(emptyList, imageList)
+                imageAdapter.updateList(imageList)
                 imageAdapter.notifyDataSetChanged()
             }
         }

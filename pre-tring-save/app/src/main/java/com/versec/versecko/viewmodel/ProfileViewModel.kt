@@ -12,10 +12,12 @@ class ProfileViewModel (
 
         ) : ViewModel() {
 
-        val _userLocal : LiveData<UserEntity> = userRepository.getOwnUser_Local().asLiveData()
-        val _userRemote : LiveData<UserEntity> = userRepository.getOwnUser_Remote().asLiveData()
+        private val _userRemote : MutableLiveData<UserEntity> = userRepository.getOwnUser_Remote().asLiveData() as MutableLiveData<UserEntity>
+        val userRemote : LiveData<UserEntity> get() = _userRemote
 
         var userEntity = UserEntity()
+
+
 
         fun insertUser_Local (userEntity: UserEntity) {
 
@@ -26,25 +28,6 @@ class ProfileViewModel (
         }
 
 
-
-        val _allUser : LiveData<MutableList<UserEntity>> = liveData {
-
-                val data = userRepository.getAllUser()
-
-                Log.d("lounge-users", data.toString())
-        }
-
-        fun allUser() {
-                viewModelScope.launch {
-
-                        val users =
-                        userRepository.getAllUser()
-
-                        Log.d("lounge-get", users.toString())
-
-
-                }
-        }
 
 
 

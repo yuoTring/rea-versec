@@ -78,7 +78,7 @@
                 android:gravity="bottom"
                 android:paddingLeft="16dp"
                 android:text="this is test name, 25"
-                android:textColor="@color/black"
+                android:textColor="@color/white_cotton"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintTop_toBottomOf="@id/textResidence"

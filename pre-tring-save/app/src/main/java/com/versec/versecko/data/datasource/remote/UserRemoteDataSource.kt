@@ -29,9 +29,13 @@ interface UserRemoteDataSource {
     fun skipUser (otherUserEntity: UserEntity, ownUser: UserEntity)
 
     suspend fun uploadImage (uriMap: MutableMap<String, Uri>)
+    fun deleteImages (indexes : MutableList<Int>)
 
     suspend fun checkLoungeCount(status: Int, localCount : Int) : Int
     suspend fun getNewLoungeUser(status: Int, newCount : Int) : MutableList<UserEntity>
     fun updateLoungeUser (status: Int) : Flow<MutableList<UserEntity>>
+
+    fun likeBack(otherUser : UserEntity, ownUser: UserEntity)
+
 
 }

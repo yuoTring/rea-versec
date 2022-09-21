@@ -71,6 +71,7 @@
             />
 
         <TextView
+            android:id="@+id/textTripWish"
             android:layout_width="152dp"
             android:layout_height="32dp"
             android:gravity="center"
@@ -83,6 +84,7 @@
             />
 
         <TextView
+            android:id="@+id/textTripStyle"
             android:layout_width="152dp"
             android:layout_height="32dp"
             android:gravity="center"

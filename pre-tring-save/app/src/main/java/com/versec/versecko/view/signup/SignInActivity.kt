@@ -37,6 +37,8 @@ class SignInActivity
     private lateinit var verifyCode : String
     private lateinit var  id : String
 
+    private lateinit var phoneNumber : String
+
 
     private lateinit var editText : EditText
     private lateinit var pinView : EditText
@@ -130,9 +132,11 @@ class SignInActivity
 
         buttonGetCode.setOnClickListener {
 
+            phoneNumber = editText.text.toString()
+
             //TimeUnit
             val options = PhoneAuthOptions.newBuilder(mAuth)
-                .setPhoneNumber("+1"+editText.text.toString()) // Phone number to verify
+                .setPhoneNumber("+1"+phoneNumber) // Phone number to verify
                 .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
                 .setActivity(this) // Activity (for callback binding)
                 .setCallbacks(callbacks) // OnVerificationStateChangedCallbacks
@@ -175,7 +179,7 @@ class SignInActivity
                 else if (signInResult.equals(Results.No(3))) {
                     Log.d("sms-test", signInResult.toString())
 
-                    startActivity(Intent(this, FillUserInfoActivity::class.java))
+                    startActivity(Intent(this, FillUserInfoActivity::class.java).putExtra("phoneNumber", phoneNumber))
                 }
                 else if (signInResult.equals(Results.Success(1))) {
                     Log.d("sms-test", signInResult.toString())
@@ -195,6 +199,14 @@ class SignInActivity
         }
 
         buttonReGetCode.setOnClickListener {
+
+            val options = PhoneAuthOptions.newBuilder(mAuth)
+                .setPhoneNumber("+1"+phoneNumber) // Phone number to verify
+                .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
+                .setActivity(this) // Activity (for callback binding)
+                .setCallbacks(callbacks) // OnVerificationStateChangedCallbacks
+                .build()
+            PhoneAuthProvider.verifyPhoneNumber(options)
 
         }
 

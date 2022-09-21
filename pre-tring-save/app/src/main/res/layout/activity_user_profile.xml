@@ -46,6 +46,34 @@
                     app:layout_constraintBottom_toBottomOf="@id/viewpagerProfileImage"/>
 
 
+                <ImageView
+                    android:id="@+id/buttonReject"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="32dp"
+                    android:elevation="2dp"
+                    android:padding="18dp"
+                    android:src="@drawable/icon_skip"
+                    android:background="@drawable/button_round_white"
+                    app:layout_constraintBottom_toTopOf="@id/tabLayout"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/buttonAccept"
+                    />
+
+                <ImageView
+                    android:id="@+id/buttonAccept"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="32dp"
+                    android:elevation="2dp"
+                    android:padding="16dp"
+                    android:src="@drawable/icon_heart"
+                    android:background="@drawable/button_round_white"
+                    app:layout_constraintBottom_toTopOf="@id/tabLayout"
+                    app:layout_constraintStart_toEndOf="@id/buttonReject"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+
                 <TextView
                     android:id="@+id/textResidence"
                     android:layout_width="wrap_content"

@@ -15,9 +15,6 @@ class MatchingViewModel (
 
 
 
-    val _ownUser : LiveData<UserEntity> = userRepository.getOwnUser_Local().asLiveData()
-
-
             fun getUsersWithGeoHash (latitude: Double,
                                      longitude: Double,
                                      radiusInMeter: Int) : LiveData<List<UserEntity>> {
@@ -34,6 +31,11 @@ class MatchingViewModel (
 
                 return _userList
             }
+
+
+
+
+
 
             fun likeUser (otherUserEntity: UserEntity, ownUserEntity: UserEntity) {
 

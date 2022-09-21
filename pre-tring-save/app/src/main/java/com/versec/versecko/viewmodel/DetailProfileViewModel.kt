@@ -13,4 +13,17 @@ class DetailProfileViewModel (
 
             var userEntity = UserEntity()
 
+
+    fun reject(userEntity: UserEntity) {
+
+    }
+
+    fun likeBack (userEntity: UserEntity) {
+
+    }
+
+    fun openChatRoom (userEntity: UserEntity) {
+
+    }
+
 }

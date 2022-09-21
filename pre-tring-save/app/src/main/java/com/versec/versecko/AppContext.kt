@@ -14,6 +14,7 @@ class AppContext : Application() {
 
         var latitude by Delegates.notNull<Double>()
         var longitude by Delegates.notNull<Double>()
+        lateinit var uid : String
 
 
         fun getInstance() : Application {
@@ -31,11 +32,20 @@ class AppContext : Application() {
     override fun onCreate() {
         super.onCreate()
 
+        uid = "test!!!!!"
+
 
         startKoin {
             androidLogger()
             androidContext(this@AppContext)
-            modules(roomDatabaseModule, userRemoteDataSourceModule, repositoryModule, userViewModelModule, signInModule)
+            modules(
+                sharedPreferenceModule,
+                roomDatabaseModule,
+                userRemoteDataSourceModule,
+                chatDataSourceModule,
+                repositoryModule,
+                userViewModelModule
+            )
         }
     }
 }

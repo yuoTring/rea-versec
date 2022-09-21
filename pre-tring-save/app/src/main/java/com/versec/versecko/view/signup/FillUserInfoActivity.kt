@@ -68,7 +68,10 @@ class FillUserInfoActivity : AppCompatActivity()
         view = binding.root
         setContentView(view)
 
+        val intent = intent
+
         user = UserEntity()
+        user.phoneNumber = intent.getStringExtra("phoneNumber").toString()
 
         residenceList = mutableListOf("+")
         tripList = mutableListOf("+")

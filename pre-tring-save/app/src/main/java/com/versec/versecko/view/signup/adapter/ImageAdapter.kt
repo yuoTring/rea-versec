@@ -12,7 +12,6 @@ import com.versec.versecko.databinding.ItemRecyclerImageBinding
 
 class ImageAdapter (
 
-    var emptyList : MutableList<String>,
     var imageList : MutableList<Uri>,
     val resourceId : Int,
     private val onClick : (String?, Int) -> Unit
@@ -40,18 +39,15 @@ class ImageAdapter (
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        holder.bind(emptyList.get(position), position, onClick)
+        holder.bind(imageList.get(position).toString(), position, onClick)
 
-        if (emptyList.get(position) == "image") {
+        if (!imageList.get(position).toString().equals("---")) {
 
-            if (imageList.get(position) != null) {
-
-                Glide
-                    .with(holder.binding.root)
-                    .load(imageList.get(position))
-                    .apply(RequestOptions.bitmapTransform(RoundedCorners(16)))
-                    .into(holder.binding.buttonAddImage)
-            }
+            Glide
+                .with(holder.binding.root)
+                .load(imageList.get(position))
+                .apply(RequestOptions.bitmapTransform(RoundedCorners(16)))
+                .into(holder.binding.buttonAddImage)
 
         }
         else {
@@ -62,11 +58,10 @@ class ImageAdapter (
     }
 
     override fun getItemCount(): Int {
-        return emptyList.size
+        return imageList.size
     }
 
-    fun updateList (emptyList: MutableList<String>, imageList: MutableList<Uri>) {
-        this.emptyList = emptyList
+    fun updateList (imageList: MutableList<Uri>) {
         this.imageList = imageList
     }
 

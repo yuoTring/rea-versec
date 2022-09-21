@@ -1,5 +1,7 @@
 package com.versec.versecko.view.profile
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -67,8 +69,7 @@ class ProfileModifyActivity : AppCompatActivity() {
         view = binding.root
         setContentView(view)
 
-        emptyList = mutableListOf("empty","empty","empty","empty","empty","empty")
-        imageList = mutableListOf(Uri.parse("---"),Uri.parse("---"),Uri.parse("---"),Uri.parse("---"),Uri.parse("---"),Uri.parse("---"))
+
         residenceList = mutableListOf("+")
         tripList = mutableListOf("+")
         styleList = mutableListOf("+")
@@ -90,17 +91,9 @@ class ProfileModifyActivity : AppCompatActivity() {
             userEntity.uriMap.forEach { entry ->
 
                 imageList.set(entry.key.toInt(),Uri.parse(entry.value) )
-                emptyList.set(entry.key.toInt(), "image")
+                emptyList.set(entry.key.toInt(), "old_image")
 
             }
-
-            imageAdapter.updateList(emptyList, imageList)
-            adapterResidence.updateTagList(residenceList)
-            adapterTrip.updateTagList(tripList)
-
-            imageAdapter.notifyDataSetChanged()
-            adapterResidence.notifyDataSetChanged()
-            adapterTrip.notifyDataSetChanged()
 
 
         })
@@ -115,25 +108,7 @@ class ProfileModifyActivity : AppCompatActivity() {
 
         val resourceId = resources.getIdentifier("button_add","drawable", packageName)
 
-        imageAdapter = ImageAdapter(emptyList, imageList, resourceId) { item, position ->
 
-            // add a new image
-            if (emptyList.get(position) == "empty") {
-
-                onClickImagePosition = position
-                startActivityForResult(Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI), 100)
-
-            }
-            // already image added
-            else {
-
-            }
-
-
-        }
-
-        binding.recyclerChosenImages.layoutManager = layoutManager
-        binding.recyclerChosenImages.adapter = imageAdapter
 
 
         val layoutManagerResidence: RecyclerView.LayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
@@ -207,37 +182,14 @@ class ProfileModifyActivity : AppCompatActivity() {
 
             var checkImageReadyOrNot = false
 
-            emptyList.forEach {
-                if (it == "image")
-                    checkImageReadyOrNot = true
-            }
 
-            /**
-            imageList.forEachIndexed { index, uri ->
 
-            if (it == Uri.parse("---"))
+            if (checkImageReadyOrNot) {
 
-            }**/
 
-            var count =0
-            //var uriMap : MutableMap<Int, String> = mutableMapOf()
-            var uriMap : MutableMap<String, Uri>
-                    = mutableMapOf()
+                userEntity.selfIntroduction = binding.editSelfIntroduction.text.toString()
 
-            emptyList.forEachIndexed { index, item ->
 
-                if (item.equals("image")) {
-                    uriMap.put(count.toString(), imageList.get(index))
-                    count++
-                }
-
-            }
-
-            if (checkImageReadyOrNot){
-
-                Log.d("image-get", "uriMap: "+ uriMap.toString())
-
-                //viewModel.uploadImage(uriMap)
 
 
 
@@ -259,39 +211,8 @@ class ProfileModifyActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == 100 && resultCode == RESULT_OK && data != null) {
 
-            val uri : Uri? = data.data
-
-            val uCrop = uri?.let {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    UCrop.of(it, Uri.fromFile(File(cacheDir, "cropped___"+ LocalDateTime.now().toString()+".png")))
-                        .withAspectRatio(1.0F, 1.0F)
-                        .start(this)
-                }
-            }
-
-        }
-        else if (requestCode ==100 && resultCode == RESULT_CANCELED) { }
-        else if (requestCode == UCrop.REQUEST_CROP && resultCode == RESULT_OK && data != null) {
-
-            val croppedImageUri = UCrop.getOutput(data)
-
-            if (croppedImageUri != null) {
-                imageList.set(onClickImagePosition, croppedImageUri)
-                emptyList.set(onClickImagePosition, "image")
-                Log.d("image-get", "emptyList: "+ emptyList.toString())
-                Log.d("image-get", "imageList: "+ imageList.toString())
-
-                imageAdapter.updateList(emptyList, imageList)
-                imageAdapter.notifyDataSetChanged()
-            }
-        }
-        else if (resultCode == UCrop.RESULT_ERROR) {
-            Log.d("error", "filluserimage-uploadimage-ucrop-error")
-
-        }
-        else if (requestCode == FillUserInfoActivity.RESIDENCE && data != null) {
+        if (requestCode == FillUserInfoActivity.RESIDENCE && data != null) {
             residenceList.removeAll(residenceList)
             residenceList.add("+")
             residenceList.addAll(data.getStringArrayListExtra("residence")!!)

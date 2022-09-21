@@ -41,6 +41,9 @@
         android:text="this is nicname example!!!"
         android:textColor="@color/gray_dark"
         android:textSize="14sp"
+        android:ems="10"
+        android:ellipsize="end"
+        android:maxLines="1"
         app:layout_constraintBottom_toBottomOf="@id/imageProfile"
         app:layout_constraintStart_toEndOf="@id/imageProfile"/>
 

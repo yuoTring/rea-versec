@@ -19,6 +19,7 @@ import com.versec.versecko.R
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.databinding.FragmentMatchingBinding
 import com.versec.versecko.view.matching.adapter.CardStackAdapter
+import com.versec.versecko.viewmodel.MainViewModel
 import com.versec.versecko.viewmodel.MatchingViewModel
 import com.yuyakaido.android.cardstackview.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -27,6 +28,7 @@ class MatchingFragment : Fragment(), CardStackListener {
 
     private lateinit var binding : FragmentMatchingBinding
     private val viewModel : MatchingViewModel by viewModel<MatchingViewModel>()
+    private val mainViewModel : MainViewModel by viewModel<MainViewModel>()
 
     private lateinit var cardStackLayoutManager: CardStackLayoutManager
     private lateinit var cardStackAdapter: CardStackAdapter
@@ -44,9 +46,11 @@ class MatchingFragment : Fragment(), CardStackListener {
     }
 
     override fun onCreateView (
+
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
+
     ): View?
     {
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_matching,container,false)
@@ -54,7 +58,6 @@ class MatchingFragment : Fragment(), CardStackListener {
 
 
         return view
-        //inflater.inflate(R.layout.fragment_matching, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -69,11 +72,13 @@ class MatchingFragment : Fragment(), CardStackListener {
 
         cardStackViewInit()
 
-
-        viewModel._ownUser.observe(viewLifecycleOwner, Observer { ownUser = it
-
-            Log.d("own-user", ownUser.toString())
+        mainViewModel.userLocal.observe(requireActivity(), Observer {
+            ownUser = it
         })
+
+
+
+
 
 
 
@@ -94,11 +99,14 @@ class MatchingFragment : Fragment(), CardStackListener {
 
                 cardStackAdapter.updateUserList(users)
                 cardStackAdapter.notifyDataSetChanged()
+
             })
 
 
 
         binding.buttonLike.setOnClickListener {
+
+            viewModel.likeUser(otherUserList.get(currentPosition), ownUser)
 
             Toast.makeText(requireActivity(), "@@@", Toast.LENGTH_SHORT).show()
 
@@ -112,12 +120,11 @@ class MatchingFragment : Fragment(), CardStackListener {
 
             binding.cardUserList.swipe()
 
-            //viewModel.likeUser(otherUserList.get(currentPosition), ownUser)
-            viewModel.likeUser(ownUser, ownUser)
-
         }
 
         binding.buttonSkip.setOnClickListener {
+
+            viewModel.skipUser(otherUserList.get(currentPosition), ownUser)
 
             val setting = SwipeAnimationSetting.Builder()
                 .setDirection(Direction.Right)
@@ -128,8 +135,6 @@ class MatchingFragment : Fragment(), CardStackListener {
 
             cardStackLayoutManager.setSwipeAnimationSetting(setting)
             binding.cardUserList.swipe()
-
-            viewModel.skipUser(otherUserList.get(currentPosition), ownUser)
         }
 
     }
@@ -160,8 +165,7 @@ class MatchingFragment : Fragment(), CardStackListener {
     override fun onCardCanceled() {
     }
 
-    override fun onCardAppeared(view: View?, position: Int) {
-    }
+    override fun onCardAppeared(view: View?, position: Int) {   initInfo() }
 
     override fun onCardDisappeared(view: View?, position: Int) { currentPosition++ }
 
@@ -188,6 +192,17 @@ class MatchingFragment : Fragment(), CardStackListener {
                 supportsChangeAnimations = false
             }
         }
+
+
+
+    }
+
+    private fun initInfo () {
+
+
+        binding.textTripWish.setText(otherUserList.get(currentPosition).tripWish.get(0)+", "+ otherUserList.get(currentPosition).tripWish.get(1))
+        binding.textTripStyle.setText("#"+otherUserList.get(currentPosition).tripStyle.get(0)+", #"+otherUserList.get(currentPosition).tripStyle.get(1))
+
 
 
 

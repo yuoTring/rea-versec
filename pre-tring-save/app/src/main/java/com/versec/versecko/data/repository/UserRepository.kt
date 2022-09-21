@@ -37,6 +37,7 @@ interface UserRepository {
 
     //suspend fun uploadImage (uriMap: MutableMap<Int, Uri>)
     suspend fun uploadImage (uriMap: MutableMap<String, Uri>)
+    fun deleteImages(indexes : MutableList<Int>)
 
 
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -47,8 +48,6 @@ interface UserRepository {
     suspend fun getNewLoungeUser(status: Int, newCount : Int) : MutableList<UserEntity>
     fun updateLoungeUser (status: Int) : Flow<MutableList<UserEntity>>
 
-
-
-
+    fun likeBack(otherUser : UserEntity, ownUser: UserEntity)
 
 }

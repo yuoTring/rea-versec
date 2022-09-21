@@ -1,11 +1,9 @@
 package com.versec.versecko.data.datasource.remote
 
-import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
@@ -13,16 +11,14 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.UploadTask
+import com.versec.versecko.AppContext
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.util.Results
-import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
-import java.io.ByteArrayOutputStream
 import java.io.File
 
 class UserRemoteDataSourceImpl (
@@ -61,8 +57,6 @@ class UserRemoteDataSourceImpl (
 
     override suspend fun insertUser(userEntity: UserEntity) {
 
-        Log.d("-----", userEntity.uid)
-
         fireStore.collection("database/user/userList/")
             .document(userEntity.uid)
             .set(userEntity)
@@ -82,6 +76,7 @@ class UserRemoteDataSourceImpl (
 
                 if (task.isSuccessful) {
 
+                    AppContext.uid = task.result.user!!.uid
 
                 }
                 else {
@@ -196,6 +191,14 @@ class UserRemoteDataSourceImpl (
 
         }
 
+        fireStore.collection("database/user/userList/")
+            .document("testestestuiduiduid_____")
+            .get()
+            .addOnCompleteListener {
+
+                userList.add(0, it.result.toObject(UserEntity::class.java)!!)
+            }.await()
+
         return userList
     }
 
@@ -245,36 +248,40 @@ class UserRemoteDataSourceImpl (
     }
 
 
-    override fun likeUser(userEntity: UserEntity, ownUser: UserEntity) {
+    override fun likeUser(other: UserEntity, ownUser: UserEntity) {
 
         val uid = "test!!!!!"
         //ownUser.uid
 
+
+
+        ownUser.loungeStatus = 2 // liked -> because ownUser send a 'like' to other
+        other.loungeStatus = 1 // like
+
+        // own - history - like list
         fireStore.collection("database/user/userList/"+uid+"/lounge/loungeHistory/likeUserList")
-            .document(userEntity.uid)
-            .set(userEntity)
+            .document(other.uid)
+            .set(other)
 
-        fireStore.collection("database/user/userList/"+userEntity.uid+"/lounge/loungeHistory/likedUserList")
+
+        // other - history - liked list
+        fireStore.collection("database/user/userList/"+other.uid+"/lounge/loungeHistory/likedUserList")
             .document(uid)
             .set(ownUser)
 
-        fireStore.collection("database/user/userList/"+userEntity.uid+"/lounge/loungeInformation/likedUserList")
+
+        // other - real time - liked list
+        fireStore.collection("database/user/userList/"+other.uid+"/lounge/loungeInformation/likedUserList")
             .document(uid)
             .set(ownUser)
 
 
+        // other - real time - liked counter
         val doc : DocumentReference =
-        fireStore.collection("database/user/userList/"+userEntity.uid+"/lounge")
+        fireStore.collection("database/user/userList/"+other.uid+"/lounge")
             .document("loungeInformation")
 
         doc.update("likedCounter", FieldValue.increment(1.0))
-
-
-
-
-
-
-
 
 
     }
@@ -293,6 +300,7 @@ class UserRemoteDataSourceImpl (
 
 
         var uploadMap = mutableMapOf<String, String>()
+
 
         uriMap.forEach { entry ->
 
@@ -341,11 +349,26 @@ class UserRemoteDataSourceImpl (
 
     }
 
+    override fun deleteImages(indexes: MutableList<Int>) {
+
+        val uid = AppContext.uid
+
+        indexes.forEach {
+
+            storage.reference.child("image/profileImages/"+uid+"/"+uid+"_"+it).delete()
+
+        }
+
+
+
+
+    }
+
     override suspend fun checkLoungeCount(status: Int, localCount: Int): Int {
 
-        var count = 0
+        var count = 0.0
 
-        var uid = "test!!!!!"
+        var uid = "testestestuiduiduid_____"
 
         fireStore.collection("database/user/userList/"+uid+"/lounge")
             .document("loungeInformation")
@@ -358,9 +381,9 @@ class UserRemoteDataSourceImpl (
 
                     val doc = task.result
 
-                    count = doc.get("likedCounter").toString().toInt()
+                    count = doc.get("likedCounter").toString().toDouble()
                     if (status == 3)
-                        count = doc.get("matchedCounter").toString().toInt()
+                        count = doc.get("matchedCounter").toString().toDouble()
 
 
                     count = count - localCount
@@ -373,7 +396,7 @@ class UserRemoteDataSourceImpl (
                 }
             }.await()
 
-        return count
+        return count.toInt()
     }
 
 
@@ -384,11 +407,11 @@ class UserRemoteDataSourceImpl (
 
         newUserList = mutableListOf()
 
-        val uid = "test!!!!!"
+        val uid = "testestestuiduiduid_____"
 
         var what= "likedUserList"
         if (status == 3)
-            what = "matchUserList"
+            what = "matchingUserList"
 
         fireStore.collection("database/user/userList/"+uid+"/lounge/loungeInformation/"+what)
             .limit(newCount.toLong())
@@ -416,11 +439,11 @@ class UserRemoteDataSourceImpl (
 
         lateinit var updatedUsers : MutableList<UserEntity>
 
-        val uid = "test!!!!!"
+        val uid = "testestestuiduiduid_____"
 
         var what = "likedUserList"
         if (status == 3)
-            what = "matchedUserList"
+            what = "matchingUserList"
 
         val collection =
             fireStore.collection("database/user/userList/"+uid+"/lounge/loungeInformation/"+what)
@@ -432,6 +455,8 @@ class UserRemoteDataSourceImpl (
             for (doc in value!!) {
 
                 updatedUsers.add(doc.toObject(UserEntity::class.java))
+
+                Log.d("local-count-result!", "status -> "+status+" -> "+doc.toObject(UserEntity::class.java).toString())
             }
 
             trySend(updatedUsers)
@@ -441,7 +466,40 @@ class UserRemoteDataSourceImpl (
 
     }
 
+    override fun likeBack(otherUser: UserEntity, ownUser: UserEntity) {
 
+        val uid = "test!!!!!"
+
+        fireStore.collection("database/user/userList/"+uid+"/lounge/loungeHistory/likeUserList")
+            .document(otherUser.uid)
+            .set(otherUser)
+
+        fireStore.collection("database/user/userList/"+uid+"/lounge/loungeHistory/matchingUserList")
+            .document(otherUser.uid)
+            .set(otherUser)
+
+        fireStore.collection("database/user/userList/"+uid+"/lounge/loungeInformation/matchingUserList")
+            .document(otherUser.uid)
+            .set(otherUser)
+
+        fireStore.collection("database/user/userList/"+otherUser.uid+"/lounge/loungeHistory/likedUserList")
+            .document(uid)
+            .set(ownUser)
+
+        fireStore.collection("database/user/userList/"+otherUser.uid+"/lounge/loungeHistory/matchingUserList")
+            .document(uid)
+            .set(ownUser)
+
+        fireStore.collection("database/user/userList/"+otherUser.uid+"/lounge/loungeInformation/matchingUserList")
+            .document(uid)
+            .set(ownUser)
+
+
+
+
+
+
+    }
 
 
 }

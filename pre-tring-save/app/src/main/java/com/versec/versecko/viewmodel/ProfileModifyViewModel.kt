@@ -1,5 +1,6 @@
 package com.versec.versecko.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
@@ -18,14 +19,26 @@ class ProfileModifyViewModel (
             val _user : LiveData<UserEntity> = userRepository.getOwnUser_Local().asLiveData()
 
 
-            fun updateOwnUser (userEntity: UserEntity) {
 
-                viewModelScope.launch {
 
-                    userRepository.insertUser_Local(userEntity)
-                    userRepository.insertUser_Remote(userEntity)
-                }
-            }
+    fun updateUser (userEntity: UserEntity, uriMap : MutableMap<String, Uri>, deleteIndexes: MutableList<Int>) {
+        update(userEntity, uriMap, deleteIndexes)
+    }
+
+    private fun update (userEntity: UserEntity, uriMap: MutableMap<String, Uri>, deleteIndexes : MutableList<Int>) {
+
+        viewModelScope.launch {
+
+            if (deleteIndexes.size>0)
+                userRepository.deleteImages(deleteIndexes)
+
+            userRepository.insertUser_Local(userEntity)
+            userRepository.insertUser_Remote(userEntity)
+            userRepository.uploadImage(uriMap)
+
+        }
+
+    }
 
 
 }

@@ -62,11 +62,11 @@ class ProfileFragment : Fragment() {
         TabLayoutMediator(binding.tabLayout, binding.viewpagerProfileImage) {
             tab, position ->
 
-
-
         }.attach()
 
 
+
+        /**
         val observer_local = Observer<UserEntity> { updatedUser ->
 
             uriList.removeAll(uriList)
@@ -103,7 +103,7 @@ class ProfileFragment : Fragment() {
 
         }
 
-        profileViewModel._userRemote.observe(viewLifecycleOwner, observer_remote)
+        profileViewModel._userRemote.observe(viewLifecycleOwner, observer_remote) **/
 
 
         binding.buttonEditProfile.setOnClickListener {
