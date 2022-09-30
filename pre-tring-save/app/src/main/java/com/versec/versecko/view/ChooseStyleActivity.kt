@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.versec.versecko.databinding.ActivityChooseStyleBinding
 import com.versec.versecko.view.signup.adapter.StyleAdapter
@@ -32,26 +33,33 @@ class ChooseStyleActivity : AppCompatActivity()
 
         setContentView(view)
 
-        styleList = resources.getStringArray(R.array.style_main).toMutableList()
+        setClickable(false)
+
+        styleList = resources.getStringArray(R.array.style).toMutableList()
         chosenList = mutableListOf()
 
-        val layoutManager = LinearLayoutManager(this)
+        val layoutManager = GridLayoutManager(this, 3)
 
         adapter = StyleAdapter(this, styleList, chosenList) {
 
-            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+            if (chosenList.size > 4) {
 
-            if (!chosenList.contains(it))
-                chosenList.add(it!!)
-            else
-                chosenList.remove(it)
-            //adapter.StyleContentsAdapter().updateStyleChosenList(chosenList)
-            //adapter.StyleContentsAdapter()
+                if (!chosenList.contains(it))
+                    Toast.makeText(this, "no", Toast.LENGTH_SHORT).show()
+                else
+                    chosenList.remove(it)
+
+            } else {
+
+                if (!chosenList.contains(it))
+                    chosenList.add(it!!)
+                else
+                    chosenList.remove(it)
+            }
+
 
             adapter.updateChosenList(chosenList)
             adapter.notifyDataSetChanged()
-
-
 
 
         }
@@ -64,17 +72,27 @@ class ChooseStyleActivity : AppCompatActivity()
         binding.recyclerTemplate.adapter = adapter
 
         binding.buttonBack.setOnClickListener { finish() }
+
         binding.buttonSet.setOnClickListener {
             val intent = Intent()
+
             if (chosenList.size>0) {
                 intent.putStringArrayListExtra("style", ArrayList(chosenList))
                 setResult(300, intent)
+                finish()
             }
-            else
-            {
-                Toast.makeText(this, "Please select at least one style to proceed!", Toast.LENGTH_SHORT).show()
-            }
+
         }
 
+    }
+
+    private fun setClickable (clickable : Boolean) {
+        if (clickable) {
+            binding.buttonSet.setBackgroundResource(R.color.blue)
+            binding.buttonSet.isClickable = true
+        } else {
+            binding.buttonSet.setBackgroundResource(R.color.gray_superlight)
+            binding.buttonSet.isClickable = false
+        }
     }
 }

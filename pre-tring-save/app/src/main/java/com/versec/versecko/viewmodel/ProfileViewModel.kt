@@ -1,6 +1,5 @@
 package com.versec.versecko.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.data.repository.UserRepository
@@ -26,6 +25,16 @@ class ProfileViewModel (
                         userRepository.insertUser_Local(userEntity)
                 }
         }
+
+        fun insert (userEntity: UserEntity) {
+                viewModelScope.launch {
+
+                        userRepository.insertUser_Remote(userEntity)
+
+                }
+        }
+
+
 
 
 

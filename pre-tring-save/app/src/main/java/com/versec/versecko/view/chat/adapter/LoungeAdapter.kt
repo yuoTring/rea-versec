@@ -11,6 +11,7 @@ import com.versec.versecko.databinding.ItemRecyclerLoungeProfileBinding
 class LoungeAdapter (
 
     private var userList : MutableList<UserEntity>,
+    private var addedValue : Int,
     private val onProfileClick : (UserEntity?) -> Unit
 
         ) : RecyclerView.Adapter<LoungeAdapter.ViewHolder>() {
@@ -35,6 +36,11 @@ class LoungeAdapter (
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
+        holder.binding.imageOutLine.visibility = View.INVISIBLE
+
+        if (addedValue>0)
+            if (position<addedValue)
+                holder.binding.imageOutLine.visibility = View.VISIBLE
 
         var user = userList.get(position)
 
@@ -56,4 +62,5 @@ class LoungeAdapter (
     }
 
     fun changeUsers(userList: MutableList<UserEntity>) { this.userList = userList}
+    fun changeAddedValue (value : Int) {this.addedValue = value}
 }

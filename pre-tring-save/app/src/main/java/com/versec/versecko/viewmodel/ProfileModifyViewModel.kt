@@ -29,12 +29,8 @@ class ProfileModifyViewModel (
 
         viewModelScope.launch {
 
-            if (deleteIndexes.size>0)
-                userRepository.deleteImages(deleteIndexes)
-
             userRepository.insertUser_Local(userEntity)
             userRepository.insertUser_Remote(userEntity)
-            userRepository.uploadImage(uriMap)
 
         }
 

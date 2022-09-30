@@ -11,25 +11,26 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
 import com.versec.versecko.R
 import com.versec.versecko.data.entity.ChatRoomEntity
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.databinding.FragmentChatBinding
+import com.versec.versecko.util.Response
 import com.versec.versecko.view.chat.adapter.ChatRoomAdapter
 import com.versec.versecko.view.chat.adapter.LoungeAdapter
 import com.versec.versecko.view.matching.UserProfileActivity
 import com.versec.versecko.viewmodel.ChatViewModel
 import com.versec.versecko.viewmodel.MainViewModel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class ChatFragment : Fragment() {
 
-
-
-    private lateinit var loungeUserList : MutableList<UserEntity>
     private lateinit var binding : FragmentChatBinding
     private val viewModel : ChatViewModel by viewModel<ChatViewModel>()
     private val mainViewModel : MainViewModel by viewModel<MainViewModel>()
@@ -38,6 +39,10 @@ class ChatFragment : Fragment() {
     private var viewLoungeStatus : Int = 2
     private var usersLiked : MutableList<UserEntity> = mutableListOf()
     private var usersMatched : MutableList<UserEntity> = mutableListOf()
+
+    private var counterLiked : Int? = 0
+    private var counterMatching : Int? = 0
+
 
 
     private lateinit var chatRoomAdapter: ChatRoomAdapter
@@ -70,26 +75,126 @@ class ChatFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        mainViewModel.userLocal.observe(viewLifecycleOwner, Observer {
+            ownUser = it
+        })
 
-        binding.buttonTest.setOnClickListener {
+        viewModel.setCounter(2,0)
+        viewModel.setCounter(3,0)
+        // get a former lounge counter
+        counterLiked = viewModel.getCounter(2)
+        counterMatching = viewModel.getCounter(3)
 
-            var ownUser = UserEntity()
-            ownUser.uid = "test!!!!!"
-            ownUser.uriMap = mutableMapOf("0" to "https://firebasestorage.googleapis.com/v0/b/tring-2c450.appspot.com/o/image%2FprofileImages%2Ftest!!!!!%2Ftest!!!!!_0?alt=media&token=fd73fe45-808f-4540-b3ce-0ba5020a1c25")
-
-            var other = UserEntity()
-            other.uid = "otherUid"
-            other.uriMap = mutableMapOf("0" to "https://firebasestorage.googleapis.com/v0/b/tring-2c450.appspot.com/o/image%2FprofileImages%2Ftest!!!!!%2Ftest!!!!!_0?alt=media&token=fd73fe45-808f-4540-b3ce-0ba5020a1c25")
-            viewModel.openRoom(other,ownUser)
-        }
-
-        loungeUserList = mutableListOf()
-
-        loungeAdapter = LoungeAdapter(loungeUserList) {
+        loungeAdapter = LoungeAdapter(usersLiked,0) {
 
             var intent = Intent(requireActivity(), UserProfileActivity::class.java)
-            intent.putExtra("user", it)
+            intent.putExtra("otherUser", it)
             startActivity(intent)
+        }
+
+        // get liked users from FireStore
+        lifecycleScope.launch {
+            viewModel.likedUsers.collect { response ->
+
+                when (response) {
+
+                    is Response.Loading -> binding.progressBarLounge.show()
+                    is Response.Success -> {
+                        binding.progressBarLounge.hide()
+
+                        usersLiked.clear()
+                        usersLiked.addAll(response.data)
+
+                        // check which tab is selected
+                        if (viewLoungeStatus == 2 ) {
+
+                            // initialize added value
+                            loungeAdapter.changeAddedValue(0)
+
+                            //show new added users more apparently (stroke will be seen)
+                            if (usersLiked.size > counterLiked!!)
+                            {
+                                viewModel.setCounter(2, usersLiked.size)
+                                loungeAdapter.changeAddedValue(usersLiked.size - counterLiked!!)
+                            }
+
+                            loungeAdapter.changeUsers(usersLiked)
+                            loungeAdapter.notifyDataSetChanged()
+
+                        } else {
+
+                            // check new liked users and if yes, set badge on tab to notify user it
+                            if (usersLiked.size > counterLiked!!) {
+                                binding.tabLayout.getTabAt(0)?.orCreateBadge!!.number
+                            }
+
+                        }
+
+                    }
+                    is Response.Error -> {
+                        binding.progressBarLounge.show()
+                    }
+                    else -> {
+                    }
+
+                }
+
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModel.matchingUsers.collect { response ->
+
+                when (response) {
+
+                    is Response.Loading -> binding.progressBarLounge.show()
+                    is Response.Success -> {
+                        binding.progressBarLounge.hide()
+
+                        usersMatched.clear()
+                        usersMatched.addAll(response.data)
+
+                        // check which tab is selected
+                        if (viewLoungeStatus == 3 ) {
+
+                            // initialize added value
+                            loungeAdapter.changeAddedValue(0)
+
+                            //show new added users more apparently
+                            if (usersMatched.size > counterLiked!!)
+                            {
+                                viewModel.setCounter(3, usersMatched.size)
+                                loungeAdapter.changeAddedValue(usersMatched.size - counterLiked!!)
+                            }
+
+                            loungeAdapter.changeUsers(usersMatched)
+                            loungeAdapter.notifyDataSetChanged()
+
+                        } else {
+
+                            // check new matched users and if yes, set badge on tab to notify user it
+                            Log.d("lounge-check", "um: "+usersMatched.size)
+                            Log.d("lounge-check", "cm: "+counterMatching)
+
+                            if (usersMatched.size > counterMatching!!) {
+                                binding.tabLayout.getTabAt(1)?.orCreateBadge!!.number
+                            }
+
+                        }
+
+                    }
+                    is Response.Error -> {
+                        binding.progressBarLounge.show()
+                    }
+                    else -> {
+
+                    }
+
+                }
+
+
+
+            }
         }
 
         binding.recyclerLikeList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,false)
@@ -103,15 +208,26 @@ class ChatFragment : Fragment() {
 
                     if (tab.position == 0) {
 
+                        if (viewLoungeStatus == 3) {
+                            viewModel.setCounter(3, usersMatched.size)
+                        }
+
                         viewLoungeStatus = 2
 
-                        binding.tabLayout.getTabAt(0)?.orCreateBadge!!.number
+                        binding.tabLayout.getTabAt(0)?.removeBadge()
 
                         loungeAdapter.changeUsers(usersLiked)
                         loungeAdapter.notifyDataSetChanged()
 
                     } else {
+
+                        if (viewLoungeStatus ==2) {
+                            viewModel.setCounter(2, usersLiked.size)
+                        }
+
                         viewLoungeStatus = 3
+
+                        binding.tabLayout.getTabAt(1)?.removeBadge()
 
                         loungeAdapter.changeUsers(usersMatched)
                         loungeAdapter.notifyDataSetChanged()
@@ -134,88 +250,150 @@ class ChatFragment : Fragment() {
 
 
 
-        viewModel.usersLiked.observe(viewLifecycleOwner, Observer {
-
-            usersLiked.addAll(it)
-
-            if (viewLoungeStatus == 2) {
-
-                loungeAdapter.changeUsers(usersLiked)
-                loungeAdapter.notifyDataSetChanged()
-            }
-
-        })
-
-        viewModel.usersMatched.observe(viewLifecycleOwner, Observer {
-
-            usersMatched.addAll(it)
-
-            if (viewLoungeStatus == 3) {
-
-                loungeAdapter.changeUsers(usersMatched)
-                loungeAdapter.notifyDataSetChanged()
-            }
-        })
-
-        viewModel.usersLikedUpdated.observe(viewLifecycleOwner, Observer {
-
-            usersLiked.addAll(0, it)
-
-            if (viewLoungeStatus == 2) {
-                loungeAdapter.changeUsers(usersLiked)
-                loungeAdapter.notifyDataSetChanged()
-
-            } else {
-
-
-            }
-
-        })
-
-        viewModel.usersMatchedUpdated.observe(viewLifecycleOwner, Observer {
-
-            usersMatched.addAll(0, it)
-
-            if (viewLoungeStatus == 3) {
-                loungeAdapter.changeUsers(usersMatched)
-                loungeAdapter.notifyDataSetChanged()
-
-            } else {
-
-
-            }
-
-
-        })
-
-        viewModel.getLoungeUser(2)
-
-        viewModel.getLoungeUser(3)
-
         chatRoomAdapter = ChatRoomAdapter(roomList) {
 
-            Log.d("message-get", it.toString())
             val intent = Intent(requireActivity(), RoomActivity::class.java)
             intent.putExtra("room", it)
             startActivity(intent)
+
+
         }
 
         binding.recyclerChatRoomList.layoutManager = LinearLayoutManager(requireActivity())
         binding.recyclerChatRoomList.adapter = chatRoomAdapter
 
 
+        lifecycleScope.launch {
 
-        viewModel.roomUpdated.observe(viewLifecycleOwner, Observer {
+            viewModel.rooms.collect {
 
-            roomList.add(it)
 
-            chatRoomAdapter.changeRooms(roomList)
-            chatRoomAdapter.notifyDataSetChanged()
 
-        })
+                val key = it.keys.first()
+
+                if (key == ADDED) {
+
+                    binding.progressBarChatRoom.hide()
+
+                    val response = it.get(ADDED)
+
+                    when(response) {
+                        is Response.Success -> {
+
+                            roomList.add(response.data)
+                            chatRoomAdapter.changeRooms(roomList)
+                            chatRoomAdapter.notifyDataSetChanged()
+                        }
+                        else -> {
+
+                        }
+                    }
+
+                } else if (key == REMOVED) {
+
+                    binding.progressBarChatRoom.hide()
+
+                    val response = it.get(REMOVED)
+
+                    when(response) {
+                        is Response.Success -> {
+
+                            var targetIndex = 0
+
+                            roomList.forEachIndexed { index, chatRoomEntity ->
+                                if (chatRoomEntity.chatRoomUid.equals(response.data.chatRoomUid))
+                                    targetIndex = index
+                            }
+
+                            roomList.removeAt(targetIndex
+                            )
+                            chatRoomAdapter.changeRooms(roomList)
+                            chatRoomAdapter.notifyDataSetChanged()
+
+                        }
+                        else -> {
+
+                        }
+                    }
+
+                } else if (key == CHANGED) {
+
+                    val response = it.get(CHANGED)
+
+                    when(response) {
+                        is Response.Success -> {
+
+                            var targetIndex = 0
+
+                            roomList.forEachIndexed { index, chatRoomEntity ->
+                                if (chatRoomEntity.chatRoomUid.equals(response.data.chatRoomUid))
+                                    targetIndex = index
+                            }
+
+                            roomList.set(targetIndex, response.data)
+                            chatRoomAdapter.changeRooms(roomList)
+                            chatRoomAdapter.notifyDataSetChanged()
+
+                        }
+                        else -> {
+
+                        }
+                    }
+
+
+
+                }
+                else if (key == ERROR) {
+                        binding.progressBarChatRoom.show()
+                }
+             }
+
+        }
+
+
+
+
+
+
+        binding.buttonTest.setOnClickListener {
+
+        }
+
+    }
+
+    override fun onStop() {
+        super.onStop()
+        reset()
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        reset()
+    }
+
+    private fun reset () {
+
+        if (viewLoungeStatus == 2) {
+
+            counterLiked = viewModel.getCounter(2)
+            loungeAdapter.changeAddedValue(0)
+            loungeAdapter.changeUsers(usersLiked)
+            loungeAdapter.notifyDataSetChanged()
+
+        } else {
+            counterMatching = viewModel.getCounter(3)
+            loungeAdapter.changeAddedValue(0)
+            loungeAdapter.changeUsers(usersMatched)
+            loungeAdapter.notifyDataSetChanged()
+        }
     }
 
     companion object {
+
+        val ADDED = 1
+        val REMOVED = 0
+        val CHANGED = 2
+        val ERROR = -1
 
         @JvmStatic
         fun newInstance() =

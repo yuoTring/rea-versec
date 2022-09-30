@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -15,6 +16,10 @@ import com.versec.versecko.view.ChooseStyleActivity
 import com.versec.versecko.view.*
 import com.versec.versecko.viewmodel.ProfileViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 class EntryActivity : AppCompatActivity()
 {
@@ -41,17 +46,11 @@ class EntryActivity : AppCompatActivity()
 
         viewModel.userRemote.observe(this, Observer {
 
+            Log.d("user-get", it.uid)
             it.loungeStatus = 0
             viewModel.insertUser_Local(it)
 
-            Toast.makeText(this, "@@@", Toast.LENGTH_SHORT).show()
-
         })
-
-
-
-
-
 
 
 
@@ -72,9 +71,9 @@ class EntryActivity : AppCompatActivity()
         binding.buttonAgreeAndStart.setOnClickListener {
             val intent
             //= Intent(this, SignInActivity::class.java)
-            //= Intent(this, MainScreenActivity::class.java)
+            = Intent(this, MainScreenActivity::class.java)
             //= Intent(this, ChoosePlaceActivity::class.java)
-            = Intent(this, FillUserInfoActivity::class.java)
+            //= Intent(this, FillUserInfoActivity::class.java)
             //= Intent(this, FillUserImageActivity::class.java)
             //= Intent(this, ChooseStyleActivity::class.java)
 

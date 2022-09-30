@@ -3,7 +3,7 @@ package com.versec.versecko.viewmodel
 import androidx.lifecycle.*
 import com.google.firebase.auth.PhoneAuthCredential
 import com.versec.versecko.data.repository.UserRepository
-import com.versec.versecko.util.Results
+import com.versec.versecko.util.Response
 import kotlinx.coroutines.launch
 
 class SignInViewModel (
@@ -29,9 +29,9 @@ class SignInViewModel (
             }**/
 
 
-    fun signIn (credential: PhoneAuthCredential) : LiveData<Results<Int>> {
+    fun signIn (credential: PhoneAuthCredential) : LiveData<Response<Int>> {
 
-        val signInResult = MutableLiveData<Results<Int>>()
+        val signInResult = MutableLiveData<Response<Int>>()
 
         viewModelScope.launch {
 

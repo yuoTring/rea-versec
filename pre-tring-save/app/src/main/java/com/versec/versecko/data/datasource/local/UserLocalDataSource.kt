@@ -6,17 +6,25 @@ import kotlinx.coroutines.flow.Flow
 interface UserLocalDataSource {
 
     fun getOwnUser () : Flow<UserEntity>
-    fun getUserList (status : Int) : Flow<MutableList<UserEntity>>
     suspend fun insertUser (userEntity: UserEntity)
     suspend fun updateUriList (uriMap: MutableMap<String,String>, status: Int)
 
-    suspend fun checkLoungeCount (status: Int) : Int
-
-
-    suspend fun getAllUser () : MutableList<UserEntity>
-
-
     fun saveDuplicateUser (uid : String)
+    fun getDuplicateUsers () : MutableList<String>?
+
+    fun setGenderValue (genderValue : String)
+    fun setAgeRange (min : Int, max : Int)
+    fun setDistance (distance : Int)
+
+    fun getGenderValue () : String?
+    fun getAgeRange() : List<Int>?
+    fun getDistance() : Int?
+
+    fun setLikedCounter (count : Int)
+    fun setMatchingCounter (count: Int)
+
+    fun getLikedCounter () : Int?
+    fun getMatchingCounter () : Int?
 
 
 

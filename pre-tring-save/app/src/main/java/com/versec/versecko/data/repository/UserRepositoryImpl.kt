@@ -5,7 +5,7 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.versec.versecko.data.datasource.local.UserLocalDataSource
 import com.versec.versecko.data.datasource.remote.UserRemoteDataSource
 import com.versec.versecko.data.entity.UserEntity
-import com.versec.versecko.util.Results
+import com.versec.versecko.util.Response
 import kotlinx.coroutines.flow.Flow
 
 class UserRepositoryImpl (
@@ -17,31 +17,8 @@ class UserRepositoryImpl (
 
 ) :UserRepository
 {
-
-    /**
-    override suspend fun getAllUser() : MutableList<UserModel>
-    {
-    val userList : List<UserEntity> = localDataSource.getAllUser()
-    var temp = mutableListOf<UserModel>()
-
-
-    for (user in userList)
-    temp.add(userMapper.entityToModel(user))
-
-    return temp
-    }
-
-
-    override suspend fun insertUser(userModel: UserModel) {
-
-    return localDataSource.insertUser(userMapper.modelToEntity(userModel))
-    }**/
     override fun getOwnUser_Local(): Flow<UserEntity> {
         return localDataSource.getOwnUser()
-    }
-
-    override fun getUserList_Local(status: Int): Flow<MutableList<UserEntity>> {
-        return localDataSource.getUserList(status)
     }
 
     override suspend fun insertUser_Local(userEntity: UserEntity) {
@@ -54,13 +31,53 @@ class UserRepositoryImpl (
         localDataSource.updateUriList(uriMap, status)
     }
 
-    override suspend fun checkLocalLoungeCount(status: Int): Int {
-        return localDataSource.checkLoungeCount(status)
+    override fun saveDuplicateUser(uid: String) {
+        localDataSource.saveDuplicateUser(uid)
     }
 
-    override suspend fun getAllUser(): MutableList<UserEntity> {
+    override fun getDuplicateUsers(): MutableList<String>? {
+        return localDataSource.getDuplicateUsers()
+    }
 
-        return localDataSource.getAllUser()
+    override fun setGenderValue(genderValue: String) {
+        localDataSource.setGenderValue(genderValue)
+    }
+
+    override fun setAgeRange(min: Int, max: Int) {
+        localDataSource.setAgeRange(min, max)
+    }
+
+    override fun setDistance(distance: Int) {
+        localDataSource.setDistance(distance)
+    }
+
+    override fun getGenderValue(): String? {
+        return localDataSource.getGenderValue()
+    }
+
+    override fun getAgeRange(): List<Int>? {
+        return localDataSource.getAgeRange()
+    }
+
+    override fun getDistance(): Int? {
+        return localDataSource.getDistance()
+    }
+
+    override fun setCounter(status: Int, count: Int) {
+
+        if (status == 2) {
+            localDataSource.setLikedCounter(count)
+        }else {
+            localDataSource.setMatchingCounter(count)
+        }
+    }
+
+    override fun getCounter(status: Int): Int? {
+        if (status == 2) {
+            return localDataSource.getLikedCounter()
+        }else {
+            return localDataSource.getMatchingCounter()
+        }
     }
 
 
@@ -71,34 +88,30 @@ class UserRepositoryImpl (
         return remoteDataSource.getOwnUser()
     }
 
-    override fun getLoungeUserList_Remote(status: Int): Flow<MutableList<UserEntity>> {
-
-        return remoteDataSource.getLoungeUserList(status)
-
-    }
-
     override suspend fun insertUser_Remote(userEntity: UserEntity) {
 
         remoteDataSource.insertUser(userEntity)
 
     }
 
-    override suspend fun signIn(credential: PhoneAuthCredential): Results<Int> {
+    override suspend fun signIn(credential: PhoneAuthCredential): Response<Int> {
 
         return remoteDataSource.signIn(credential)
     }
 
-    override suspend fun checkNickName(nickName: String): Results<Int> {
+    override suspend fun checkNickName(nickName: String): Response<Int> {
         return remoteDataSource.checkNickName(nickName)
     }
 
     override suspend fun getUsersWithGeoHash(
         latitude: Double,
         longitude: Double,
-        radiusInMeter: Int
-    ): List<UserEntity> {
-
-        return remoteDataSource.getUsersWithGeoHash(latitude, longitude, radiusInMeter)
+        radiusInMeter: Int,
+        gender: String,
+        minAge: Int,
+        maxAge: Int
+    ): Response<MutableList<UserEntity>> {
+        return remoteDataSource.getUsersWithGeoHash(latitude, longitude, radiusInMeter, gender, minAge, maxAge)
     }
 
     override suspend fun uploadImage(uriMap: MutableMap<String, Uri>) {
@@ -106,40 +119,45 @@ class UserRepositoryImpl (
         remoteDataSource.uploadImage(uriMap)
     }
 
-    override fun deleteImages(indexes: MutableList<Int>) {
-        remoteDataSource.deleteImages(indexes)
+    override fun deleteImage(index: Int) {
+        remoteDataSource.deleteImage(index)
     }
 
-    override fun likeUser(otherUserEntity: UserEntity, ownUser: UserEntity) {
-
-        remoteDataSource.likeUser(otherUserEntity, ownUser)
-        localDataSource.saveDuplicateUser(otherUserEntity.uid)
+    override suspend fun reuploadImage(index: Int, uri: Uri) {
+        remoteDataSource.reuploadImage(index, uri)
     }
 
-    override fun skipUser(otherUserEntity: UserEntity, ownUser: UserEntity) {
+    override suspend fun likeUser(otherUser: UserEntity, ownUser: UserEntity): Response<Int> {
 
-        remoteDataSource.skipUser(otherUserEntity, ownUser)
-        localDataSource.saveDuplicateUser(otherUserEntity.uid)
+        localDataSource.saveDuplicateUser(otherUser.uid)
+
+        return remoteDataSource.likeUser(otherUser, ownUser)
     }
 
-    override suspend fun checkLoungeCount(status: Int, localCount: Int): Int {
 
-        return remoteDataSource.checkLoungeCount(status, localCount)
+    override fun skipUser(otherUser: UserEntity) {
+        remoteDataSource.skipUser(otherUser)
     }
 
-    override suspend fun getNewLoungeUser(status: Int, newCount: Int): MutableList<UserEntity> {
+    override fun getLoungeUsers(status: Int): Flow<Response<MutableList<UserEntity>>> {
 
-        return remoteDataSource.getNewLoungeUser(status, newCount)
+        return remoteDataSource.getLoungeUsers(status)
     }
 
-    override fun updateLoungeUser(status: Int): Flow<MutableList<UserEntity>> {
-
-        return remoteDataSource.updateLoungeUser(status)
+    override suspend fun matchUser(otherUser: UserEntity, ownUser: UserEntity): Response<Int> {
+        return remoteDataSource.matchUser(otherUser, ownUser)
     }
 
-    override fun likeBack(otherUser: UserEntity, ownUser: UserEntity) {
+    override suspend fun deleteMatch(otherUid: String): Response<Int> {
+        return remoteDataSource.deleteMatch(otherUid)
+    }
 
-        remoteDataSource.likeBack(otherUser, ownUser)
+    override suspend fun rejectLiked(otherUser: UserEntity): Response<Int> {
+        return remoteDataSource.rejectLiked(otherUser)
+    }
+
+    override suspend fun rejectMatched(otherUser: UserEntity): Response<Int> {
+        return remoteDataSource.rejectMatched(otherUser)
     }
 
 

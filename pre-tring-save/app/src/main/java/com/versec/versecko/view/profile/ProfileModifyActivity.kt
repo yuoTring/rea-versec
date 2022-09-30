@@ -39,12 +39,6 @@ class ProfileModifyActivity : AppCompatActivity() {
     private lateinit var view : View
 
     private lateinit var layoutManager: RecyclerView.LayoutManager
-    private lateinit var imageAdapter: ImageAdapter
-
-    private lateinit var emptyList: MutableList<String>
-    private lateinit var imageList: MutableList<Uri>
-
-    private var onClickImagePosition : Int = 0
 
     private lateinit var adapterResidence : TagAdapter
     private lateinit var adapterTrip : TagAdapter
@@ -87,13 +81,6 @@ class ProfileModifyActivity : AppCompatActivity() {
 
             binding.editSelfIntroduction.setText(userEntity.selfIntroduction)
 
-
-            userEntity.uriMap.forEach { entry ->
-
-                imageList.set(entry.key.toInt(),Uri.parse(entry.value) )
-                emptyList.set(entry.key.toInt(), "old_image")
-
-            }
 
 
         })

@@ -46,6 +46,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tabLayout"
             />
+        
+        <androidx.core.widget.ContentLoadingProgressBar
+            android:id="@+id/progressBarLounge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?android:attr/progressBarStyleSmall"
+            app:layout_constraintTop_toTopOf="@id/recyclerLikeList"
+            app:layout_constraintBottom_toBottomOf="@id/recyclerLikeList"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="invisible"
+            />
 
         <TextView
             android:id="@+id/text000"
@@ -65,6 +77,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/text000"
+            />
+
+        <androidx.core.widget.ContentLoadingProgressBar
+            android:id="@+id/progressBarChatRoom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?android:attr/progressBarStyle"
+            app:layout_constraintTop_toTopOf="@id/recyclerChatRoomList"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="invisible"
             />
 
         <androidx.appcompat.widget.AppCompatButton

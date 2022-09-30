@@ -66,7 +66,7 @@ class FillUserImageActivity : AppCompatActivity()
 
         val resourceId = resources.getIdentifier("button_add","drawable", packageName)
 
-        imageAdapter = ImageAdapter(imageList, resourceId) { item, position ->
+        imageAdapter = ImageAdapter(imageList, resourceId, false) { item, position ->
 
             // add a new image
             if (imageList.get(position).toString().equals("---")) {

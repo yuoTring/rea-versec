@@ -16,4 +16,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+
+    <TextView
+        android:id="@+id/textSlotIndex"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="SLOT 1"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        app:layout_constraintTop_toTopOf="@id/buttonAddImage"
+        app:layout_constraintStart_toStartOf="@id/buttonAddImage"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

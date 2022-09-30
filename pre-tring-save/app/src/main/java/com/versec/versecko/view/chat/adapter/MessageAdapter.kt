@@ -122,7 +122,7 @@ class MessageAdapter (
 
 
 
-            if (message.readOtNot)
+            if (message.readed)
                 viewHolder.binding.viewReadOrNot.visibility = View.INVISIBLE
             else
                 viewHolder.binding.viewReadOrNot.visibility = View.VISIBLE
@@ -132,6 +132,8 @@ class MessageAdapter (
         else {
 
             val viewHolder = holder as OtherViewHolder
+
+            viewHolder.binding.textMessage.setText(message.contents)
 
             // first message
             if (position == 0 ) {

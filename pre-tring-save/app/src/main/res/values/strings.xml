@@ -13,46 +13,53 @@
     </string-array>
 
 
-    <string-array name="style_main">
-        <item>Style1</item>
-        <item>Style2</item>
-        <item>Style3</item>
-        <item>Style4</item>
-    </string-array>
-
-    <string-array name="Style1">
-        <item>s1_test000</item>
-        <item>s1_test001</item>
-        <item>s1_test002</item>
-        <item>s1_test003</item>
-
-    </string-array>
-
-    <string-array name="Style2">
-        <item>s2_test000</item>
-        <item>s2_test001</item>
-        <item>s2_test002</item>
-        <item>s2_test003</item>
-    </string-array>
-
-    <string-array name="Style3">
-        <item>s3_test000</item>
-        <item>s3_test001</item>
-        <item>s3_test002</item>
-        <item>s3_test003</item>
-    </string-array>
-
-    <string-array name="Style4">
-        <item>s4_test000</item>
-        <item>s4_test001</item>
-        <item>s4_test002</item>
-        <item>s4_test003</item>
+    <string-array name="style">
+        <item>000</item>
+        <item>001</item>
+        <item>002</item>
+        <item>000</item>
+        <item>001</item>
+        <item>002</item>
+        <item>000</item>
+        <item>001</item>
+        <item>002</item>
+        <item>000</item>
+        <item>001</item>
+        <item>002</item>
     </string-array>
 
 
     <string-array name="lounge_status">
         <item>받은 좋아요</item>
         <item>매칭</item>
+    </string-array>
+
+    <string-array name="profile_edit">
+        <item>edit info</item>
+        <item>edit image</item>
+    </string-array>
+
+    <array name="slider_age">
+        <item>20</item>
+        <item>80</item>
+    </array>
+
+    <string-array name="banner_title">
+        <item>title0</item>
+        <item>title1</item>
+        <item>title2</item>
+    </string-array>
+
+    <string-array name="banner_image">
+        <item>banner_style_0</item>
+        <item>banner_style_1</item>
+        <item>banner_style_2</item>
+    </string-array>
+
+    <string-array name="banner_content">
+        <item>content000</item>
+        <item>content002</item>
+        <item>content001</item>
     </string-array>
 
 </resources>

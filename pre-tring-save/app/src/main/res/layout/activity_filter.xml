@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".FilterActivity">
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonBack"
+        android:layout_width="40dp"
+        android:layout_height="48dp"
+        android:background="@drawable/button_back"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/text000"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center"
+        android:background="@color/white_cotton"
+        android:text="매칭 필터"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+
+    <TextView
+        android:id="@+id/text001"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:layout_marginTop="16dp"
+        android:paddingLeft="16dp"
+        android:gravity="center_vertical|start"
+        android:text="성별"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/text000"/>
+
+    <LinearLayout
+        android:id="@+id/containerGenderButton"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:weightSum="10"
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/text001">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonGenderMale"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="2.5"
+            android:background="@drawable/button_corner_12_superlightgray"
+            android:text="남자"
+            android:textColor="@color/gray"
+            android:textSize="14sp"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonGenderFemale"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="2.5"
+            android:background="@drawable/button_corner_12_superlightgray"
+            android:text="여자"
+            android:textColor="@color/gray"
+            android:textSize="14sp"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonGenderBoth"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="2.5"
+            android:background="@drawable/button_corner_12_superlightgray"
+            android:text="남녀 무관"
+            android:textColor="@color/gray"
+            android:textSize="14sp"/>
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/text002"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:layout_marginTop="64dp"
+        android:paddingLeft="16dp"
+        android:gravity="center_vertical|start"
+        android:text="나이"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/containerGenderButton"/>
+
+
+    <com.google.android.material.slider.RangeSlider
+        android:id="@+id/sliderAge"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:theme="@style/Theme.MaterialComponents"
+        style="@style/slider_age"
+        android:valueFrom="20"
+        android:valueTo="80"
+        app:values="@array/slider_age"
+        android:stepSize="1"
+        app:layout_constraintTop_toBottomOf="@id/text002"/>
+
+    <TextView
+        android:id="@+id/textAgeRange"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:gravity="center"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:background="@drawable/button_corner_16_charcoal"
+        android:text="20살 - 56살"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@id/sliderAge"
+        app:layout_constraintEnd_toEndOf="@id/sliderAge"/>
+
+    <TextView
+        android:id="@+id/text003"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:layout_marginTop="64dp"
+        android:paddingLeft="16dp"
+        android:gravity="center_vertical|start"
+        android:text="거리"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/sliderAge"/>
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/sliderDistance"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:theme="@style/Theme.MaterialComponents"
+        style="@style/slider_distance"
+        android:valueFrom="1"
+        android:valueTo="100"
+        android:value="20"
+        android:stepSize="1"
+        app:layout_constraintTop_toBottomOf="@id/text003"
+        />
+
+    <TextView
+        android:id="@+id/textDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:gravity="center"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:background="@drawable/button_corner_16_charcoal"
+        android:text="20km 이내"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@id/sliderDistance"
+        app:layout_constraintEnd_toEndOf="@id/sliderDistance"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonSet"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/charcoal"
+        android:text="완료"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

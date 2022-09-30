@@ -1,11 +1,11 @@
 package com.versec.versecko.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
+import android.util.Log
+import androidx.lifecycle.*
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.data.repository.UserRepository
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainViewModel(
 
@@ -18,4 +18,19 @@ class MainViewModel(
     val userLocal : LiveData<UserEntity> get() = _userLocal
 
 
+    /**
+    private val _genderFilter = MutableLiveData<String> ()
+
+    fun setGender (gender : String) {
+        _setGender(gender)
+    }
+
+    private fun _setGender (gender: String) {
+
+        viewModelScope.launch {
+
+            delay(500)
+            _genderFilter.value = gender
+        }
+    } **/
 }

@@ -13,6 +13,19 @@
         android:layout_height="match_parent"
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
+        <androidx.core.widget.ContentLoadingProgressBar
+            android:id="@+id/progressBarUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?android:attr/progressBarStyle"
+            android:elevation="2dp"
+            android:visibility="invisible"
+            app:layout_constraintTop_toTopOf="@id/cardUserList"
+            app:layout_constraintBottom_toBottomOf="@id/cardUserList"
+            app:layout_constraintStart_toStartOf="@id/cardUserList"
+            app:layout_constraintEnd_toEndOf="@id/cardUserList"/>
+
+
         <com.yuyakaido.android.cardstackview.CardStackView
             android:id="@+id/cardUserList"
             android:layout_width="match_parent"
@@ -22,10 +35,8 @@
             android:layout_marginRight="12dp"
             android:layout_marginBottom="8dp"
             android:background="@color/white_cotton"
-            app:cardUseCompatPadding="true"
-            app:cardPreventCornerOverlap="false"
-            app:cardCornerRadius="16dp"
             app:cardBackgroundColor="@color/blue"
+            android:clipToPadding="false"
             app:layout_constraintTop_toTopOf="parent"/>
 
 

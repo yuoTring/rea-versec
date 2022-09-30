@@ -51,21 +51,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"
             app:layout_constrainedHeight="true"
             app:layout_constraintTop_toBottomOf="@+id/text000"
-            app:layout_constraintBottom_toTopOf="@+id/textIndicator"/>
+            app:layout_constraintBottom_toTopOf="@+id/view000"/>
 
-        <TextView
-            android:id="@+id/textIndicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@id/view000"
-            app:layout_constraintStart_toStartOf="parent"/>
 
         <View
             android:id="@+id/view000"
@@ -94,6 +85,7 @@
                 tools:ignore="Autofill"
                 android:hint="Enter Message"
                 android:textColorHint="@color/white"
+                android:textColor="@color/black"
                 android:layout_toStartOf="@id/buttonSend"
                 />
 
@@ -107,6 +99,7 @@
                 android:text="SEND"
                 android:textColor="@color/white"
                 android:textSize="12sp"
+                android:visibility="gone"
                 android:layout_alignParentEnd="true"/>
 
         </RelativeLayout>

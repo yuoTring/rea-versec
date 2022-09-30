@@ -21,11 +21,15 @@ import com.versec.versecko.data.room.UserEntityDAO
 import com.versec.versecko.viewmodel.*
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val sharedPreferenceModule = module {
 
-    single { androidApplication().getSharedPreferences("duplicateUsers", 0) }
+    single(named("users")) { androidApplication().getSharedPreferences("duplicateUsers", 0) }
+    single(named("filter")) { androidApplication().getSharedPreferences("filter",0) }
+
+    single(named("lounge")) { androidApplication().getSharedPreferences("lounge",0) }
 
 }
 
@@ -61,7 +65,8 @@ val chatDataSourceModule = module {
 
 val repositoryModule = module {
 
-    single<UserLocalDataSource> { UserLocalDataSourceImpl(get(), get()) }
+    single<UserLocalDataSource>
+    { UserLocalDataSourceImpl(get(), get(named("users")), get(named("filter")), get(named("lounge"))) }
     single<UserRemoteDataSource> { UserRemoteDataSourceImpl(get(), get(), get()) }
     single<ChatDataSource> { ChatDataSourceImpl(get(),get()) }
     single<UserRepository> { UserRepositoryImpl(get(), get()) }
@@ -87,9 +92,10 @@ val userViewModelModule = module {
     viewModel { FillUserImageViewModel(get()) }
     viewModel { MatchingViewModel(get()) }
     viewModel { MainViewModel(get()) }
+    viewModel { FilterViewModel(get()) }
 
     viewModel { ChatViewModel(get(),get()) }
-    viewModel { DetailProfileViewModel(get()) }
+    viewModel { DetailProfileViewModel(get(),get()) }
     viewModel { RoomViewModel(get()) }
 
 }

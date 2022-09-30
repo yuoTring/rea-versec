@@ -18,7 +18,7 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.versec.versecko.R
-import com.versec.versecko.util.Results
+import com.versec.versecko.util.Response
 import com.versec.versecko.view.SplashActivity
 import com.versec.versecko.viewmodel.SignInViewModel
 import org.koin.android.ext.android.inject
@@ -170,18 +170,18 @@ class SignInActivity
             signInViewModel.signIn(credential).observe(this, Observer {
                 signInResult ->
 
-                if (signInResult.equals(Results.Exist(2))) {
+                if (signInResult.equals(Response.Exist(2))) {
                     Log.d("sms-test", signInResult.toString())
 
                     startActivity(Intent(this, SplashActivity::class.java))
 
                 }
-                else if (signInResult.equals(Results.No(3))) {
+                else if (signInResult.equals(Response.No(3))) {
                     Log.d("sms-test", signInResult.toString())
 
                     startActivity(Intent(this, FillUserInfoActivity::class.java).putExtra("phoneNumber", phoneNumber))
                 }
-                else if (signInResult.equals(Results.Success(1))) {
+                else if (signInResult.equals(Response.Success(1))) {
                     Log.d("sms-test", signInResult.toString())
 
                 }

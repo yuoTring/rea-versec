@@ -1,6 +1,7 @@
 package com.versec.versecko.view.chat.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -50,6 +51,15 @@ class ChatRoomAdapter (
 
         holder.binding.textNickName.setText(member.nickName)
         holder.binding.textMessageSumnail.setText(room.lastMessageSent)
+
+        if (room.unreadMessageCounter > 0) {
+
+            holder.binding.textUnreadMessageCounter.visibility = View.VISIBLE
+            holder.binding.textUnreadMessageCounter.setText(room.unreadMessageCounter.toString())
+        }
+        else {
+            holder.binding.textUnreadMessageCounter.visibility = View.INVISIBLE
+        }
 
         Glide
             .with(holder.binding.root)

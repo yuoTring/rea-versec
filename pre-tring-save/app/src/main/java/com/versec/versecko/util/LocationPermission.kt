@@ -33,8 +33,8 @@ class LocationPermission {
                     permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
 
                         fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
-                            AppContext.latitude = location.latitude
-                            AppContext.longitude = location.longitude
+                            AppContext.latitude = Math.abs(location.latitude)
+                            AppContext.longitude = Math.abs(location.longitude)
                         }
                     }
                     permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
@@ -74,8 +74,8 @@ class LocationPermission {
                         location ->
 
                             //Toast.makeText(activity, "location: "+ location.toString(), Toast.LENGTH_SHORT).show()
-                            AppContext.latitude = location.latitude
-                            AppContext.longitude = location.longitude
+                            AppContext.latitude = Math.abs(location.latitude)
+                            AppContext.longitude = Math.abs(location.longitude)
 
 
 

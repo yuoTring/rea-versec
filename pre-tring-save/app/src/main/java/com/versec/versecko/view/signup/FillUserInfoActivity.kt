@@ -4,12 +4,9 @@ import android.content.Intent
 import com.versec.versecko.R
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,8 +15,10 @@ import com.firebase.geofire.GeoLocation
 import com.versec.versecko.AppContext
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.databinding.ActivityFillUserInfoBinding
-import com.versec.versecko.util.Results
+import com.versec.versecko.util.Response
 import com.versec.versecko.view.ChoosePlaceActivity
+import com.versec.versecko.view.ChooseStyleActivity
+import com.versec.versecko.view.signup.adapter.StyleAdapter
 import com.versec.versecko.view.signup.adapter.TagAdapter
 import com.versec.versecko.viewmodel.FillUserInfoViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -52,7 +51,8 @@ class FillUserInfoActivity : AppCompatActivity()
     companion object {
 
         const val RESIDENCE = 1
-        const val TRIP =2
+        const val TRIP = 2
+        const val STYLE = 3
 
     }
 
@@ -176,7 +176,7 @@ class FillUserInfoActivity : AppCompatActivity()
             viewModel.checkNickName(binding.editNickName.text.toString()).observe(this, androidx.lifecycle.Observer {
                 result ->
 
-                if (result.equals(Results.Exist(1))) {
+                if (result.equals(Response.Exist(1))) {
 
                     binding.textCheckNickNameOverlap.setText("can not")
                     binding.textCheckNickNameOverlap.setTextColor(ContextCompat.getColor(this, R.color.red))
@@ -192,21 +192,29 @@ class FillUserInfoActivity : AppCompatActivity()
             })
         }
 
+        adapterStyle = TagAdapter(styleList) { style ->
+
+            if (style.equals("+"))
+                startActivityForResult(Intent(this, ChooseStyleActivity::class.java).putExtra("requestCode", STYLE), STYLE)
+            else {
+                styleList.remove(style)
+                adapterStyle.updateTagList(styleList)
+                adapterStyle.notifyDataSetChanged()
+            }
+        }
+
+        binding.recyclerChosenStyle.layoutManager = layoutManagerStyle
+        binding.recyclerChosenStyle.adapter = adapterStyle
+
 
         binding.buttonToNext.setOnClickListener {
-
-            //user.nickName = binding.editNickName.text.toString()
-            //user.birth = binding.editBirth.text.toString()
-
-            //if (user.nickName != null && user.gender != null)
-            styleList.addAll(mutableListOf("!!!","???"))
 
 
             if (checkNickname && checkBirth && checkGender && residenceList.size>1 && tripList.size>1 && styleList.size>1) {
 
-                /**
-                 *
-                 */
+                user.nickName = binding.editNickName.text.toString()
+                user.birth = binding.editBirth.text.toString()
+
                 user.age = Calendar.YEAR - user.birth.substring(0,4).toInt()
                 user.mainResidence = residenceList.get(1)
                 user.tripWish.addAll(tripList.subList(1, tripList.size))
@@ -278,7 +286,13 @@ class FillUserInfoActivity : AppCompatActivity()
         else if (requestCode == TRIP && data == null) {
 
         }
-        else {
+        else if (requestCode == STYLE && data != null) {
+
+            styleList.clear()
+            styleList.add("+")
+            styleList.addAll(data.getStringArrayListExtra("style")!!)
+            adapterStyle.updateTagList(styleList)
+            adapterStyle.notifyDataSetChanged()
 
         }
 

@@ -12,5 +12,17 @@ data class MessageEntity(
 
     var date : String = "10",
     var time : String ="15:15",
-    var readOtNot : Boolean = false
-)
+    var readed : Boolean = false
+) {
+
+    override fun equals(other: Any?): Boolean {
+
+        val other = other as MessageEntity
+        if (messageUid.equals(other.messageUid))
+            return true
+        else
+            return false
+    }
+}
+
+

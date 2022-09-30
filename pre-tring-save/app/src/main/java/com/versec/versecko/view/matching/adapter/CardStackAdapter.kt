@@ -20,14 +20,20 @@ import com.versec.versecko.view.matching.UserProfileActivity
 
 class CardStackAdapter (
 
-    private val activity : Activity,
-    private var userList: List<UserEntity>
+    private var userList: List<UserEntity>,
+    private val onImageClick: (String?) -> Unit
 
 ) : RecyclerView.Adapter<CardStackAdapter.ViewHolder>() {
 
 
     inner class ViewHolder (val binding: ItemCardstackUserBinding) :
-        RecyclerView.ViewHolder(binding.root) {}
+        RecyclerView.ViewHolder(binding.root) {
+
+            fun bind (text : String?, onImageClick: (String?) -> Unit ) {
+
+                onImageClick(text)
+            }
+        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
@@ -54,6 +60,7 @@ class CardStackAdapter (
             tempUriList.add(entry.key.toInt(), entry.value)
         }
 
+        tempUriList.removeAll(listOf("null"))
 
         val cardViewPagerAdapter = CardViewPagerAdapter(tempUriList) {
 
@@ -73,13 +80,7 @@ class CardStackAdapter (
 
             }
             else {
-
-                var intent = Intent(activity, UserProfileActivity::class.java)
-                intent.putExtra("user", user)
-                activity.startActivity(intent)
-
-                Log.d("user-get", user.toString())
-
+                    onImageClick(it)
             }
 
         }
@@ -128,7 +129,7 @@ class CardStackAdapter (
 
         inner class ViewPagerViewHolder (val binding : ItemCardstackViewpagerBinding) : RecyclerView.ViewHolder(binding.root) {
 
-            fun bind (temp : String?, onImageClick: (String?) -> Unit) {
+            fun bind (onImageClick: (String?) -> Unit) {
 
                 binding.toLeft.setOnClickListener {
 
@@ -158,18 +159,25 @@ class CardStackAdapter (
 
         override fun onBindViewHolder(holder: ViewPagerViewHolder, position: Int) {
 
-            holder.bind(uriList.get(position), onImageClick)
+            holder.bind(onImageClick)
 
             val corner = 16
 
-            Glide
-                .with(holder.binding.root)
-                .load(Uri.parse(uriList.get(position)))
-                .apply(RequestOptions.bitmapTransform(RoundedCorners(corner)))
-                .into(holder.binding.imageProfileImage)
+
+            if (!uriList.get(position).equals("null")) {
+
+                Log.d("uri-check", uriList.get(position))
+                Glide
+                    .with(holder.binding.root)
+                    .load(Uri.parse(uriList.get(position)))
+                    .apply(RequestOptions.bitmapTransform(RoundedCorners(corner)))
+                    .into(holder.binding.imageProfileImage)
+            }
+
         }
 
         override fun getItemCount(): Int {
+
             return uriList.size
         }
 

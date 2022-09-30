@@ -4,9 +4,7 @@ import androidx.lifecycle.*
 import com.versec.versecko.data.entity.ChatRoomEntity
 import com.versec.versecko.data.entity.MessageEntity
 import com.versec.versecko.data.repository.ChatRepository
-import com.versec.versecko.util.SingleLiveData
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
+import com.versec.versecko.util.Response
 
 class RoomViewModel (
 
@@ -15,41 +13,28 @@ class RoomViewModel (
         ) : ViewModel() {
 
 
-
-            fun getAllMessage (roomUid : String) : LiveData<MutableList<MessageEntity>> {
-
-
-                val _messageList = MutableLiveData<MutableList<MessageEntity>>()
-
-                viewModelScope.launch {
-
-                    _messageList.postValue(repository.getAllMessages(roomUid))
-                }
+            fun getMessages (roomUid : String) = repository.getMessages(roomUid).asLiveData()
 
 
-                return _messageList
+            private suspend fun _sendMessage (content : String, room : ChatRoomEntity) : Response<Int> {
+                return repository.sendMessage(content, room)
             }
 
-
-            fun sendMessage(contents : String, room : ChatRoomEntity ) {
-
-                repository.sendMessage(contents, room)
-
+            suspend fun sendMessage (content: String, room: ChatRoomEntity) : Response<Int> {
+                return _sendMessage(content, room)
             }
 
+            private suspend fun _resetUnreadMessageCounter (chatRoomUid : String) : Response<Int>
+                = repository.resetUnreadMessageCounter(chatRoomUid)
 
-        fun set (roomUid: String) : LiveData<MessageEntity> {
+            suspend fun resetUnreadMessageCounter (chatRoomUid: String) : Response<Int>
+                = _resetUnreadMessageCounter(chatRoomUid)
 
+            private suspend fun _resetReadOrNot (message : MessageEntity) : Response<Int>
+                = repository.resetReadOrNot(message)
 
-            val temp : LiveData<MessageEntity> = repository.getUpdatedMessage(roomUid).asLiveData()
-
-            val up : SingleLiveData<MessageEntity> = temp as SingleLiveData<MessageEntity>
-
-            return up
-        }
-
-
-
+            suspend fun resetReadOrNot (message: MessageEntity) : Response<Int>
+                = _resetReadOrNot(message)
 
 
 

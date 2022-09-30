@@ -1,17 +1,16 @@
 package com.versec.versecko.view.profile
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import com.google.android.material.tabs.TabLayoutMediator
 import com.versec.versecko.R
-import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.databinding.FragmentProfileBinding
 import com.versec.versecko.view.profile.adapter.ViewPagerAdapter
 import com.versec.versecko.viewmodel.ProfileViewModel
@@ -64,50 +63,21 @@ class ProfileFragment : Fragment() {
 
         }.attach()
 
-
-
-        /**
-        val observer_local = Observer<UserEntity> { updatedUser ->
-
-            uriList.removeAll(uriList)
-
-            profileViewModel.userEntity= updatedUser
-            //binding.textResidence.setText(updatedUser.mainResidence)
-            //binding.textMannerScore.setText("매너 점수: "+updatedUser.mannerScore.toString())
-            //binding.textNickAndAge.setText(updatedUser.nickName+", "+updatedUser.age)
-            Log.d("profile-user", "local: "+updatedUser.toString())
-            //binding.textNickAndAge.setText(updatedUser.nickName+", " +updatedUser.age)
-
-            updatedUser.uriMap.forEach { entry ->
-
-                //uriList.set(entry.key.toInt(), entry.value)
-                uriList.add(entry.key.toInt(), entry.value)
-            }
-
-            adapter.updateImages(uriList)
-            adapter.notifyDataSetChanged()
-        //binding.viewpagerProfileImage.adapter.notifyDataSetChanged()
-
-        }
-
-        //profileViewModel._userLcoal.observe(viewLifecycleOwner, observer_local)
-
-        profileViewModel._userLocal.observe(viewLifecycleOwner, observer_local)
-
-        val observer_remote = Observer<UserEntity> { updatedUser ->
-
-            profileViewModel.userEntity = updatedUser
-            Log.d("profile-user", "remote: "+updatedUser.toString())
-
-            profileViewModel.insertUser_Local(updatedUser)
-
-        }
-
-        profileViewModel._userRemote.observe(viewLifecycleOwner, observer_remote) **/
-
-
         binding.buttonEditProfile.setOnClickListener {
-            startActivity(Intent(activity, ProfileModifyActivity::class.java))
+
+            val builder = AlertDialog.Builder(requireActivity())
+
+            builder.setItems(R.array.profile_edit, DialogInterface.OnClickListener { dialogInterface, index ->
+
+                when(index) {
+                    0 -> startActivity(Intent(requireActivity(), ProfileModifyActivity::class.java))
+                    1 -> startActivity(Intent(requireActivity(), ImageModifyActivity::class.java))
+                }
+
+            })
+
+            builder.create().show()
+
         }
 
 

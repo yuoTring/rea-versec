@@ -13,13 +13,12 @@ import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.storage.FirebaseStorage
 import com.versec.versecko.AppContext
 import com.versec.versecko.data.entity.UserEntity
-import com.versec.versecko.util.Results
+import com.versec.versecko.util.Response
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
-import java.io.File
 
 class UserRemoteDataSourceImpl (
 
@@ -29,10 +28,14 @@ class UserRemoteDataSourceImpl (
 
 ) : UserRemoteDataSource {
 
+    companion object {
+        val SUCCESS = 1
+    }
+
     override fun getOwnUser(): Flow<UserEntity> = callbackFlow{
 
         val document = fireStore.collection("database/user/userList/")
-            .document("test!!!!!")
+            .document(AppContext.uid)
 
         val subscription = document.addSnapshotListener { snapshot,_ ->
 
@@ -50,12 +53,10 @@ class UserRemoteDataSourceImpl (
 
     }
 
-    override fun getLoungeUserList(status: Int): Flow<MutableList<UserEntity>> {
-        TODO("Not yet implemented")
-    }
-
 
     override suspend fun insertUser(userEntity: UserEntity) {
+
+        Log.d("user-get", userEntity.uid)
 
         fireStore.collection("database/user/userList/")
             .document(userEntity.uid)
@@ -64,10 +65,10 @@ class UserRemoteDataSourceImpl (
         //.set(userEntity)
     }
 
-    override suspend fun signIn(credential: PhoneAuthCredential): Results<Int> {
+    override suspend fun signIn(credential: PhoneAuthCredential): Response<Int> {
 
 
-        lateinit var signInResult : Results<Int>
+        lateinit var signInResult : Response<Int>
 
         //1. sign in with phone number and sms code
         auth.signInWithCredential(credential)
@@ -81,7 +82,8 @@ class UserRemoteDataSourceImpl (
                 }
                 else {
 
-                    signInResult = Results.Error(task.exception)
+                    signInResult = Response.Error(task.exception?.message.toString())
+
                 }
             }.await()
 
@@ -95,13 +97,13 @@ class UserRemoteDataSourceImpl (
                     if (document.isSuccessful) {
 
                         if (document.getResult().exists()) {
-                            signInResult = Results.Exist(2)
+                            signInResult = Response.Exist(2)
                         } else {
-                            signInResult = Results.No(3)
+                            signInResult = Response.No(3)
                         }
                     } else {
 
-                        signInResult = Results.Error(document.exception)
+                        signInResult = Response.Error(document.exception?.message.toString())
 
                     }
                 }.await()
@@ -113,10 +115,10 @@ class UserRemoteDataSourceImpl (
 
 
 
-    override suspend fun checkNickName(nickName: String): Results<Int> {
+    override suspend fun checkNickName(nickName: String): Response<Int> {
 
 
-        lateinit var result : Results<Int>
+        lateinit var result : Response<Int>
 
         fireStore.collection("database")
             .document("user")
@@ -129,9 +131,9 @@ class UserRemoteDataSourceImpl (
                     val list = document.result.data?.get("nickNameList") as List<String>
 
                     if (list.contains(nickName))
-                        result = Results.Exist(1)
+                        result = Response.Exist(1)
                     else
-                        result = Results.No(0)
+                        result = Response.No(0)
 
                     //document.getResult().get("nickNameList")
                 }
@@ -146,154 +148,153 @@ class UserRemoteDataSourceImpl (
     override suspend fun getUsersWithGeoHash(
         latitude: Double,
         longitude: Double,
-        radiusInMeter: Int
-    ): List<UserEntity> {
+        radiusInMeter: Int,
+        gender: String,
+        minAge: Int,
+        maxAge: Int
+    ): Response<MutableList<UserEntity>> {
 
-        val center = GeoLocation(latitude, longitude)
 
-        val bounds = GeoFireUtils.getGeoHashQueryBounds(center, radiusInMeter.toDouble())
 
-        val tasks : MutableList<Task<QuerySnapshot>> = mutableListOf()
+        try {
 
-        val boundSize : Int = bounds.size
+            val center = GeoLocation(latitude, longitude)
 
-        var docs = mutableListOf<DocumentSnapshot>()
-        var userList = mutableListOf<UserEntity>()
+            val bounds = GeoFireUtils.getGeoHashQueryBounds(center, radiusInMeter.toDouble())
 
-        bounds.forEach {
+            val tasks : MutableList<Task<QuerySnapshot>> = mutableListOf()
 
-                geoQueryBounds ->
 
-            val query = fireStore.collection("database/user/userList")
-                .orderBy("geohash")
-                .startAt(geoQueryBounds.startHash)
-                .endAt(geoQueryBounds.endHash)
+            var docs = mutableListOf<DocumentSnapshot>()
+            var userList = mutableListOf<UserEntity>()
 
-            tasks.add(query.get())
-        }
+            bounds.forEach {
 
-        val tasksResult = Tasks.whenAllComplete(tasks).await()
+                    geoQueryBounds ->
 
-        tasksResult.forEach { task ->
+                val query = fireStore.collection("database/user/userList")
+                    .orderBy("geohash")
+                    .startAt(geoQueryBounds.startHash)
+                    .endAt(geoQueryBounds.endHash)
 
-            val snapshot = task.result as QuerySnapshot
+                if (!gender.equals("both")) {
+                  query.whereEqualTo("gender", gender)
+                }
 
-            snapshot.documents.forEach {
-
-                docs.add(it)
-
+                tasks.add(query.get())
             }
-        }
 
-        docs.forEach { documentSnapshot ->
+            val tasksResult = Tasks.whenAllComplete(tasks).await()
 
-            documentSnapshot.toObject(UserEntity::class.java)?.let { userList.add(it) }
+            tasksResult.forEach { task ->
 
-        }
+                val snapshot = task.result as QuerySnapshot
 
-        fireStore.collection("database/user/userList/")
+                snapshot.documents.forEach {
+                    docs.add(it)
+                }
+            }
+
+            docs.forEach { documentSnapshot ->
+
+                val user = documentSnapshot.toObject(UserEntity::class.java)!!
+
+                if (user.age>=minAge && user.age<maxAge) {
+                    userList.add(user)
+                }
+            }
+
+
+            /**
+            fireStore.collection("database/user/userList/")
             .document("testestestuiduiduid_____")
             .get()
             .addOnCompleteListener {
 
-                userList.add(0, it.result.toObject(UserEntity::class.java)!!)
-            }.await()
-
-        return userList
-    }
+            userList.add(0, it.result.toObject(UserEntity::class.java)!!)
+            }.await() **/
 
 
-    override fun getUsers(
-        latitude: Double,
-        longitude: Double,
-        radiusInMeter: Int
+            val user = fireStore.collection("database/user/userList/")
+                .document("test!!!!!")
+                .get()
+                .await()
+                .toObject(UserEntity::class.java)
 
-    ): Flow<MutableList<DocumentSnapshot>> = flow {
+            userList.add(user!!)
 
-
-        val center = GeoLocation(latitude, longitude)
-
-        val bounds = GeoFireUtils.getGeoHashQueryBounds(center, radiusInMeter.toDouble())
-
-        val tasks : MutableList<Task<QuerySnapshot>> = mutableListOf()
-
-        val boundSize : Int = bounds.size
-
-        var docs = mutableListOf<DocumentSnapshot>()
-        var userList = mutableListOf<UserEntity>()
-
-        bounds.forEach {
-
-                geoQueryBounds ->
-
-            val query = fireStore.collection("database/user/userList")
-                .orderBy("geohash")
-                .startAt(geoQueryBounds.startHash)
-                .endAt(geoQueryBounds.endHash)
-
-            tasks.add(query.get())
-        }
+            return Response.Success(userList)
 
 
-        val result = Tasks.whenAllComplete(tasks).await()
-
-        result.forEach { task ->
-
-            val snapshot = task.result as QuerySnapshot
-
-            snapshot.documents
-
+        } catch (exception : Exception) {
+            return Response.Error(exception.message.toString())
         }
 
     }
 
+    override suspend fun getUsersWithCondition(conditions: List<String>): Response<MutableList<UserEntity>> {
 
-    override fun likeUser(other: UserEntity, ownUser: UserEntity) {
-
-        val uid = "test!!!!!"
-        //ownUser.uid
+        try {
 
 
 
-        ownUser.loungeStatus = 2 // liked -> because ownUser send a 'like' to other
-        other.loungeStatus = 1 // like
+        } catch (exception : Exception) {
 
-        // own - history - like list
-        fireStore.collection("database/user/userList/"+uid+"/lounge/loungeHistory/likeUserList")
-            .document(other.uid)
-            .set(other)
+        }
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun likeUser(otherUser: UserEntity, ownUser: UserEntity): Response<Int> {
+
+        val uid = AppContext.uid
+
+        ownUser.loungeStatus = 2
+        otherUser.loungeStatus =1
+
+        Log.d("like-check", "other: "+ otherUser.uid)
+        Log.d("like-check", "own: "+ ownUser.uid)
 
 
-        // other - history - liked list
-        fireStore.collection("database/user/userList/"+other.uid+"/lounge/loungeHistory/likedUserList")
-            .document(uid)
+
+        try {
+            fireStore.collection("database/user/userList/"+otherUser.uid+"/lounge/loungeInformation/likedUserList")
+                .document(uid)
+                .set(ownUser)
+                .await()
+
+                likeHistory(otherUser, ownUser)
+            return Response.Success(SUCCESS)
+        }
+        catch (exception : Exception) {
+            return Response.Error(exception.message.toString())
+        }
+    }
+
+    private fun likeHistory(otherUser: UserEntity, ownUser: UserEntity) {
+
+        fireStore.collection("database/user/userList/"+AppContext.uid+"/lounge/loungeHistory/likeUserList")
+            .document(otherUser.uid)
+            .set(otherUser)
+
+        fireStore.collection("database/user/userList/"+otherUser.uid+"/lounge/loungeHistory/likedUserList")
+            .document(AppContext.uid)
             .set(ownUser)
+    }
 
+    override fun skipUser(otherUser: UserEntity) {
 
-        // other - real time - liked list
-        fireStore.collection("database/user/userList/"+other.uid+"/lounge/loungeInformation/likedUserList")
-            .document(uid)
-            .set(ownUser)
+        try {
 
+            fireStore.collection("database/user/userList/"+AppContext.uid+"/lounge/loungeHistory/skipUserList")
+                .document(otherUser.uid)
+                .set(otherUser)
+        }
+        catch (exception : Exception) {
 
-        // other - real time - liked counter
-        val doc : DocumentReference =
-        fireStore.collection("database/user/userList/"+other.uid+"/lounge")
-            .document("loungeInformation")
-
-        doc.update("likedCounter", FieldValue.increment(1.0))
-
+        }
 
     }
 
-    override fun skipUser(otherUserEntity: UserEntity, ownUser: UserEntity) {
-
-        val uid = "test!!!!!"
-
-        fireStore.collection("database/user/userList/"+uid+"lounge/loungeHistory/skipList")
-            .document(otherUserEntity.uid)
-            .set(otherUserEntity)
-    }
 
     override suspend fun uploadImage (uriMap: MutableMap<String, Uri>)
     {
@@ -309,6 +310,8 @@ class UserRemoteDataSourceImpl (
 
             val ref =
                 storage.reference.child("image/profileImages/"+"test!!!!!"+"/"+"test!!!!!"+"_"+entry.key)
+
+
 
             var uploadTask = ref.putFile(entry.value)
 
@@ -327,12 +330,13 @@ class UserRemoteDataSourceImpl (
 
                     uploadMap.put(entry.key, it.toString())
 
-                    Log.d("uri-???", "key: "+ entry.key + "-----"+ it.toString())
 
                 }.addOnFailureListener {
 
                 }.await()
         }
+
+        for (index in uriMap.size .. 5) { uploadMap.put(index.toString(), "null") }
 
 
         fireStore.collection("database/user/userList")
@@ -349,157 +353,230 @@ class UserRemoteDataSourceImpl (
 
     }
 
-    override fun deleteImages(indexes: MutableList<Int>) {
+    override fun deleteImage(index: Int) {
 
         val uid = AppContext.uid
 
-        indexes.forEach {
+        storage.reference.child("image/profileImages/"+uid+"/"+uid+"_"+index).delete()
 
-            storage.reference.child("image/profileImages/"+uid+"/"+uid+"_"+it).delete()
+        fireStore.collection("database/user/userList/")
+            .document(uid)
+            .update(mapOf(
 
-        }
-
-
-
-
+                "uriMap.${index.toString()}" to "null"
+            ))
     }
 
-    override suspend fun checkLoungeCount(status: Int, localCount: Int): Int {
-
-        var count = 0.0
-
-        var uid = "testestestuiduiduid_____"
-
-        fireStore.collection("database/user/userList/"+uid+"/lounge")
-            .document("loungeInformation")
-            .get()
-            .addOnCompleteListener {
-
-                task ->
-
-                if (task.isSuccessful) {
-
-                    val doc = task.result
-
-                    count = doc.get("likedCounter").toString().toDouble()
-                    if (status == 3)
-                        count = doc.get("matchedCounter").toString().toDouble()
-
-
-                    count = count - localCount
-
-
-
-                }
-                else {
-
-                }
-            }.await()
-
-        return count.toInt()
-    }
-
-
-
-    override suspend fun getNewLoungeUser(status: Int, newCount: Int): MutableList<UserEntity> {
-
-        lateinit var newUserList : MutableList<UserEntity>
-
-        newUserList = mutableListOf()
-
-        val uid = "testestestuiduiduid_____"
-
-        var what= "likedUserList"
-        if (status == 3)
-            what = "matchingUserList"
-
-        fireStore.collection("database/user/userList/"+uid+"/lounge/loungeInformation/"+what)
-            .limit(newCount.toLong())
-            .get()
-            .addOnCompleteListener { snap ->
-
-                if (snap.isSuccessful) {
-
-                    snap.result.documents.forEach { documentSnapshot ->
-                        documentSnapshot.toObject(UserEntity::class.java)?.let { newUserList.add(it) }
-                    }
-                } else {
-
-                }
-
-            }.await()
-
-
-        return newUserList
-
-
-    }
-
-    override fun updateLoungeUser(status: Int): Flow<MutableList<UserEntity>> = callbackFlow {
-
-        lateinit var updatedUsers : MutableList<UserEntity>
-
-        val uid = "testestestuiduiduid_____"
-
-        var what = "likedUserList"
-        if (status == 3)
-            what = "matchingUserList"
-
-        val collection =
-            fireStore.collection("database/user/userList/"+uid+"/lounge/loungeInformation/"+what)
-
-        updatedUsers = mutableListOf()
-
-        val subscription = collection.addSnapshotListener { value, error ->
-
-            for (doc in value!!) {
-
-                updatedUsers.add(doc.toObject(UserEntity::class.java))
-
-                Log.d("local-count-result!", "status -> "+status+" -> "+doc.toObject(UserEntity::class.java).toString())
-            }
-
-            trySend(updatedUsers)
-        }
-
-        awaitClose { subscription.remove() }
-
-    }
-
-    override fun likeBack(otherUser: UserEntity, ownUser: UserEntity) {
+    override suspend fun reuploadImage(index: Int, uri: Uri) {
 
         val uid = "test!!!!!"
 
-        fireStore.collection("database/user/userList/"+uid+"/lounge/loungeHistory/likeUserList")
-            .document(otherUser.uid)
-            .set(otherUser)
 
-        fireStore.collection("database/user/userList/"+uid+"/lounge/loungeHistory/matchingUserList")
-            .document(otherUser.uid)
-            .set(otherUser)
+        val ref = storage.reference.child("image/profileImages/"+uid+"/"+uid+"_"+index)
 
-        fireStore.collection("database/user/userList/"+uid+"/lounge/loungeInformation/matchingUserList")
-            .document(otherUser.uid)
-            .set(otherUser)
+        val uploadTask = ref.putFile(uri)
 
-        fireStore.collection("database/user/userList/"+otherUser.uid+"/lounge/loungeHistory/likedUserList")
+        uploadTask.addOnSuccessListener { }.addOnFailureListener {  }.await()
+
+        var uri= "null"
+
+        ref.downloadUrl.addOnSuccessListener {
+            uri = it.toString()
+        }.addOnFailureListener {  }.await()
+
+        fireStore.collection("database/user/userList")
             .document(uid)
-            .set(ownUser)
+            .update(mapOf(
+                "uriMap.${index.toString()}" to uri
+            ))
+    }
 
-        fireStore.collection("database/user/userList/"+otherUser.uid+"/lounge/loungeHistory/matchingUserList")
-            .document(uid)
-            .set(ownUser)
+    override fun getLoungeUsers(status: Int): Flow<Response<MutableList<UserEntity>>> = callbackFlow {
 
-        fireStore.collection("database/user/userList/"+otherUser.uid+"/lounge/loungeInformation/matchingUserList")
-            .document(uid)
-            .set(ownUser)
+        val uid = AppContext.uid
+
+        lateinit var subscription : ListenerRegistration
+
+        try {
+
+            trySend(Response.Loading)
+
+            if (status == 2) {
 
 
+                subscription =
+                fireStore.collection("database/user/userList/"+uid+"/lounge/loungeInformation/likedUserList")
+                    .addSnapshotListener { value, error ->
 
+                        if (value != null) {
+
+                            trySend(Response.Success(value.toObjects(UserEntity::class.java)))
+                        }
+
+                    }
+
+
+            } else {
+
+                subscription =
+                    fireStore.collection("database/user/userList/"+uid+"/lounge/loungeInformation/matchingUserList")
+                        .addSnapshotListener { value, error ->
+
+                            if (value != null) {
+
+                                trySend(Response.Success(value.toObjects(UserEntity::class.java)))
+                            }
+
+                        }
+
+            }
+
+        } catch (exception : Exception) {
+            trySend(Response.Error(exception.message.toString()))
+        }
+
+        awaitClose { subscription.remove() }
+    }
+
+    override suspend fun matchUser(otherUser: UserEntity, ownUser: UserEntity): Response<Int> {
+
+        Log.d("match-check", "other: "+ otherUser.uid)
+        Log.d("match-check", "own: "+ownUser.uid)
+
+        try {
+
+            otherUser.loungeStatus = 3
+            ownUser.loungeStatus = 3
+
+            fireStore.collection("database/user/userList/"+ownUser.uid+"/lounge/loungeInformation/likedUserList")
+                .document(otherUser.uid)
+                .delete()
+                .await()
+
+
+            fireStore.collection("database/user/userList/"+ownUser.uid+"/lounge/loungeInformation/matchingUserList")
+                .document(otherUser.uid)
+                .set(otherUser)
+                .await()
+
+            fireStore.collection("database/user/userList/"+otherUser.uid+"/lounge/loungeInformation/matchingUserList")
+                .document(ownUser.uid)
+                .set(ownUser)
+                .await()
+
+            matchHistory(otherUser, ownUser)
+
+            return Response.Success(SUCCESS)
+
+        } catch (exception : Exception) {
+
+            return Response.Error(exception.message.toString())
+        }
 
 
 
     }
+
+    override suspend fun deleteMatch(otherUid: String): Response<Int> {
+
+        try {
+
+
+            fireStore.collection("database/user/userList/"+AppContext.uid+"/lounge/loungeInformation/matchingUserList/")
+                .document(otherUid)
+                .delete()
+                .await()
+
+            fireStore.collection("database/user/userList/"+otherUid+"/lounge/loungeInformation/matchingUserList/")
+                .document(AppContext.uid)
+                .delete()
+                .await()
+
+            return Response.Success(SUCCESS)
+
+        }
+        catch (exception : Exception) {
+            return Response.Error(exception.message.toString())
+        }
+    }
+
+    private fun matchHistory (otherUser: UserEntity, ownUser: UserEntity) {
+
+        try {
+
+            fireStore.collection("database/user/userList/"+ownUser.uid+"/lounge/loungeHistory/matchingUserList")
+                .document(otherUser.uid)
+                .set(otherUser)
+
+            fireStore.collection("database/user/userList/"+otherUser.uid+"/lounge/loungeHistory/matchingUserList")
+                .document(ownUser.uid)
+                .set(ownUser)
+
+            fireStore.collection("database/user/userList/"+ownUser.uid+"/lounge/loungeHistory/likeUserList")
+                .document(otherUser.uid)
+                .set(otherUser)
+
+            fireStore.collection("database/user/userList/"+otherUser.uid+"/lounge/loungeHistory/matchingUserList")
+                .document(ownUser.uid)
+                .set(ownUser)
+
+
+        } catch (exception : Exception) {
+
+        }
+    }
+
+    override suspend fun rejectLiked(otherUser: UserEntity): Response<Int> {
+
+        try {
+
+            fireStore.collection("database/user/userList/"+AppContext.uid+"/lounge/loungeInformation/matchingUserList")
+                .document(otherUser.uid)
+                .delete()
+                .await()
+
+            skipUser(otherUser)
+
+            return Response.Success(SUCCESS)
+
+        } catch (exception : Exception) {
+
+            return Response.Error(exception.message.toString())
+        }
+    }
+
+
+
+    override suspend fun rejectMatched(otherUser: UserEntity): Response<Int> {
+
+        try {
+
+            fireStore.collection("database/user/userList/"+AppContext.uid+"/lounge/loungeInformation/matchingUserList")
+                .document(otherUser.uid)
+                .delete()
+                .await()
+
+            fireStore.collection("database/user/userList/"+otherUser.uid+"/lounge/loungeInformation/matchingUserList")
+                .document(AppContext.uid)
+                .delete()
+                .await()
+
+            skipUser(otherUser)
+
+            return Response.Success(SUCCESS)
+
+
+        } catch (exception : Exception) {
+
+            return Response.Error(exception.message.toString())
+        }
+
+    }
+
+
+
+
+
 
 
 }

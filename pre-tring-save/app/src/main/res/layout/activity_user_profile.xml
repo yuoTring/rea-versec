@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout>
+<layout xmlns:tools="http://schemas.android.com/tools">
 
     <data
         >
@@ -10,25 +10,37 @@
     </data>
 
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
         tools:context=".view.matching.UserProfileActivity">
 
-        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:background="@color/white_cotton"
-            tools:context=".view.profile.ProfileFragment">
+            tools:context=".view.profile.ProfileFragment"
+            tools:ignore="MissingConstraints">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+
+                <androidx.core.widget.ContentLoadingProgressBar
+                    android:id="@+id/progressBarUserProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="?android:attr/progressBarStyle"
+                    android:elevation="1dp"
+                    android:visibility="invisible"
+                    app:layout_constraintTop_toTopOf="@id/viewpagerProfileImage"
+                    app:layout_constraintBottom_toBottomOf="@id/viewpagerProfileImage"
+                    app:layout_constraintStart_toStartOf="@id/viewpagerProfileImage"
+                    app:layout_constraintEnd_toEndOf="@id/viewpagerProfileImage"/>
+
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/viewpagerProfileImage"
@@ -84,7 +96,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginLeft="16dp"
                     android:background="@drawable/button_corner_16_blue_gradient"
-                    android:text="@{viewModel.userEntity.mainResidence}"
+                    android:text="~~"
                     android:textColor="@color/white"
                     android:textSize="12sp"
                     app:layout_constraintTop_toBottomOf="@id/viewpagerProfileImage"
@@ -101,7 +113,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginLeft="16dp"
                     android:background="@drawable/button_corner_16_charcoal"
-                    android:text="@{`매너 점수: `+Double.toString(viewModel.userEntity.mannerScore)}"
+                    android:text="~~"
                     android:textColor="@color/white"
                     android:textSize="12sp"
                     app:layout_constraintTop_toBottomOf="@id/viewpagerProfileImage"
@@ -115,7 +127,7 @@
                     android:layout_height="32dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginLeft="16dp"
-                    android:text="@{String.valueOf(viewModel.userEntity.age)}"
+                    android:text="~~"
                     android:textColor="@color/charcoal"
                     android:textSize="24sp"
                     android:textStyle="bold"
@@ -134,19 +146,6 @@
                     android:textSize="12sp"
                     app:layout_constraintTop_toBottomOf="@id/textNickAndAge"
                     app:layout_constraintStart_toStartOf="parent"/>
-
-                <TextView
-                    android:id="@+id/textKnock"
-                    android:layout_width="wrap_content"
-                    android:layout_height="24dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginLeft="4dp"
-                    android:text="@{String.valueOf(viewModel.userEntity.knock)}"
-                    android:textColor="@color/blue_azure"
-                    android:textSize="12sp"
-                    app:layout_constraintTop_toBottomOf="@id/textNickAndAge"
-                    app:layout_constraintStart_toEndOf="@id/text000"
-                    />
 
                 <TextView
                     android:id="@+id/text001"

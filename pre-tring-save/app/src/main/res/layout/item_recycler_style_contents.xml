@@ -2,10 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="72dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="8dp"
-    android:layout_marginRight="8dp"
+    android:layout_gravity="center"
+    android:layout_margin="8dp"
     android:background="@color/white">
 
     <com.google.android.material.imageview.ShapeableImageView
@@ -16,10 +16,25 @@
         android:src="@drawable/test_profileimage"
         android:scaleType="fitXY"
         android:adjustViewBounds="true"
+        android:elevation="2dp"
         app:shapeAppearanceOverlay="@style/round_image"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/imageOutLine"
+        android:layout_width="59dp"
+        android:layout_height="59dp"
+        android:background="@color/blue_azure"
+        android:adjustViewBounds="true"
+        android:visibility="invisible"
+        app:shapeAppearanceOverlay="@style/round_image"
+        app:layout_constraintTop_toTopOf="@id/imageStyle"
+        app:layout_constraintBottom_toBottomOf="@id/imageStyle"
+        app:layout_constraintStart_toStartOf="@id/imageStyle"
+        app:layout_constraintEnd_toEndOf="@id/imageStyle"
         />
 
     <TextView
@@ -31,6 +46,7 @@
         android:textColor="@color/black"
         android:textSize="12sp"
         android:textStyle="bold"
+        android:gravity="center"
         app:layout_constraintTop_toBottomOf="@id/imageStyle"
         app:layout_constraintStart_toStartOf="@id/imageStyle"
         app:layout_constraintEnd_toEndOf="@id/imageStyle"/>
