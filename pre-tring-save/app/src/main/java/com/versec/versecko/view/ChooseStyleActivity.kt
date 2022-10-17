@@ -20,6 +20,7 @@ class ChooseStyleActivity : AppCompatActivity()
     private lateinit var styleList : MutableList<String>
     private lateinit var chosenList : MutableList<String>
 
+    private var requestCode = 0
     // requestCode = 3
 
     override fun onCreate(savedInstanceState: Bundle?)
@@ -33,6 +34,10 @@ class ChooseStyleActivity : AppCompatActivity()
 
         setContentView(view)
 
+        val intent = intent
+
+        requestCode = intent.getIntExtra("requestCode",0)
+
         setClickable(false)
 
         styleList = resources.getStringArray(R.array.style).toMutableList()
@@ -42,19 +47,26 @@ class ChooseStyleActivity : AppCompatActivity()
 
         adapter = StyleAdapter(this, styleList, chosenList) {
 
+            val style = it!!.substringBefore("__")
+
             if (chosenList.size > 4) {
 
-                if (!chosenList.contains(it))
-                    Toast.makeText(this, "no", Toast.LENGTH_SHORT).show()
+                if (!chosenList.contains(style))
+                    Toast.makeText(this, "최대 5가지 스타일을 선택할 수 있습니다.", Toast.LENGTH_SHORT).show()
                 else
-                    chosenList.remove(it)
+                    chosenList.remove(style)
 
             } else {
 
-                if (!chosenList.contains(it))
-                    chosenList.add(it!!)
+                if (!chosenList.contains(style))
+                    chosenList.add(style)
                 else
-                    chosenList.remove(it)
+                    chosenList.remove(style)
+
+                if (chosenList.size>0)
+                    setClickable(true)
+                else
+                    setClickable(false)
             }
 
 
@@ -71,15 +83,38 @@ class ChooseStyleActivity : AppCompatActivity()
         binding.recyclerTemplate.layoutManager = layoutManager
         binding.recyclerTemplate.adapter = adapter
 
-        binding.buttonBack.setOnClickListener { finish() }
+        binding.buttonBack.setOnClickListener {
+            if (requestCode == 1000) {
+
+                setResult(1000)
+                finish()
+
+            } else {
+                finish()
+            }
+        }
 
         binding.buttonSet.setOnClickListener {
             val intent = Intent()
 
-            if (chosenList.size>0) {
+            if (chosenList.size>0 && requestCode == 3) {
+
                 intent.putStringArrayListExtra("style", ArrayList(chosenList))
                 setResult(300, intent)
                 finish()
+
+            } else if (chosenList.size>0 && requestCode == 500) {
+
+                intent.putStringArrayListExtra("condition", ArrayList(chosenList))
+                setResult(300, intent)
+                finish()
+
+            } else if (chosenList.size>0 && requestCode == 1000) {
+
+                intent.putStringArrayListExtra("condition", ArrayList(chosenList))
+                setResult(300, intent)
+                finish()
+
             }
 
         }

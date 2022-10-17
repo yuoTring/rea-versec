@@ -41,19 +41,8 @@ class TagAdapter (
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        with(holder) {
-
-            if (position==0)
-            {
-                holder.bind(tagList.get(position), onClick)
-                //holder.binding.buttonAddTag.setText("+")
-            }
-            else {
-                holder.bind(tagList.get(position), onClick)
-                holder.binding.buttonAddTag.setText(tagList.get(position))
-            }
-
-        }
+        holder.bind(tagList.get(position), onClick)
+        holder.binding.buttonAddTag.setText(tagList.get(position))
     }
 
     override fun getItemCount(): Int {

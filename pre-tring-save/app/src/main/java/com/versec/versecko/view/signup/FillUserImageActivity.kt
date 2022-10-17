@@ -1,6 +1,5 @@
 package com.versec.versecko.view.signup
 
-import com.versec.versecko.R
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
@@ -9,24 +8,27 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
-import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doAfterTextChanged
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.versec.versecko.AppContext
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.databinding.ActivityFillUserImageBinding
-import com.versec.versecko.view.MainScreenActivity
+import com.versec.versecko.util.Response
+import com.versec.versecko.util.WindowEventManager
 import com.versec.versecko.view.signup.adapter.ImageAdapter
 import com.versec.versecko.viewmodel.FillUserImageViewModel
 import com.yalantis.ucrop.UCrop
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.time.LocalDateTime
+import kotlin.random.Random
 
 class FillUserImageActivity : AppCompatActivity()
 {
@@ -49,6 +51,7 @@ class FillUserImageActivity : AppCompatActivity()
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
+
 
         var intent = intent
         userEntity= intent.getSerializableExtra("user") as UserEntity
@@ -135,43 +138,140 @@ class FillUserImageActivity : AppCompatActivity()
 
         binding.buttonComplete.setOnClickListener {
 
+
+
             var checkImageReadyOrNot = false
 
             if (!imageList.get(0).toString().equals("---"))
                 checkImageReadyOrNot = true
 
 
-
-
-
-            val uriMap : MutableMap<String, Uri>
-            = mutableMapOf()
-
-
-            imageList.forEachIndexed { index, uri ->
-
-                if (!uri.toString().equals("---"))
-                    uriMap.put(index.toString(), imageList.get(index))
-            }
-
             if (checkImageReadyOrNot){
 
-                Log.d("image-get", "uriMap: "+ uriMap.toString())
-
-                userEntity.uid = "test!!!!!"
-                userEntity.selfIntroduction = binding.editSelfIntroduction.text.toString()
-                viewModel.uploadImage(uriMap)
-                viewModel.insertUser(userEntity)
+                for (x in 1000 .. 1000) {
 
 
-                startActivity(Intent(this, CongratsActivity::class.java))
+                    val la = Random.nextDouble(-0.05, 0.05)
+                    val lo = Random.nextDouble(-0.05,0.05)
+
+                    userEntity.uid = AppContext.uid
+                    //userEntity.nickName = "test__"+x
+                    userEntity.selfIntroduction = binding.editSelfIntroduction.text.toString()
+
+                    userEntity.latitude = userEntity.latitude + la
+                    userEntity.longitude = userEntity.longitude + lo
+
+                    userEntity.phoneNumber = "010-0000-"+x
+
+
+                    val uriMap : MutableMap<String, Uri>
+                            = mutableMapOf()
+
+
+                    imageList.forEachIndexed { index, uri ->
+
+                        if (!uri.toString().equals("---"))
+                            uriMap.put(index.toString(), imageList.get(index))
+                    }
+
+
+                    lifecycleScope.launch {
+
+                        show()
+
+                        val insertResponse_Remote = viewModel.insertUser_Remote(userEntity)
+
+                        val insertResponse_Local = viewModel.insertUser_Local(userEntity)
+
+
+
+                        when(insertResponse_Remote) {
+                            is Response.Success -> {
+
+                                val uploadResult = viewModel.uploadImage(uriMap)
+
+                                when(uploadResult) {
+                                    is Response.Success -> {
+
+
+                                        val fcmResponse = viewModel.saveFCMToken()
+
+                                        when (fcmResponse) {
+                                            is Response.Success -> {
+
+                                            }
+                                            is Response.Error -> {
+
+                                                Log.d("error-!!!", fcmResponse.errorMessage)
+
+                                            }
+                                            else -> {
+
+                                            }
+                                        }
+
+                                        val insertResponse_LocalWithUriMap = viewModel.getOwnUser()
+
+                                        when(insertResponse_LocalWithUriMap) {
+                                            is Response.Success -> {
+
+                                                hide()
+                                                startActivity(Intent(this@FillUserImageActivity, CongratsActivity::class.java))
+                                            }
+                                            is Response.Error -> {
+                                                show()
+                                            }
+                                            else -> {
+
+                                            }
+                                        }
+
+
+
+                                    }
+
+                                    is Response.Error -> {
+
+
+                                        hide()
+                                    }
+                                    else -> {
+
+                                    }
+                                }
+
+                            }
+                            is Response.Error -> {
+                                hide()
+
+
+                            }
+                            else -> {
+
+                            }
+                        }
+
+                        when(insertResponse_Local) {
+                            is Response.Error -> {
+                                hide()
+                            }
+                            else -> {
+
+                            }
+                        }
+                    }
+
+                }
+
+
+
 
 
 
             }
             else
             {
-                Toast.makeText(this,"nonono", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,"사진을 하나 이상 업로드하십시오.", Toast.LENGTH_SHORT).show()
             }
 
 
@@ -179,6 +279,21 @@ class FillUserImageActivity : AppCompatActivity()
 
 
         }
+
+    }
+
+    private fun show () {
+        binding.progressBar.show()
+        WindowEventManager.blockUserInteraction(this@FillUserImageActivity)
+    }
+
+    private fun hide () {
+        binding.progressBar.hide()
+        WindowEventManager.openUserInteraction(this@FillUserImageActivity)
+    }
+
+    private fun insertUser () {
+
 
     }
 

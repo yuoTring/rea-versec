@@ -5,17 +5,12 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
 import com.versec.versecko.data.datasource.local.UserLocalDataSource
 import com.versec.versecko.data.datasource.local.UserLocalDataSourceImpl
-import com.versec.versecko.data.datasource.remote.ChatDataSource
-import com.versec.versecko.data.datasource.remote.ChatDataSourceImpl
-import com.versec.versecko.data.datasource.remote.UserRemoteDataSource
-import com.versec.versecko.data.datasource.remote.UserRemoteDataSourceImpl
-import com.versec.versecko.data.repository.ChatRepository
-import com.versec.versecko.data.repository.ChatRepositoryImpl
-import com.versec.versecko.data.repository.UserRepository
-import com.versec.versecko.data.repository.UserRepositoryImpl
+import com.versec.versecko.data.datasource.remote.*
+import com.versec.versecko.data.repository.*
 import com.versec.versecko.data.room.AppDatabase
 import com.versec.versecko.data.room.UserEntityDAO
 import com.versec.versecko.viewmodel.*
@@ -30,6 +25,7 @@ val sharedPreferenceModule = module {
     single(named("filter")) { androidApplication().getSharedPreferences("filter",0) }
 
     single(named("lounge")) { androidApplication().getSharedPreferences("lounge",0) }
+    single(named("setting")) { androidApplication().getSharedPreferences("setting",0) }
 
 }
 
@@ -50,27 +46,33 @@ val roomDatabaseModule = module {
     }
 }
 
-val userRemoteDataSourceModule = module {
+val firebaseModule = module {
 
     single { Firebase.firestore }
     single { FirebaseAuth.getInstance() }
     single { FirebaseStorage.getInstance() }
+    single { FirebaseMessaging.getInstance() }
+
+    single { Firebase.database.reference }
+
 
 }
 
-val chatDataSourceModule = module {
+val dataSourceModule = module {
 
-    single { Firebase.database.reference }
+    single<UserLocalDataSource>
+    { UserLocalDataSourceImpl(get(), get(named("users")), get(named("filter")), get(named("lounge")), get(named("setting"))) }
+    single<UserRemoteDataSource> { UserRemoteDataSourceImpl(get(), get(), get(), get()) }
+    single<ChatDataSource> { ChatDataSourceImpl(get(),get()) }
+    single<StoryDataSource> { StoryDataSourceImpl(get(), get())}
 }
 
 val repositoryModule = module {
 
-    single<UserLocalDataSource>
-    { UserLocalDataSourceImpl(get(), get(named("users")), get(named("filter")), get(named("lounge"))) }
-    single<UserRemoteDataSource> { UserRemoteDataSourceImpl(get(), get(), get()) }
-    single<ChatDataSource> { ChatDataSourceImpl(get(),get()) }
+
     single<UserRepository> { UserRepositoryImpl(get(), get()) }
     single<ChatRepository> { ChatRepositoryImpl(get()) }
+    single<StoryRepository> { StoryRepositoryImpl(get())  }
 
 
 }
@@ -82,17 +84,20 @@ val getUserUseCaseModule = module {
     factory { GetUserUseCase(get()) }
 }**/
 
-val userViewModelModule = module {
+val viewModelModule = module {
 
     viewModel { SignInViewModel(get()) }
-    viewModel { ProfileViewModel(get()) }
+    viewModel { ProfileViewModel(get(), get()) }
     viewModel { ProfileModifyViewModel(get()) }
     viewModel { ImageModifyViewModel(get()) }
     viewModel { FillUserInfoViewModel(get()) }
     viewModel { FillUserImageViewModel(get()) }
     viewModel { MatchingViewModel(get()) }
+    viewModel { DiscoveryViewModel(get()) }
     viewModel { MainViewModel(get()) }
     viewModel { FilterViewModel(get()) }
+    viewModel { SplashViewModel(get()) }
+    viewModel { SettingViewModel(get()) }
 
     viewModel { ChatViewModel(get(),get()) }
     viewModel { DetailProfileViewModel(get(),get()) }

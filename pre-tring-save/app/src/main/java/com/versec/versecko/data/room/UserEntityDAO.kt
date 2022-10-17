@@ -8,7 +8,9 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import com.versec.versecko.data.entity.UserEntity
+import com.versec.versecko.util.Response
 import kotlinx.coroutines.flow.Flow
+import java.util.*
 
 @Dao
 interface UserEntityDAO {
@@ -56,10 +58,11 @@ interface UserEntityDAO {
     @Query("SELECT COUNT(*) FROM user WHERE loungeStatus =:status")
     suspend fun checkLoungeCount(status: Int) : Int
 
-
     @Query("SELECT * FROM user")
     suspend fun getAllUser() : MutableList<UserEntity>
 
+    @Query("UPDATE user SET deletedAt = :value WHERE uid = :uid")
+    suspend fun updateDeletedAt (value : Date?, uid : String)
 
 
 }

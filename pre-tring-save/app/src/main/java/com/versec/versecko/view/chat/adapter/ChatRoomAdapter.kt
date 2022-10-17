@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.versec.versecko.AppContext
 import com.versec.versecko.data.entity.ChatRoomEntity
-import com.versec.versecko.data.entity.ChatRoomMemberEntity
+import com.versec.versecko.data.entity.RoomMemberEntity
 import com.versec.versecko.databinding.ItemRecyclerChatroomBinding
 
 class ChatRoomAdapter (
@@ -39,7 +39,7 @@ class ChatRoomAdapter (
 
 
         val room = chatRoomList.get(position)
-        lateinit var member : ChatRoomMemberEntity
+        lateinit var member : RoomMemberEntity
 
         holder.bind(room, onRoomClick)
 
@@ -63,7 +63,7 @@ class ChatRoomAdapter (
 
         Glide
             .with(holder.binding.root)
-            .load(member.uri)
+            .load(member.profileUrl)
             .into(holder.binding.imageProfile)
 
 

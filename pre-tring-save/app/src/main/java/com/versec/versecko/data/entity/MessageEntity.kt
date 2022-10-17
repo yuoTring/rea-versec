@@ -7,8 +7,8 @@ data class MessageEntity(
     var contents : String = "Hi this is error",
     var chatRoomUid : String = "...",
 
-    var sender : ChatRoomMemberEntity = ChatRoomMemberEntity(),
-    var receiver : ChatRoomMemberEntity = ChatRoomMemberEntity(),
+    var sender : RoomMemberEntity = RoomMemberEntity(),
+    var receiver : RoomMemberEntity = RoomMemberEntity(),
 
     var date : String = "10",
     var time : String ="15:15",

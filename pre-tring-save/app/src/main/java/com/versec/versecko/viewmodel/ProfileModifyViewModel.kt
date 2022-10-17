@@ -1,40 +1,44 @@
 package com.versec.versecko.viewmodel
 
 import android.net.Uri
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.data.repository.UserRepository
+import com.versec.versecko.util.Response
 import kotlinx.coroutines.launch
 
 class ProfileModifyViewModel (
 
     private val userRepository: UserRepository
 
-
         ) : ViewModel() {
 
-            val _user : LiveData<UserEntity> = userRepository.getOwnUser_Local().asLiveData()
 
 
+            private val _user : MutableLiveData<UserEntity> =userRepository.getOwnUser_Local().asLiveData() as MutableLiveData<UserEntity>
+            val user : LiveData<UserEntity> = _user
 
 
-    fun updateUser (userEntity: UserEntity, uriMap : MutableMap<String, Uri>, deleteIndexes: MutableList<Int>) {
-        update(userEntity, uriMap, deleteIndexes)
+    private suspend fun _insertUser_Remote (userEntity: UserEntity) : Response<Int> {
+        return userRepository.insertUser_Remote(userEntity)
     }
 
-    private fun update (userEntity: UserEntity, uriMap: MutableMap<String, Uri>, deleteIndexes : MutableList<Int>) {
-
-        viewModelScope.launch {
-
-            userRepository.insertUser_Local(userEntity)
-            userRepository.insertUser_Remote(userEntity)
-
-        }
-
+    suspend fun insertUser_Remote (userEntity: UserEntity) : Response<Int> {
+        return _insertUser_Remote(userEntity)
     }
+
+
+    private suspend fun _insertUser_Local (userEntity: UserEntity) : Response<Int> {
+        return userRepository.insertUser_Local(userEntity)
+    }
+
+    suspend fun insertUser_Local (userEntity: UserEntity) : Response<Int> {
+        return _insertUser_Local(userEntity)
+    }
+
+
+
+
 
 
 }

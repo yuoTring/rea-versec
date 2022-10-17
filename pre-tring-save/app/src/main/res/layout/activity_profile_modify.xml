@@ -263,6 +263,17 @@
 
         </androidx.core.widget.NestedScrollView>
 
+        <androidx.core.widget.ContentLoadingProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="104dp"
+            android:layout_height="104dp"
+            style="@style/Widget.AppCompat.ProgressBar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/buttonComplete"
             android:layout_width="match_parent"

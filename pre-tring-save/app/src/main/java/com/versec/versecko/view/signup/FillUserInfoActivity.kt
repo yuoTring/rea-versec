@@ -1,9 +1,11 @@
 package com.versec.versecko.view.signup
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import com.versec.versecko.R
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -22,6 +24,7 @@ import com.versec.versecko.view.signup.adapter.StyleAdapter
 import com.versec.versecko.view.signup.adapter.TagAdapter
 import com.versec.versecko.viewmodel.FillUserInfoViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.time.LocalDate
 import java.util.*
 
 class FillUserInfoActivity : AppCompatActivity()
@@ -105,19 +108,20 @@ class FillUserInfoActivity : AppCompatActivity()
         binding.editBirth.doAfterTextChanged { text ->
 
             val valid = checkValidBirth(text.toString())
+            binding.textCheckBirth.visibility = View.VISIBLE
 
 
 
             if (valid)
             {
-                binding.textCheckBirth.setText("valid")
+                binding.textCheckBirth.setText("유효한 생년월일입니다.")
                 binding.textCheckBirth.setTextColor(ContextCompat.getColor(this@FillUserInfoActivity,R.color.blue))
                 user.birth = text.toString()
                 checkBirth =true
             }
             else
             {
-                binding.textCheckBirth.setText("invalid")
+                binding.textCheckBirth.setText("잘못된 생년월일입니다.")
                 binding.textCheckBirth.setTextColor(ContextCompat.getColor(this@FillUserInfoActivity,R.color.red))
                 checkBirth =false
             }
@@ -137,11 +141,11 @@ class FillUserInfoActivity : AppCompatActivity()
 
         adapterResidence = TagAdapter(residenceList) { place ->
 
-            if (place.equals("+"))
+            if (place.equals("다시 설정") || place.equals("+"))
                 startActivityForResult(Intent(this, ChoosePlaceActivity::class.java).putExtra("requestCode", RESIDENCE), RESIDENCE)
 
             residenceList.removeAll(residenceList)
-            residenceList.add("+")
+            residenceList.add("다시 설정")
             adapterResidence.updateTagList(residenceList)
             adapterResidence.notifyDataSetChanged()
 
@@ -173,17 +177,19 @@ class FillUserInfoActivity : AppCompatActivity()
 
         binding.buttonCheckOverlap.setOnClickListener {
 
+            binding.textCheckNickNameOverlap.visibility = View.VISIBLE
+
             viewModel.checkNickName(binding.editNickName.text.toString()).observe(this, androidx.lifecycle.Observer {
                 result ->
 
                 if (result.equals(Response.Exist(1))) {
 
-                    binding.textCheckNickNameOverlap.setText("can not")
+                    binding.textCheckNickNameOverlap.setText("이미 존재하는 닉네임입니다!")
                     binding.textCheckNickNameOverlap.setTextColor(ContextCompat.getColor(this, R.color.red))
                     checkNickname = false
                 }
                 else {
-                    binding.textCheckNickNameOverlap.setText("can")
+                    binding.textCheckNickNameOverlap.setText("사용 가능한 닉네임입니다!")
                     user.nickName = binding.editNickName.text.toString()
                     binding.textCheckNickNameOverlap.setTextColor(ContextCompat.getColor(this, R.color.blue))
                     checkNickname = true
@@ -215,8 +221,14 @@ class FillUserInfoActivity : AppCompatActivity()
                 user.nickName = binding.editNickName.text.toString()
                 user.birth = binding.editBirth.text.toString()
 
-                user.age = Calendar.YEAR - user.birth.substring(0,4).toInt()
+
+
                 user.mainResidence = residenceList.get(1)
+                if (residenceList.size>2)
+                    user.subResidence = residenceList.get(2)
+                else
+                    user.subResidence = residenceList.get(1)
+
                 user.tripWish.addAll(tripList.subList(1, tripList.size))
                 user.tripStyle.addAll(styleList.subList(1, styleList.size))
 
@@ -230,7 +242,7 @@ class FillUserInfoActivity : AppCompatActivity()
 
             } else {
 
-                Toast.makeText(this, "please fill in all info to push next button!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "모든 정보를 입력하고 다음 버튼을 눌러주세요!", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -241,7 +253,7 @@ class FillUserInfoActivity : AppCompatActivity()
 
     private fun checkValidBirth (birth : String) : Boolean {
 
-        if (birth.length<8)
+        if (birth.length < 8 || birth.length > 8)
             return false
         else {
 
@@ -258,13 +270,17 @@ class FillUserInfoActivity : AppCompatActivity()
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == RESIDENCE && data != null) {
-            residenceList.removeAll(residenceList)
-            residenceList.add("+")
+
+            residenceList.clear()
+            residenceList.add("다시 설정")
             residenceList.addAll(data.getStringArrayListExtra("residence")!!)
+
+            Log.d("tag-check", "request: "+ RESIDENCE+"__"+residenceList.toString())
             adapterResidence.updateTagList(residenceList)
             adapterResidence.notifyDataSetChanged()
 
@@ -275,7 +291,7 @@ class FillUserInfoActivity : AppCompatActivity()
         }
         else if (requestCode == TRIP && data != null) {
 
-            tripList.removeAll(tripList)
+            tripList.clear()
             tripList.add("+")
             tripList.addAll(data.getStringArrayListExtra("trip")!!)
             adapterTrip.updateTagList(tripList)

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.versec.versecko" >
+    package="com.versec.versecko">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -18,13 +18,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar"
-        tools:targetApi="31" >
-        <service
-            android:name=".util.FCMService"
-            android:exported="false">
+        tools:targetApi="31">
+        <activity
+            android:name=".view.story.StoryUploadActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.signup.ToMainScreenActivity"
+            android:exported="false" />
 
+        <service
+            android:name=".util.FCMServic"
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
@@ -67,11 +73,12 @@
             android:name=".view.signup.FillUserInfoActivity"
             android:exported="false" />
         <activity
-            android:name=".view.SplashActivity"
+            android:name=".view.signup.EntryActivity"
             android:exported="false" />
         <activity
             android:name=".view.signup.FillUserImageActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".view.signup.CongratsActivity"
             android:exported="false" />
@@ -85,8 +92,8 @@
             android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".view.signup.EntryActivity"
-            android:exported="true" >
+            android:name=".view.SplashActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -10,7 +10,6 @@ class UserMapper {
             uid = userEntity.uid,
             nickName = userEntity.nickName,
             gender = userEntity.gender,
-            age = userEntity.age,
             birth = userEntity.birth,
 
             mainResidence = userEntity.mainResidence,
@@ -36,7 +35,6 @@ class UserMapper {
             uid = userModel.uid,
             nickName = userModel.nickName,
             gender = userModel.gender,
-            age = userModel.age,
             birth = userModel.birth,
 
             mainResidence = userModel.mainResidence,

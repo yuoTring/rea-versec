@@ -1,12 +1,13 @@
 package com.versec.versecko.data.datasource.local
 
 import com.versec.versecko.data.entity.UserEntity
+import com.versec.versecko.util.Response
 import kotlinx.coroutines.flow.Flow
 
 interface UserLocalDataSource {
 
     fun getOwnUser () : Flow<UserEntity>
-    suspend fun insertUser (userEntity: UserEntity)
+    suspend fun insertUser (userEntity: UserEntity) : Response<Int>
     suspend fun updateUriList (uriMap: MutableMap<String,String>, status: Int)
 
     fun saveDuplicateUser (uid : String)
@@ -26,6 +27,17 @@ interface UserLocalDataSource {
     fun getLikedCounter () : Int?
     fun getMatchingCounter () : Int?
 
+    fun setMatchingNotification (on : Boolean)
+    fun setLikedNotification (on : Boolean)
+    fun setChatNotification (on: Boolean)
+    fun setKnockNotification (on: Boolean)
+    fun setMarketingNotification (on: Boolean)
 
+    fun getMatchingNotification () : Boolean
+    fun getLikedNotification () : Boolean
+    fun getChatNotification () : Boolean
+    fun getKnockNotification () : Boolean
+    fun getMarketingNotification () : Boolean
 
+    suspend fun updateDeletedAt (activate : Boolean) : Response<Int>
 }

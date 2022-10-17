@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.versec.versecko.AppContext
+import com.versec.versecko.FilterActivity
 import com.versec.versecko.R
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.databinding.FragmentMatchingBinding
@@ -25,6 +26,8 @@ import com.versec.versecko.view.matching.adapter.CardStackAdapter
 import com.versec.versecko.viewmodel.MainViewModel
 import com.versec.versecko.viewmodel.MatchingViewModel
 import com.yuyakaido.android.cardstackview.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.ArrayList
@@ -47,6 +50,8 @@ class MatchingFragment : Fragment(), CardStackListener {
     private var hidden = false
     private var whichFrag = 0
 
+    private lateinit var response: Response<MutableList<UserEntity>>
+
     private val conditionList : MutableList<String> = mutableListOf()
 
     private lateinit var genderFilter : String
@@ -60,7 +65,9 @@ class MatchingFragment : Fragment(), CardStackListener {
 
         arguments?.let {
             whichFrag= it.getInt("which")
-            conditionList.addAll(it.getStringArrayList("codition")!!.toMutableList())
+
+
+            conditionList.addAll(it.getStringArrayList("condition")!!.toMutableList())
         }
 
 
@@ -79,6 +86,8 @@ class MatchingFragment : Fragment(), CardStackListener {
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_matching,container,false)
         val view = binding.root
 
+
+        noResultViewOn(false)
 
         return view
     }
@@ -103,13 +112,7 @@ class MatchingFragment : Fragment(), CardStackListener {
 
         mainViewModel.userLocal.observe(requireActivity(), Observer {
             ownUser = it
-            Log.d("user-get", ownUser.toString())
         })
-
-        //should move it to anther one
-        viewModel.setGender("both")
-        viewModel.setAgeRange(20,80)
-        viewModel.setDistance(30)
 
         genderFilter = viewModel.getGender()!!
         minAge = viewModel.getAgeRange()!!.get(0)
@@ -120,8 +123,20 @@ class MatchingFragment : Fragment(), CardStackListener {
 
             binding.progressBarUser.show()
 
-            val response =
-                viewModel.getUsersWithGeoHash(AppContext.latitude, AppContext.longitude, radius, genderFilter, minAge, maxAge)
+            //val response =
+                //viewModel.getUsersWithGeoHash(AppContext.latitude, AppContext.longitude, radius, genderFilter, minAge, maxAge)
+
+            if (whichFrag == MAIN) {
+                response =
+                    viewModel.getUsersWithGeoHash(AppContext.latitude, AppContext.longitude, radius, genderFilter, minAge, maxAge)
+            } else if (whichFrag == RESIDENCE) {
+                response =
+                    viewModel.getUsersWithPlaces(conditionList, genderFilter, minAge, maxAge)
+            } else if (whichFrag == TRIP) {
+                response =
+                    viewModel.getUsersWithPlaces(conditionList, genderFilter, minAge, maxAge)
+            }
+
             when(response) {
 
 
@@ -131,13 +146,24 @@ class MatchingFragment : Fragment(), CardStackListener {
                     if (!otherUserList.isEmpty())
                         otherUserList.removeAll(otherUserList)
 
-                    otherUserList.addAll(response.data)
+                    otherUserList.addAll((response as Response.Success<MutableList<UserEntity>>).data)
+
+                    if (otherUserList.contains(ownUser))
+                        otherUserList.remove(ownUser)
+
+
+                    if (otherUserList.size == 0)
+                        noResultViewOn(true)
+                    else
+                        noResultViewOn(false)
+
+                    Log.d("fragment-state", "size: " +otherUserList.size)
 
                     cardStackAdapter.updateUserList(otherUserList)
                     cardStackAdapter.notifyDataSetChanged()
                 }
                 is Response.Error -> {
-                    Log.d("TAG-LIFE", response.errorMessage)
+                    Log.d("TAG-LIFE", (response as Response.Error).errorMessage)
                 }
                 else -> {
                     Log.d("TAG-LIFE", "else")
@@ -151,12 +177,15 @@ class MatchingFragment : Fragment(), CardStackListener {
         binding.buttonLike.setOnClickListener { like(otherUserList.get(currentPosition), ownUser) }
         binding.buttonSkip.setOnClickListener { skip(otherUserList.get(currentPosition)) }
 
+        binding.buttonSetSearchCondition.setOnClickListener { requireActivity().startActivity(Intent(requireActivity(), FilterActivity::class.java)) }
+
 
 
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
+
         if (hidden)
             this.hidden = true
         else
@@ -176,9 +205,10 @@ class MatchingFragment : Fragment(), CardStackListener {
         val BOTH = "both"
 
 
-        const val MAIN = 1000
-        const val PLACE = 1001
-        const val STYLE = 1002
+        const val MAIN = 10000
+        const val STYLE = 10001
+        const val RESIDENCE = 10002
+        const val TRIP = 10003
 
         @JvmStatic
         fun newInstance(whichFrag : Int, list : ArrayList<String>) =
@@ -214,12 +244,22 @@ class MatchingFragment : Fragment(), CardStackListener {
     override fun onCardCanceled() {
     }
 
-    override fun onCardAppeared(view: View?, position: Int) {  initInfo() }
+    override fun onCardAppeared(view: View?, position: Int) { initInfo() }
 
     override fun onCardDisappeared(view: View?, position: Int) {
 
         if (currentPosition<otherUserList.size - 1)
             currentPosition++
+
+        lifecycleScope.launch(Dispatchers.Main) {
+
+            delay(950)
+
+            if (currentPosition == otherUserList.size - 1)
+                noResultViewOn(true)
+            else
+                noResultViewOn(false)
+        }
     }
 
     private fun cardStackViewInit () {
@@ -265,6 +305,8 @@ class MatchingFragment : Fragment(), CardStackListener {
 
     private fun like (otherUser : UserEntity, ownUser : UserEntity) {
 
+        Log.d("user-like", otherUser.toString())
+
         lifecycleScope.launch {
 
             when(viewModel.likeUser(otherUser, ownUser)) {
@@ -304,6 +346,7 @@ class MatchingFragment : Fragment(), CardStackListener {
 
     private fun getUsersAgain () {
 
+
         if (!hidden) {
 
 
@@ -315,12 +358,37 @@ class MatchingFragment : Fragment(), CardStackListener {
                 maxAge != viewModel.getAgeRange()!!.get(1)
             ) {
 
+
+                radius = newRadius
+                genderFilter = viewModel.getGender()!!
+                minAge = viewModel.getAgeRange()!!.get(0)
+                maxAge = viewModel.getAgeRange()!!.get(1)
+
+                Log.d("fragment-state", "fr: " +whichFrag +" - "+hidden)
+
+
+
+                Log.d("fragment-state", "wh: " +radius)
+                Log.d("fragment-state", "wh: " +genderFilter)
+                Log.d("fragment-state", "wh: " +minAge)
+                Log.d("fragment-state", "wh: " +maxAge)
+
+
                 lifecycleScope.launch {
 
                     binding.progressBarUser.show()
 
-                    val response =
-                        viewModel.getUsersWithGeoHash(AppContext.latitude, AppContext.longitude, radius, genderFilter, minAge, maxAge)
+                    if (whichFrag == MAIN) {
+                        response =
+                            viewModel.getUsersWithGeoHash(AppContext.latitude, AppContext.longitude, radius, genderFilter, minAge, maxAge)
+                    } else if (whichFrag == RESIDENCE) {
+                        response =
+                            viewModel.getUsersWithPlaces(conditionList, genderFilter, minAge, maxAge)
+                    } else if (whichFrag == TRIP) {
+                        response =
+                            viewModel.getUsersWithPlaces(conditionList, genderFilter, minAge, maxAge)
+                    }
+
                     when(response) {
 
 
@@ -330,13 +398,20 @@ class MatchingFragment : Fragment(), CardStackListener {
                             if (!otherUserList.isEmpty())
                                 otherUserList.removeAll(otherUserList)
 
-                            otherUserList.addAll(response.data)
+                            otherUserList.addAll((response as Response.Success<MutableList<UserEntity>>).data)
+
+                            Log.d("fragment-state", "size: " +otherUserList.size)
+
+                            if (otherUserList.size == 0)
+                                noResultViewOn(true)
+                            else
+                                noResultViewOn(false)
 
                             cardStackAdapter.updateUserList(otherUserList)
                             cardStackAdapter.notifyDataSetChanged()
                         }
                         is Response.Error -> {
-                            Log.d("TAG-LIFE", response.errorMessage)
+                            Log.d("TAG-LIFE", (response as Response.Error).errorMessage)
                         }
                         else -> {
                             Log.d("TAG-LIFE", "else")
@@ -354,6 +429,21 @@ class MatchingFragment : Fragment(), CardStackListener {
 
         }
 
+    }
+
+    private fun noResultViewOn (on : Boolean) {
+
+        if (on) {
+
+            binding.containerUserOn.visibility = View.INVISIBLE
+            binding.containerNoResult.visibility = View.VISIBLE
+
+        } else {
+
+            binding.containerUserOn.visibility = View.VISIBLE
+            binding.containerNoResult.visibility = View.INVISIBLE
+
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

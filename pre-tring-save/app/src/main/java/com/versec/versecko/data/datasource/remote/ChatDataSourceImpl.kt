@@ -1,12 +1,11 @@
 package com.versec.versecko.data.datasource.remote
 
 import android.os.Build
-import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.versec.versecko.AppContext
 import com.versec.versecko.data.entity.ChatRoomEntity
-import com.versec.versecko.data.entity.ChatRoomMemberEntity
+import com.versec.versecko.data.entity.RoomMemberEntity
 import com.versec.versecko.data.entity.MessageEntity
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.util.Response
@@ -46,8 +45,8 @@ class ChatDataSourceImpl (
 
                                 roomId!!,
                                 mutableMapOf(
-                                        otherUser.uid to ChatRoomMemberEntity(otherUser.uid, otherUser.nickName, otherUser.uriMap.get("0")!!),
-                                        ownUser.uid to ChatRoomMemberEntity(ownUser.uid, ownUser.nickName, ownUser.uriMap.get("0")!!)),
+                                        otherUser.uid to RoomMemberEntity(otherUser.uid, otherUser.nickName, otherUser.uriMap.get("0")!!),
+                                        ownUser.uid to RoomMemberEntity(ownUser.uid, ownUser.nickName, ownUser.uriMap.get("0")!!)),
                                 0,
                                 "no message sent yet"
                         )
@@ -112,10 +111,8 @@ class ChatDataSourceImpl (
 
         override fun deleteChatRoom(chatRoomUid: String, otherUid: String) {
 
-                databaseReference.child("chat").child("chatRoomList").child(chatRoomUid).removeValue()
-                databaseReference.child("chat").child("chatRoomByUser").child(auth.currentUser!!.uid).child(chatRoomUid).removeValue()
-                databaseReference.child("chat").child("chatRoomByUser").child(otherUid).child(chatRoomUid).removeValue()
-                databaseReference.child("chat").child("messageList").child(chatRoomUid).removeValue()
+                //databaseReference.child("chat").child("chatRoomList").child(chatRoomUid).removeValue()
+
         }
 
         override suspend fun sendMessage(content: String, room: ChatRoomEntity): Response<Int> {
@@ -125,23 +122,14 @@ class ChatDataSourceImpl (
                         val messageUid = databaseReference.child("chat").child("messageList").child(room.chatRoomUid).push().key
 
 
-                        lateinit var sender : ChatRoomMemberEntity
-                        lateinit var receiver : ChatRoomMemberEntity
+                        lateinit var sender : RoomMemberEntity
 
-                        room.memberMap.values.forEach {
-
-                                if (it.uid.equals(AppContext.uid)) {
-                                        sender = it
-                                } else {
-                                        receiver = it
-                                }
-
-                        }
 
 
                         val message = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                         {
 
+                                /**
                                 MessageEntity(
                                         messageUid!!,
                                         content,
@@ -151,7 +139,7 @@ class ChatDataSourceImpl (
                                         LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
                                         LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm")),
                                         false
-                                )
+                                )**/
                         }
                         else
                         {
@@ -159,6 +147,7 @@ class ChatDataSourceImpl (
                                 val dateFormat = SimpleDateFormat("yyyy-MM-dd")
                                 val timeFormat = SimpleDateFormat("HH:mm")
 
+                                /**
                                 MessageEntity(
                                         messageUid!!,
                                         content,
@@ -168,19 +157,13 @@ class ChatDataSourceImpl (
                                         dateFormat.format(calendar.time),
                                         timeFormat.format(calendar.time),
                                         false
-                                )
+                                )**/
 
                         }
 
 
 
-                        databaseReference.child("chat").child("messageList").child(room.chatRoomUid).child(messageUid).setValue(message)
 
-                        databaseReference.child("chat").child("chatRoomListByUser").child(receiver.uid).child(room.chatRoomUid).child("unreadMessageCounter").setValue(ServerValue.increment(1.0)).await()
-
-                        databaseReference.child("chat").child("chatRoomListByUser").child(sender.uid).child(room.chatRoomUid).child("lastMessageSent").setValue(message.contents).await()
-
-                        databaseReference.child("chat").child("chatRoomListByUser").child(receiver.uid).child(room.chatRoomUid).child("lastMessageSent").setValue(message.contents).await()
 
 
                         // must edit in later to handle an error

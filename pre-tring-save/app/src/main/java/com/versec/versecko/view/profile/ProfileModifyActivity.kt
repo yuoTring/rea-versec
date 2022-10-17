@@ -1,33 +1,26 @@
 package com.versec.versecko.view.profile
 
-import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
-import android.net.Uri
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.versec.versecko.R
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.databinding.ActivityProfileModifyBinding
+import com.versec.versecko.util.Response
+import com.versec.versecko.util.WindowEventManager
 import com.versec.versecko.view.ChoosePlaceActivity
 import com.versec.versecko.view.signup.FillUserInfoActivity
-import com.versec.versecko.view.signup.adapter.ImageAdapter
 import com.versec.versecko.view.signup.adapter.TagAdapter
 import com.versec.versecko.viewmodel.ProfileModifyViewModel
-import com.yalantis.ucrop.UCrop
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.File
-import java.time.LocalDateTime
 
 class ProfileModifyActivity : AppCompatActivity() {
 
@@ -68,10 +61,10 @@ class ProfileModifyActivity : AppCompatActivity() {
         tripList = mutableListOf("+")
         styleList = mutableListOf("+")
 
-        viewModel._user.observe(this, Observer { updatedUser ->
+
+        viewModel.user.observe(this, Observer { updatedUser ->
 
             userEntity = updatedUser
-            Log.d("profile-modify", updatedUser.toString())
 
 
 
@@ -82,8 +75,8 @@ class ProfileModifyActivity : AppCompatActivity() {
             binding.editSelfIntroduction.setText(userEntity.selfIntroduction)
 
 
-
         })
+
 
 
 
@@ -167,32 +160,63 @@ class ProfileModifyActivity : AppCompatActivity() {
 
         binding.buttonComplete.setOnClickListener {
 
-            var checkImageReadyOrNot = false
+            userEntity.selfIntroduction = binding.editSelfIntroduction.text.toString()
 
+            lifecycleScope.launch {
 
+                show()
 
-            if (checkImageReadyOrNot) {
+                val insertResponse_Remote = viewModel.insertUser_Remote(userEntity)
 
+                val insertResponse_Local = viewModel.insertUser_Local(userEntity)
 
-                userEntity.selfIntroduction = binding.editSelfIntroduction.text.toString()
+                when(insertResponse_Remote) {
+
+                    is Response.Success -> {
+                        hide()
+                        finish()
+                    }
+                    is Response.Error -> {
+                        hide()
+                    }
+                    else -> {
+
+                    }
+                }
+
+                when(insertResponse_Local) {
+
+                    is Response.Success -> {
+                        hide()
+                    }
+                    is Response.Error -> {
+                        hide()
+                    }
+                    else -> {
+
+                    }
+                }
 
 
 
 
 
             }
-            else
-            {
-                Toast.makeText(this,"nonono", Toast.LENGTH_SHORT).show()
-            }
-
-
-
-
-
         }
 
 
+    }
+
+    private fun show() {
+
+        binding.progressBar.show()
+        WindowEventManager.blockUserInteraction(this)
+    }
+
+    private fun hide() {
+
+        binding.progressBar.hide()
+        WindowEventManager.openUserInteraction(this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -48,7 +48,7 @@ class CardStackAdapter (
         var user = userList.get(position)
 
 
-        holder.binding.textNickAndAge.setText(user.nickName+", "+user.age)
+        holder.binding.textNickAndAge.setText(user.nickName)
         holder.binding.textResidence.setText(user.mainResidence)
         holder.binding.textMannerScore.setText("매너 점수: "+ user.mannerScore)
 

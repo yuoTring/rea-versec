@@ -3,25 +3,28 @@ package com.versec.versecko.util
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.RingtoneManager
 import android.os.Build
-import android.os.IBinder
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import androidx.core.content.getSystemService
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.versec.versecko.R
+import com.versec.versecko.data.repository.UserRepository
 import com.versec.versecko.view.MainScreenActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
-class FCMService : FirebaseMessagingService() {
+class FCMServic : FirebaseMessagingService() {
 
+    private val userRepository : UserRepository by inject<UserRepository>()
     private val FCM_ID ="channel_fcm"
 
 
@@ -65,6 +68,20 @@ class FCMService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
+
+        CoroutineScope(Dispatchers.IO).launch {
+
+            when(userRepository.postFCMToken(token)) {
+                is Response.Success -> {
+                    Log.d("fcm-log", "post success")
+                }
+                is Response.Error -> { Log.d("fcm-log", "post error") }
+                else -> {
+
+                }
+            }
+        }
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

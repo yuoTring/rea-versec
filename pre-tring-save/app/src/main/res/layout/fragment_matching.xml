@@ -11,142 +11,215 @@
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/white"
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
-        <androidx.core.widget.ContentLoadingProgressBar
-            android:id="@+id/progressBarUser"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="?android:attr/progressBarStyle"
-            android:elevation="2dp"
-            android:visibility="invisible"
-            app:layout_constraintTop_toTopOf="@id/cardUserList"
-            app:layout_constraintBottom_toBottomOf="@id/cardUserList"
-            app:layout_constraintStart_toStartOf="@id/cardUserList"
-            app:layout_constraintEnd_toEndOf="@id/cardUserList"/>
-
-
-        <com.yuyakaido.android.cardstackview.CardStackView
-            android:id="@+id/cardUserList"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/containerUserOn"
             android:layout_width="match_parent"
-            android:layout_height="360dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginBottom="8dp"
-            android:background="@color/white_cotton"
-            app:cardBackgroundColor="@color/blue"
-            android:clipToPadding="false"
-            app:layout_constraintTop_toTopOf="parent"/>
+            android:layout_height="match_parent">
+
+            <androidx.core.widget.ContentLoadingProgressBar
+                android:id="@+id/progressBarUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?android:attr/progressBarStyle"
+                android:elevation="2dp"
+                android:visibility="invisible"
+                app:layout_constraintTop_toTopOf="@id/cardUserList"
+                app:layout_constraintBottom_toBottomOf="@id/cardUserList"
+                app:layout_constraintStart_toStartOf="@id/cardUserList"
+                app:layout_constraintEnd_toEndOf="@id/cardUserList"/>
 
 
-        <TextView
-            android:id="@+id/text000"
-            android:layout_width="152dp"
-            android:layout_height="20dp"
-            android:layout_marginTop="32dp"
-            android:gravity="center"
-            android:text="여행 Wish"
-            android:textColor="@color/gray_dark"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/cardUserList"
-            app:layout_constraintStart_toStartOf="@id/cardUserList"
-            app:layout_constraintEnd_toStartOf="@id/view000"
-            />
-
-        <View
-            android:id="@+id/view000"
-            android:layout_width="0.96dp"
-            android:layout_height="56dp"
-            android:layout_marginTop="24dp"
-            android:background="@color/nero"
-            app:layout_constraintTop_toBottomOf="@id/cardUserList"
-            app:layout_constraintStart_toEndOf="@id/text000"
-            app:layout_constraintEnd_toStartOf="@id/text001"/>
+            <com.yuyakaido.android.cardstackview.CardStackView
+                android:id="@+id/cardUserList"
+                android:layout_width="360dp"
+                android:layout_height="360dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/white_cotton"
+                app:cardBackgroundColor="@color/blue"
+                android:clipToPadding="false"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
 
-        <TextView
-            android:id="@+id/text001"
-            android:layout_width="152dp"
-            android:layout_height="20dp"
-            android:layout_marginTop="32dp"
-            android:gravity="center"
-            android:text="여행 Style"
-            android:textColor="@color/gray_dark"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/cardUserList"
-            app:layout_constraintStart_toEndOf="@id/view000"
-            app:layout_constraintEnd_toEndOf="@id/cardUserList"
-            />
+            <TextView
+                android:id="@+id/text000"
+                android:layout_width="152dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="32dp"
+                android:gravity="center"
+                android:text="여행 Wish"
+                android:textColor="@color/gray_dark"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@id/cardUserList"
+                app:layout_constraintStart_toStartOf="@id/cardUserList"
+                app:layout_constraintEnd_toStartOf="@id/view000"
+                />
 
-        <TextView
-            android:id="@+id/textTripWish"
-            android:layout_width="152dp"
-            android:layout_height="32dp"
-            android:gravity="center"
-            android:text="서울전체, 부산 해운대구"
-            android:textColor="@color/charcoal"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/text000"
-            app:layout_constraintStart_toStartOf="@id/text000"
-            />
+            <View
+                android:id="@+id/view000"
+                android:layout_width="0.96dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="24dp"
+                android:background="@color/nero"
+                app:layout_constraintTop_toBottomOf="@id/cardUserList"
+                app:layout_constraintStart_toEndOf="@id/text000"
+                app:layout_constraintEnd_toStartOf="@id/text001"/>
 
-        <TextView
-            android:id="@+id/textTripStyle"
-            android:layout_width="152dp"
-            android:layout_height="32dp"
-            android:gravity="center"
-            android:text="#캠핑, #드라이브"
-            android:textColor="@color/charcoal"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/text001"
-            app:layout_constraintEnd_toEndOf="@id/text001">
 
-        </TextView>
+            <TextView
+                android:id="@+id/text001"
+                android:layout_width="152dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="32dp"
+                android:gravity="center"
+                android:text="여행 Style"
+                android:textColor="@color/gray_dark"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@id/cardUserList"
+                app:layout_constraintStart_toEndOf="@id/view000"
+                app:layout_constraintEnd_toEndOf="@id/cardUserList"
+                />
 
-        <ImageView
-            android:id="@+id/buttonSkip"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_marginTop="32dp"
-            android:elevation="2dp"
-            android:padding="18dp"
-            android:src="@drawable/icon_skip"
-            android:background="@drawable/button_round_white"
-            app:layout_constraintTop_toBottomOf="@id/view000"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/buttonKnock"/>
+            <TextView
+                android:id="@+id/textTripWish"
+                android:layout_width="152dp"
+                android:layout_height="32dp"
+                android:gravity="center"
+                android:text="서울전체, 부산 해운대구"
+                android:textColor="@color/charcoal"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@id/text000"
+                app:layout_constraintStart_toStartOf="@id/text000"
+                />
 
-        <ImageView
-            android:id="@+id/buttonKnock"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_marginTop="32dp"
-            android:elevation="2dp"
-            android:padding="16dp"
-            android:src="@drawable/icon_knock"
-            android:background="@drawable/button_round_white"
-            app:layout_constraintTop_toBottomOf="@id/view000"
-            app:layout_constraintStart_toEndOf="@id/buttonSkip"
-            app:layout_constraintEnd_toStartOf="@id/buttonLike"
-            />
+            <TextView
+                android:id="@+id/textTripStyle"
+                android:layout_width="152dp"
+                android:layout_height="32dp"
+                android:gravity="center"
+                android:text="#캠핑, #드라이브"
+                android:textColor="@color/charcoal"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@id/text001"
+                app:layout_constraintEnd_toEndOf="@id/text001">
 
-        <ImageView
-            android:id="@+id/buttonLike"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_marginTop="32dp"
-            android:elevation="2dp"
-            android:padding="16dp"
-            android:src="@drawable/icon_heart"
-            android:background="@drawable/button_round_white"
-            app:layout_constraintTop_toBottomOf="@id/view000"
-            app:layout_constraintStart_toEndOf="@id/buttonKnock"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            </TextView>
+
+            <ImageView
+                android:id="@+id/buttonSkip"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="32dp"
+                android:elevation="2dp"
+                android:padding="18dp"
+                android:src="@drawable/icon_skip"
+                android:background="@drawable/button_round_white"
+                app:layout_constraintTop_toBottomOf="@id/view000"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/buttonKnock"/>
+
+            <ImageView
+                android:id="@+id/buttonKnock"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="32dp"
+                android:elevation="2dp"
+                android:padding="16dp"
+                android:src="@drawable/icon_knock"
+                android:background="@drawable/button_round_white"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/view000"
+                app:layout_constraintStart_toEndOf="@id/buttonSkip"
+                app:layout_constraintEnd_toStartOf="@id/buttonLike"
+                />
+
+            <ImageView
+                android:id="@+id/buttonLike"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="32dp"
+                android:elevation="2dp"
+                android:padding="16dp"
+                android:src="@drawable/icon_heart"
+                android:background="@drawable/button_round_white"
+                app:layout_constraintTop_toBottomOf="@id/view000"
+                app:layout_constraintStart_toEndOf="@id/buttonKnock"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/containerNoResult"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible">
+
+            <ImageView
+                android:id="@+id/image000"
+                android:layout_width="232dp"
+                android:layout_height="128dp"
+                android:layout_marginBottom="128dp"
+                android:background="@drawable/logo_large"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <TextView
+                android:id="@+id/text002"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:text="검색된 여행 친구가 없습니다 \n 검색 범위를 넓힌 다음 더 많은 친구들을 만나보세요"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:layout_constraintTop_toBottomOf="@id/image000"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.43"/>
+
+
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/buttonSetSearchCondition"
+                android:layout_width="224dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="120dp"
+                android:paddingLeft="24dp"
+                android:background="@drawable/button_corner_32_charcoal"
+                android:text="검색 조건 설정"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintTop_toBottomOf="@id/image000"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="104dp"
+                android:elevation="2dp"
+                android:src="@drawable/icon_filter_white"
+                app:layout_constraintTop_toTopOf="@id/buttonSetSearchCondition"
+                app:layout_constraintBottom_toBottomOf="@id/buttonSetSearchCondition"
+                app:layout_constraintStart_toStartOf="@id/buttonSetSearchCondition"
+                app:layout_constraintEnd_toEndOf="@id/buttonSetSearchCondition"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

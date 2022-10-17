@@ -14,17 +14,15 @@
         android:layout_height="48dp"
         android:gravity="center"
         android:background="@color/white_cotton"
-        android:text="~~~"
-        android:textColor="@color/blue"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/buttonLeft"
-        android:layout_width="20dp"
+        android:layout_width="16dp"
         android:layout_height="20dp"
         android:layout_marginLeft="16dp"
-        android:visibility="invisible"
-        android:background="@drawable/icon_reset"
+        android:visibility="visible"
+        android:background="@drawable/icon_back"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/textTopTitle"
         app:layout_constraintStart_toStartOf="parent"/>
@@ -66,7 +64,6 @@
         app:itemIconTint="@color/charcoal"
         app:labelVisibilityMode="labeled"
         app:itemTextColor="@color/charcoal"
-
         app:layout_constraintBottom_toBottomOf="parent"
         />
 

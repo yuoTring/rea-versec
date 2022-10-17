@@ -17,7 +17,7 @@
         android:id="@+id/page_lounge"
         android:enabled="true"
         android:icon="@drawable/icon_lounge"
-        android:title="라운지"/>
+        android:title="동네이야기"/>
 
     <item
         android:id="@+id/page_chat"

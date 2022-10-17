@@ -5,7 +5,7 @@ import java.io.Serializable
 data class ChatRoomEntity(
 
     var chatRoomUid : String = "...",
-    var memberMap : MutableMap<String, ChatRoomMemberEntity> = mutableMapOf(),
+    var memberMap : MutableMap<String, RoomMemberEntity> = mutableMapOf(),
     var unreadMessageCounter : Int = 0,
     var lastMessageSent : String = "..."
 

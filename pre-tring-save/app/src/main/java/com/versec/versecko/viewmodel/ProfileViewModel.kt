@@ -1,46 +1,50 @@
 package com.versec.versecko.viewmodel
 
 import androidx.lifecycle.*
+import com.versec.versecko.data.entity.StoryEntity
 import com.versec.versecko.data.entity.UserEntity
+import com.versec.versecko.data.repository.StoryRepository
 import com.versec.versecko.data.repository.UserRepository
+import com.versec.versecko.util.Response
 import kotlinx.coroutines.launch
 
 class ProfileViewModel (
 
-        private val userRepository: UserRepository
+        private val userRepository: UserRepository,
+        private val storyRepository: StoryRepository
 
         ) : ViewModel() {
 
-        private val _userRemote : MutableLiveData<UserEntity> = userRepository.getOwnUser_Remote().asLiveData() as MutableLiveData<UserEntity>
-        val userRemote : LiveData<UserEntity> get() = _userRemote
+
+
+
+        private val _userLocal : MutableLiveData<UserEntity> = userRepository.getOwnUser_Local().asLiveData() as MutableLiveData<UserEntity>
+        val userLocal : LiveData<UserEntity> = _userLocal
+
 
         var userEntity = UserEntity()
 
 
-
-        fun insertUser_Local (userEntity: UserEntity) {
-
-                viewModelScope.launch {
-
-                        userRepository.insertUser_Local(userEntity)
-                }
+        private suspend fun _getOwnUser_Remote () : Response<UserEntity?> {
+                return userRepository.getOwnUserOneShot()
         }
 
-        fun insert (userEntity: UserEntity) {
-                viewModelScope.launch {
+        suspend fun getOwnUser_Remote () : Response<UserEntity?> {
+                return _getOwnUser_Remote()
+        }
 
-                        userRepository.insertUser_Remote(userEntity)
+        private suspend fun _insertUser_Local (userEntity: UserEntity) : Response<Int> {
+                return userRepository.insertUser_Local(userEntity)
+        }
 
-                }
+        suspend fun insertUser_Local (userEntity: UserEntity) : Response<Int> {
+                return _insertUser_Local(userEntity)
         }
 
 
-
-
-
-
-
-
+        suspend fun getPath () : Response<Int> {
+                return storyRepository.uploadStory(StoryEntity())
+        }
 
 
 

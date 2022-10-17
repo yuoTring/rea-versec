@@ -3,6 +3,7 @@ package com.versec.versecko.data.room
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.util.*
 
 
 class TypeConverter {
@@ -28,5 +29,18 @@ class TypeConverter {
         val mapType = object : TypeToken<MutableMap<String, String>>() {}.type
 
         return Gson().fromJson(value, mapType)
+    }
+
+    @TypeConverter
+    fun dateToJson (value : Date?) : String {
+        return Gson().toJson(value)
+    }
+
+    @TypeConverter
+    fun jsonToDate (value: String) : Date? {
+
+        val dateType = object : TypeToken<Date?>() {}.type
+
+        return Gson().fromJson(value, dateType)
     }
 }

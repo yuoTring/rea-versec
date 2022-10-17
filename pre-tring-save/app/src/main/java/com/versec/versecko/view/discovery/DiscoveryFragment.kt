@@ -54,16 +54,16 @@ class DiscoveryFragment : Fragment() {
 
             if (it.equals(titleList.get(0))) {
 
-                requireActivity().startActivityForResult(Intent(requireActivity(), ChooseStyleActivity::class.java), 500)
+                requireActivity().startActivityForResult(Intent(requireActivity(), ChooseStyleActivity::class.java).putExtra("requestCode", DISCOVERY_STYLE), DISCOVERY_STYLE)
 
             } else if (it.equals(titleList.get(1))) {
 
-                requireActivity().startActivityForResult(Intent(requireActivity(), ChoosePlaceActivity::class.java), 501)
+                requireActivity().startActivityForResult(Intent(requireActivity(), ChoosePlaceActivity::class.java).putExtra("requestCode", DISCOVERY_RESIDENCE), DISCOVERY_RESIDENCE)
 
 
             } else if (it.equals(titleList.get(2))) {
 
-                requireActivity().startActivityForResult(Intent(requireActivity(), ChoosePlaceActivity::class.java), 502)
+                requireActivity().startActivityForResult(Intent(requireActivity(), ChoosePlaceActivity::class.java).putExtra("requestCode", DISCOVERY_TRIP), DISCOVERY_TRIP)
 
             }
 
@@ -75,6 +75,12 @@ class DiscoveryFragment : Fragment() {
     }
 
     companion object {
+
+        const val DISCOVERY_STYLE = 500
+        const val DISCOVERY_RESIDENCE = 501
+        const val DISCOVERY_TRIP = 502
+
+        const val AGAIN = 1000
 
         @JvmStatic
         fun newInstance() =

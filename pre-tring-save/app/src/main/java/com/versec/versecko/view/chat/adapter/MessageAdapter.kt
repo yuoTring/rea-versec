@@ -145,7 +145,7 @@ class MessageAdapter (
 
                 Glide
                     .with(viewHolder.binding.root)
-                    .load(message.sender.uri)
+                    .load(message.sender.profileUrl)
                     .into(viewHolder.binding.imageProfile)
 
 
@@ -173,7 +173,7 @@ class MessageAdapter (
 
                     Glide
                         .with(viewHolder.binding.root)
-                        .load(message.sender.uri)
+                        .load(message.sender.profileUrl)
                         .into(viewHolder.binding.imageProfile)
                 }
 

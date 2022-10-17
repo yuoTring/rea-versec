@@ -32,7 +32,6 @@ class AppContext : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        uid = "test!!!!!"
 
 
         startKoin {
@@ -41,10 +40,10 @@ class AppContext : Application() {
             modules(
                 sharedPreferenceModule,
                 roomDatabaseModule,
-                userRemoteDataSourceModule,
-                chatDataSourceModule,
+                firebaseModule,
+                dataSourceModule,
                 repositoryModule,
-                userViewModelModule
+                viewModelModule
             )
         }
     }

@@ -59,37 +59,58 @@
         <entry key="..\:/Users/cours/AndroidStudioProjects/versecko/app/src/main/res/layout/page_searching.xml" value="0.5" />
         <entry key="..\:/Users/cours/AndroidStudioProjects/versecko/app/src/main/res/menu/menu_bottom.xml" value="0.34074074074074073" />
         <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/drawable-v24/button_corner_12_superlightgray.xml" value="0.2885" />
+        <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/drawable/bnb_selector.xml" value="0.2335" />
         <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/drawable/button_corner_12_black.xml" value="0.4445" />
         <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/drawable/button_corner_12_charcoal.xml" value="0.1595" />
         <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/drawable/button_corner_16_gray_light.xml" value="0.4445" />
         <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/drawable/button_corner_8_superlightgray.xml" value="0.4445" />
+        <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/drawable/button_to.xml" value="0.4315" />
+        <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/drawable/ic_arrow_back_24.xml" value="0.4315" />
+        <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/drawable/ic_baseline_arrow_forward_ios_24.xml" value="0.4315" />
         <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/activity_choose_place.xml" value="0.3458333333333333" />
         <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/activity_choose_style.xml" value="0.2994791666666667" />
+        <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/activity_entry.xml" value="0.5208333333333334" />
         <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/activity_fill_user_image.xml" value="0.28804347826086957" />
+        <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/activity_fill_user_info.xml" value="0.48020833333333335" />
         <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/activity_filter.xml" value="0.33" />
         <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/activity_image_modify.xml" value="0.3807291666666667" />
-        <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/activity_main_screen.xml" value="0.39479166666666665" />
+        <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/activity_main.xml" value="0.37135416666666665" />
+        <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/activity_main_screen.xml" value="0.3544600938967136" />
         <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/activity_profile_modify.xml" value="0.33" />
         <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/activity_room.xml" value="0.4222222222222222" />
         <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/activity_setting.xml" value="0.4603174603174603" />
-        <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/activity_sign_in.xml" value="0.31302083333333336" />
+        <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/activity_sign_in.xml" value="0.25" />
+        <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/activity_splash.xml" value="0.1" />
+        <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/activity_story_upload.xml" value="0.353125" />
+        <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/activity_to_main_screen.xml" value="0.3234375" />
         <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/activity_user_profile.xml" value="0.25" />
         <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/fragment_chat.xml" value="0.22" />
         <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/fragment_discovery.xml" value="0.33" />
         <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/fragment_matching.xml" value="0.32864583333333336" />
+        <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/fragment_no_result.xml" value="0.3" />
         <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/fragment_profile.xml" value="0.32864583333333336" />
+        <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/fragment_story_feed.xml" value="0.3183876811594203" />
+        <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/item_alert.xml" value="0.34556159420289856" />
+        <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/item_alert_activate.xml" value="0.45416666666666666" />
+        <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/item_alert_delete.xml" value="0.45416666666666666" />
+        <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/item_alert_inactivate.xml" value="0.45416666666666666" />
         <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/item_cardstack_user.xml" value="0.12863070539419086" />
         <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/item_cardstack_viewpager.xml" value="0.21644803229061554" />
         <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/item_dropdown.xml" value="0.317481884057971" />
+        <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/item_logout.xml" value="0.45416666666666666" />
         <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/item_recycler_chatroom.xml" value="0.3808876811594203" />
         <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/item_recycler_discovery.xml" value="0.33" />
         <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/item_recycler_image.xml" value="0.4244791666666667" />
         <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/item_recycler_lounge_profile.xml" value="0.67" />
+        <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/item_recycler_place.xml" value="0.49114583333333334" />
         <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/item_recycler_style.xml" value="0.2994791666666667" />
         <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/item_recycler_style_contents.xml" value="0.9" />
+        <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/item_recycler_subplace.xml" value="0.49114583333333334" />
         <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/message_me.xml" value="0.67" />
         <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/message_other.xml" value="0.67" />
         <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/message_sender.xml" value="0.75" />
+        <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/layout/page_searching.xml" value="0.3" />
+        <entry key="..\:/Users/sas/Desktop/saerd/pre-tring-save/app/src/main/res/menu/menu_bottom.xml" value="0.4359375" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/drawable-v24/button_corner_8_black.xml" value="0.292" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/drawable-v24/dot_selected.xml" value="0.332" />
         <entry key="..\:/Users/sas/sadrd/pre-tring-save/app/src/main/res/drawable-v24/edit_line_bottom.xml" value="0.292" />

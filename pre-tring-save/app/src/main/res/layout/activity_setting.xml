@@ -32,14 +32,21 @@
         android:layout_height="56dp"
         android:minWidth="240dp"
         android:layout_marginTop="16dp"
+        android:paddingLeft="24dp"
+        android:gravity="center_vertical"
+        android:text="매칭 성공 알림"
+        android:textColor="@color/charcoal"
+        android:textSize="14sp"
+        android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/text000"
         app:layout_constraintStart_toStartOf="parent"/>
 
     <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/switchMatching"
         android:layout_width="wrap_content"
         android:layout_height="56dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="16dp"
         app:thumbTint="@color/white_cotton"
         app:trackTint="@color/blue"
         app:layout_constraintTop_toBottomOf="@id/text000"
@@ -50,13 +57,20 @@
         android:layout_width="wrap_content"
         android:layout_height="56dp"
         android:minWidth="240dp"
+        android:paddingLeft="24dp"
+        android:gravity="center_vertical"
+        android:text="새로 받은 Like 알림"
+        android:textColor="@color/charcoal"
+        android:textSize="14sp"
+        android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/text001"
         app:layout_constraintStart_toStartOf="parent"/>
 
     <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/switchLiked"
         android:layout_width="wrap_content"
         android:layout_height="56dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="16dp"
         app:thumbTint="@color/white_cotton"
         app:trackTint="@color/blue"
         app:layout_constraintTop_toBottomOf="@id/text001"
@@ -67,13 +81,20 @@
         android:layout_width="wrap_content"
         android:layout_height="56dp"
         android:minWidth="240dp"
+        android:paddingLeft="24dp"
+        android:gravity="center_vertical"
+        android:text="새 메시지 알림"
+        android:textColor="@color/charcoal"
+        android:textSize="14sp"
+        android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/text002"
         app:layout_constraintStart_toStartOf="parent"/>
 
     <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/switchMessage"
         android:layout_width="wrap_content"
         android:layout_height="56dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="16dp"
         app:thumbTint="@color/white_cotton"
         app:trackTint="@color/blue"
         app:layout_constraintTop_toBottomOf="@id/text002"
@@ -84,15 +105,24 @@
         android:layout_width="wrap_content"
         android:layout_height="56dp"
         android:minWidth="240dp"
+        android:paddingLeft="24dp"
+        android:gravity="center_vertical"
+        android:text="Knock 알림"
+        android:visibility="gone"
+        android:textColor="@color/charcoal"
+        android:textSize="14sp"
+        android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/text003"
         app:layout_constraintStart_toStartOf="parent"/>
 
     <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/switchKnock"
         android:layout_width="wrap_content"
         android:layout_height="56dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="16dp"
         app:thumbTint="@color/white_cotton"
         app:trackTint="@color/blue"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/text003"
         app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -101,17 +131,159 @@
         android:layout_width="wrap_content"
         android:layout_height="56dp"
         android:minWidth="240dp"
+        android:paddingLeft="24dp"
+        android:gravity="center_vertical"
+        android:text="마케팅 수신 동의"
+        android:textColor="@color/charcoal"
+        android:textSize="14sp"
+        android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/text004"
         app:layout_constraintStart_toStartOf="parent"/>
 
     <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/switchMarketing"
         android:layout_width="wrap_content"
         android:layout_height="56dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="16dp"
         app:thumbTint="@color/white_cotton"
         app:trackTint="@color/blue"
         app:layout_constraintTop_toBottomOf="@id/text004"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/text006"
+        android:layout_width="wrap_content"
+        android:layout_height="56dp"
+        android:minWidth="240dp"
+        android:paddingLeft="24dp"
+        android:gravity="center_vertical"
+        android:text="서비스 이용약관"
+        android:textColor="@color/charcoal"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/text005"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/textToService"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/button_to"
+        app:layout_constraintTop_toBottomOf="@id/text005"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/text007"
+        android:layout_width="wrap_content"
+        android:layout_height="56dp"
+        android:minWidth="240dp"
+        android:paddingLeft="24dp"
+        android:gravity="center_vertical"
+        android:text="개인정보 보호약관"
+        android:textColor="@color/charcoal"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/text006"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/textToPI"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/button_to"
+        app:layout_constraintTop_toBottomOf="@id/text006"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/text008"
+        android:layout_width="wrap_content"
+        android:layout_height="56dp"
+        android:minWidth="240dp"
+        android:paddingLeft="24dp"
+        android:gravity="center_vertical"
+        android:text="위치정보 이용약관"
+        android:textColor="@color/charcoal"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/text007"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/textToLI"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/button_to"
+        app:layout_constraintTop_toBottomOf="@id/text007"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/textLogOut"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:paddingLeft="24dp"
+        android:gravity="center_vertical"
+        android:text="로그아웃"
+        android:textColor="@color/red"
+        android:textSize="12sp"
+        app:layout_constraintTop_toBottomOf="@id/text008"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/textInactivate"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:paddingLeft="24dp"
+        android:gravity="center_vertical"
+        android:text="계정 비활성화"
+        android:textColor="@color/red"
+        android:textSize="12sp"
+        app:layout_constraintTop_toBottomOf="@id/textLogOut"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/textActivate"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:paddingLeft="24dp"
+        android:gravity="center_vertical"
+        android:text="계정 활성화"
+        android:textColor="@color/red"
+        android:textSize="12sp"
+        android:visibility="invisible"
+        app:layout_constraintTop_toBottomOf="@id/textLogOut"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/textDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:paddingLeft="24dp"
+        android:gravity="center_vertical"
+        android:text="계정 삭제"
+        android:textColor="@color/red"
+        android:textSize="12sp"
+        app:layout_constraintTop_toBottomOf="@id/textInactivate"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <androidx.core.widget.ContentLoadingProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="104dp"
+        android:layout_height="104dp"
+        android:visibility="invisible"
+        style="@style/Widget.AppCompat.ProgressBar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

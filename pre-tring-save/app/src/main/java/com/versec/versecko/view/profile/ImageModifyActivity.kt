@@ -11,12 +11,16 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.versec.versecko.databinding.ActivityImageModifyBinding
+import com.versec.versecko.util.Response
 import com.versec.versecko.view.signup.adapter.ImageAdapter
 import com.versec.versecko.viewmodel.ImageModifyViewModel
 import com.yalantis.ucrop.UCrop
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.time.LocalDateTime
@@ -50,7 +54,7 @@ class ImageModifyActivity : AppCompatActivity() {
 
 
 
-        imageList = mutableListOf(Uri.parse("---"),Uri.parse("---"),Uri.parse("---"),Uri.parse("---"),Uri.parse("---"),Uri.parse("---"))
+        imageList = mutableListOf(Uri.parse("null"),Uri.parse("null"),Uri.parse("null"),Uri.parse("null"),Uri.parse("null"),Uri.parse("null"))
 
         val resourceId = resources.getIdentifier("button_add","drawable", packageName)
 
@@ -64,7 +68,7 @@ class ImageModifyActivity : AppCompatActivity() {
 
 
                 builder.setItems(
-                    arrayOf("edit"),
+                    arrayOf("수정"),
                     DialogInterface.OnClickListener { dialogInterface, index ->
 
 
@@ -79,16 +83,40 @@ class ImageModifyActivity : AppCompatActivity() {
             } else {
 
 
-                if (!imageList.get(position).toString().equals("---")) {
+                if (!imageList.get(position).toString().equals("null")) {
 
                     builder.setItems(
-                        arrayOf("delete"),
+                        arrayOf("삭제"),
                         DialogInterface.OnClickListener { dialogInterface, index ->
 
-                            viewModel.deleteImage(position)
-                            imageList.set(position, Uri.parse("---"))
-                            imageAdapter.updateList(imageList)
-                            imageAdapter.notifyDataSetChanged()
+                            binding.progressBar.show()
+
+                            lifecycleScope.launch {
+
+                                val response = viewModel.deleteImage(position)
+
+                                when(response) {
+                                    is Response.Success -> {
+
+                                        binding.progressBar.hide()
+                                        imageList.set(position, Uri.parse("null"))
+                                        imageAdapter.updateList(imageList)
+                                        imageAdapter.notifyDataSetChanged()
+
+                                        syncOwnUser()
+                                    }
+                                    is Response.Error -> {
+
+                                        binding.progressBar.hide()
+                                        Toast.makeText(this@ImageModifyActivity, "인터넷 연결 오류로 인해 이미지가 삭제되지 않았습니다.", Toast.LENGTH_SHORT).show()
+                                    }
+                                    else -> {
+
+                                    }
+                                }
+
+                            }
+
 
                         })
 
@@ -130,6 +158,44 @@ class ImageModifyActivity : AppCompatActivity() {
 
     }
 
+    private suspend fun syncOwnUser () {
+
+        val remoteResponse = viewModel.getOwnUser_Remote()
+
+        when (remoteResponse) {
+            is Response.Success -> {
+
+                if (remoteResponse.data != null) {
+
+                    val localResponse = viewModel.insertUser_Local(remoteResponse.data)
+
+                    when(localResponse) {
+
+                        is Response.Success -> {
+
+                        }
+                        is Response.Error -> {
+
+                        }
+                        else -> {
+
+                        }
+                    }
+
+
+                } else {
+
+                }
+            }
+            is Response.Error -> {
+
+            }
+            else -> {
+
+            }
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -154,12 +220,32 @@ class ImageModifyActivity : AppCompatActivity() {
 
             if (croppedImageUri != null) {
 
-                imageList.set(onClickImageIndex, croppedImageUri)
+                binding.progressBar.show()
 
-                imageAdapter.updateList(imageList)
-                imageAdapter.notifyDataSetChanged()
+                lifecycleScope.launch {
 
-                viewModel.uploadImage(onClickImageIndex, croppedImageUri)
+                    val response = viewModel.reuploadImage(onClickImageIndex, croppedImageUri)
+
+                    when(response) {
+                        is Response.Success -> {
+                            binding.progressBar.hide()
+
+                            imageList.set(onClickImageIndex, croppedImageUri)
+
+                            imageAdapter.updateList(imageList)
+                            imageAdapter.notifyDataSetChanged()
+
+                            syncOwnUser()
+                        }
+                        is Response.Error -> {
+                            binding.progressBar.hide()
+                            Toast.makeText(this@ImageModifyActivity, "인터넷 연결 오류로 인해 이미지가 업로드되지 않았습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                        else -> {
+
+                        }
+                    }
+                }
             }
         }
         else if (resultCode == UCrop.RESULT_ERROR) {

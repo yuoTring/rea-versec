@@ -2,14 +2,15 @@ package com.versec.versecko.data.entity
 
 data class StoryEntity(
 
-    var uid : String,
-    var userUid : String,
-    var userNickName : String,
+    var uid : String = "uid",
+    var userUid : String ="uid",
+    var userNickName : String ="???",
 
-    var contents : String,
-    var uriList : List<String>,
+    var contents : String = "~~~",
+    var uriMap : MutableMap<String,String> = mutableMapOf(),
 
-    var location : String,
-    var likes : Int
+    var mainLocation : String = "???",
+    var subLocation : String = "???",
+    var likes : Int = 0
 
 )

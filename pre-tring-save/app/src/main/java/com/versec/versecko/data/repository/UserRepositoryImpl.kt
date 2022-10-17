@@ -21,10 +21,10 @@ class UserRepositoryImpl (
         return localDataSource.getOwnUser()
     }
 
-    override suspend fun insertUser_Local(userEntity: UserEntity) {
-
-        localDataSource.insertUser(userEntity)
+    override suspend fun insertUser_Local(userEntity: UserEntity): Response<Int> {
+        return localDataSource.insertUser(userEntity)
     }
+
 
     override suspend fun updateUriList(uriMap: MutableMap<String, String>, status: Int) {
 
@@ -80,6 +80,60 @@ class UserRepositoryImpl (
         }
     }
 
+    override fun setMatchingNotification(on: Boolean) {
+
+        localDataSource.setMatchingNotification(on)
+    }
+
+    override fun setLikedNotification(on: Boolean) {
+
+        localDataSource.setLikedNotification(on)
+    }
+
+    override fun setChatNotification(on: Boolean) {
+
+        localDataSource.setChatNotification(on)
+    }
+
+    override fun setKnockNotification(on: Boolean) {
+
+        localDataSource.setKnockNotification(on)
+    }
+
+    override fun setMarketingNotification(on: Boolean) {
+
+        localDataSource.setMarketingNotification(on)
+    }
+
+    override fun getMatchingNotification(): Boolean {
+
+        return localDataSource.getMatchingNotification()
+    }
+
+    override fun getLikedNotification(): Boolean {
+
+        return localDataSource.getLikedNotification()
+    }
+
+    override fun getChatNotification(): Boolean {
+
+        return localDataSource.getChatNotification()
+    }
+
+    override fun getKnockNotification(): Boolean {
+
+        return localDataSource.getKnockNotification()
+    }
+
+    override fun getMarketingNotification(): Boolean {
+
+        return localDataSource.getMarketingNotification()
+    }
+
+    override suspend fun updateDeletedAt(activate: Boolean): Response<Int> {
+        return localDataSource.updateDeletedAt(activate)
+    }
+
 
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -88,15 +142,26 @@ class UserRepositoryImpl (
         return remoteDataSource.getOwnUser()
     }
 
-    override suspend fun insertUser_Remote(userEntity: UserEntity) {
-
-        remoteDataSource.insertUser(userEntity)
-
+    override suspend fun getOwnUserOneShot(): Response<UserEntity?> {
+        return remoteDataSource.getOwnUserOneShot()
     }
+
+    override suspend fun insertUser_Remote(userEntity: UserEntity): Response<Int> {
+        return remoteDataSource.insertUser(userEntity)
+    }
+
 
     override suspend fun signIn(credential: PhoneAuthCredential): Response<Int> {
 
         return remoteDataSource.signIn(credential)
+    }
+
+    override fun getUid(): Response<String?> {
+        return remoteDataSource.getUid()
+    }
+
+    override suspend fun checkUid(uid: String): Response<Int> {
+        return remoteDataSource.checkUid(uid)
     }
 
     override suspend fun checkNickName(nickName: String): Response<Int> {
@@ -114,17 +179,60 @@ class UserRepositoryImpl (
         return remoteDataSource.getUsersWithGeoHash(latitude, longitude, radiusInMeter, gender, minAge, maxAge)
     }
 
-    override suspend fun uploadImage(uriMap: MutableMap<String, Uri>) {
+    override suspend fun getUsersWithPlace(
+        places: List<String>,
+        gender: String,
+        minAge: Int,
+        maxAge: Int
+    ): Response<MutableList<UserEntity>> {
 
-        remoteDataSource.uploadImage(uriMap)
+        return remoteDataSource.getUsersWithPlace(places, gender, minAge, maxAge)
     }
 
-    override fun deleteImage(index: Int) {
-        remoteDataSource.deleteImage(index)
+    override suspend fun getUsersWithResidence(
+        residences: List<String>,
+        gender: String,
+        minAge: Int,
+        maxAge: Int
+    ): Response<MutableList<UserEntity>> {
+
+        return remoteDataSource.getUsersWithResidence(residences, gender, minAge, maxAge)
     }
 
-    override suspend fun reuploadImage(index: Int, uri: Uri) {
-        remoteDataSource.reuploadImage(index, uri)
+    override suspend fun getUsersWithStyle(
+        styles: List<String>,
+        gender: String,
+        minAge: Int,
+        maxAge: Int
+    ): Response<MutableList<UserEntity>> {
+
+        return remoteDataSource.getUsersWithStyle(styles, gender, minAge, maxAge)
+    }
+
+    override suspend fun uploadImage(uriMap: MutableMap<String, Uri>): Response<Int> {
+        return remoteDataSource.uploadImage(uriMap)
+    }
+
+    override suspend fun deleteImage(index: Int): Response<Int> {
+        return remoteDataSource.deleteImage(index)
+    }
+
+
+    override suspend fun reuploadImage(index: Int, uri: Uri): Response<Int> {
+        return remoteDataSource.reuploadImage(index, uri)
+    }
+
+
+    override suspend fun saveFCMToken(): Response<Int> {
+        return remoteDataSource.saveFCMToken()
+    }
+
+    override suspend fun getFCMToken(): Response<String> {
+        return remoteDataSource.getFCMToken()
+    }
+
+    override suspend fun postFCMToken(token: String): Response<Int> {
+        return remoteDataSource.postFCMToken(token)
     }
 
     override suspend fun likeUser(otherUser: UserEntity, ownUser: UserEntity): Response<Int> {
@@ -158,6 +266,22 @@ class UserRepositoryImpl (
 
     override suspend fun rejectMatched(otherUser: UserEntity): Response<Int> {
         return remoteDataSource.rejectMatched(otherUser)
+    }
+
+    override fun logOut(): Response<Int> {
+        return remoteDataSource.logOut()
+    }
+
+    override suspend fun deleteAccount(): Response<Int> {
+        return remoteDataSource.deleteAccount()
+    }
+
+    override suspend fun inactivateAccount(): Response<Int> {
+        return remoteDataSource.inactivateAccount()
+    }
+
+    override suspend fun activateAccount(): Response<Int> {
+        return remoteDataSource.activateAccount()
     }
 
 

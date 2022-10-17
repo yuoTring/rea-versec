@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.io.Serializable
+import java.util.*
 
 @Entity (tableName = "user")
 data class UserEntity(
@@ -11,7 +12,6 @@ data class UserEntity(
     @PrimaryKey var uid : String = "0",
     @ColumnInfo(name = "nick_name") var nickName : String = "ALexion",
     @ColumnInfo(name = "gender") var gender : String = "male",
-    @ColumnInfo(name = "age") var age : Int =25,
     @ColumnInfo(name = "birth") var birth : String = "19991212",
 
     @ColumnInfo(name = "main_residence") var mainResidence : String = "Seoul",
@@ -20,11 +20,12 @@ data class UserEntity(
     @ColumnInfo(name = "trip_style") var tripStyle : MutableList<String> = mutableListOf(),
     @ColumnInfo(name = "self_introduction") var selfIntroduction : String = "Hi",
 
-    //@ColumnInfo(name = "uri_list") var uriList : MutableList<String> = mutableListOf("!!!","!!?"),
     @ColumnInfo(name = "uri_Map") var uriMap : MutableMap<String,String> = mutableMapOf("0" to "---", "1" to "---"),
-    @ColumnInfo(name = "geohash") var geohash : String = "",
+    @ColumnInfo(name = "geohash") var geohash : String = "???",
     @ColumnInfo(name = "latitude") var latitude : Double = 37.75,
     @ColumnInfo(name = "longitude") var longitude : Double = 124.5,
+    @ColumnInfo(name = "language") var languages : MutableList<String> = mutableListOf("ko"),
+    @ColumnInfo(name = "deletedAt") var deletedAt : Date? = null,
 
     @ColumnInfo(name = "manner_score") var mannerScore : Double = 4.5,
     @ColumnInfo(name = "premium") var premiumOrNot : Boolean = false,

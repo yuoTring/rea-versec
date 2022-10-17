@@ -6,16 +6,20 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayoutMediator
 import com.versec.versecko.R
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.databinding.ActivityUserProfileBinding
 import com.versec.versecko.util.Response
 import com.versec.versecko.view.profile.adapter.ViewPagerAdapter
+import com.versec.versecko.view.signup.adapter.TagAdapter
 import com.versec.versecko.viewmodel.DetailProfileViewModel
 import com.versec.versecko.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.*
 
 class UserProfileActivity : AppCompatActivity() {
 
@@ -34,6 +38,9 @@ class UserProfileActivity : AppCompatActivity() {
 
     private lateinit var imageAdapter : ViewPagerAdapter
 
+    private lateinit var tripAdapter : TagAdapter
+    private lateinit var styleAdapter: TagAdapter
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -45,9 +52,13 @@ class UserProfileActivity : AppCompatActivity() {
         val intent = intent
 
         otherUser = intent.getSerializableExtra("otherUser") as UserEntity
+        Log.d("error-check","other: "+otherUser.toString())
+
 
         mainViewModel.userLocal.observe(this, Observer {
             ownUser = it
+
+            Log.d("error-check","own: "+ownUser.toString())
         })
 
 
@@ -151,7 +162,10 @@ class UserProfileActivity : AppCompatActivity() {
             } else if (otherUser.loungeStatus == MATCHING) {
 
                 lifecycleScope.launch {
-                    when(viewModel.openChat(otherUser, ownUser)) {
+
+                    val openResponse = viewModel.openChat(otherUser, ownUser)
+
+                    when(openResponse) {
                         is Response.Success -> {
 
                             binding.progressBarUserProfile.hide()
@@ -162,7 +176,6 @@ class UserProfileActivity : AppCompatActivity() {
                                     finish()
                                 }
                                 is Response.Error -> {
-
                                 }
                                 else -> {
 
@@ -171,7 +184,7 @@ class UserProfileActivity : AppCompatActivity() {
 
                         }
                         is Response.Error -> {
-
+                            Log.d("error-check", openResponse.errorMessage)
                         }
                         else -> {
 
@@ -196,9 +209,28 @@ class UserProfileActivity : AppCompatActivity() {
         binding.viewpagerProfileImage.adapter = imageAdapter
         TabLayoutMediator(binding.tabLayout, binding.viewpagerProfileImage) { tab, position -> }
 
+        val age = Calendar.getInstance().get(Calendar.YEAR) - otherUser.birth.substring(0,4).toInt()
+
+        binding.textNickAndAge.setText(otherUser.nickName+" ,"+age)
+
         binding.textResidence.setText(otherUser.mainResidence+" "+otherUser.subResidence)
-        binding.textNickAndAge.setText(otherUser.nickName+", "+otherUser.age)
         binding.textMannerScore.setText(otherUser.mannerScore.toString())
+
+        tripAdapter = TagAdapter(otherUser.tripWish) {
+
+        }
+
+        styleAdapter = TagAdapter(otherUser.tripStyle) {
+
+        }
+
+        binding.recyclerTripWish.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL,false)
+        binding.recyclerTripWish.adapter = tripAdapter
+
+        binding.recyclerTripStyle.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+        binding.recyclerTripStyle.adapter = styleAdapter
+
+        binding.textSelfIntroduction.setText(otherUser.selfIntroduction)
 
     }
 }

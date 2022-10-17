@@ -45,12 +45,12 @@ class StyleAdapter (
 
         holder.bind(styleList.get(position), onClick)
 
+        val id = activity.resources.getIdentifier("style_"+styleList.get(position).substringAfter("__"), "drawable",activity.packageName)
 
-        val resourceId = activity.resources.getIdentifier("s1_test"+styleList.get(position), "drawable", activity.packageName)
-        holder.binding.imageStyle.setImageDrawable(ContextCompat.getDrawable(activity, resourceId))
-        holder.binding.textStyle.setText(styleList.get(position))
+        holder.binding.imageStyle.setImageDrawable(ContextCompat.getDrawable(activity, id))
+        holder.binding.textStyle.setText(styleList.get(position).substringBefore("__"))
 
-        if (chosenList.contains(styleList.get(position))) {
+        if (chosenList.contains(styleList.get(position).substringBefore("__"))) {
 
             holder.binding.imageOutLine.visibility = View.VISIBLE
             holder.binding.textStyle.setTextColor(ContextCompat.getColor(activity, R.color.blue_azure))
