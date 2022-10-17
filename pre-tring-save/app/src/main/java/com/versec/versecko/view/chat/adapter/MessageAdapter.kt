@@ -68,26 +68,28 @@ class MessageAdapter (
 
             val viewHolder = holder as MeViewHolder
 
-            viewHolder.binding.textMessage.setText(message.contents)
+            viewHolder.binding.textMessage.setText()
 
             // first message
             if (position == 0 ) {
 
                 viewHolder.binding.textDate.visibility = View.VISIBLE
-                viewHolder.binding.textDate.setText(message.date)
+                viewHolder.binding.textDate.setText()
 
 
 
             } else {
 
                 // Date Visible (current message date != former message date)
+
+                /**
                 if (!message.date.equals(messageList.get(position-1).date))
                 {
                     viewHolder.binding.textDate.visibility = View.VISIBLE
                     viewHolder.binding.textDate.setText(message.date)
                 } else {
                     viewHolder.binding.textDate.visibility = View.GONE
-                }
+                }**/
 
 
             }
@@ -95,7 +97,7 @@ class MessageAdapter (
             // last message
             if (position == messageList.size -1 ) {
 
-                viewHolder.binding.textTime.setText(message.time)
+                viewHolder.binding.textTime.setText()
 
             } else {
 
@@ -103,13 +105,14 @@ class MessageAdapter (
                 if (message.sender.uid.equals(messageList.get(position+1).sender.uid)) {
 
                     // Time Invisible (current message time == next message time )
+                    /**
                     if (message.time.equals(messageList.get(position+1).time)) {
 
                         viewHolder.binding.textTime.visibility = View.GONE
                     } else {
                         viewHolder.binding.textTime.visibility = View.VISIBLE
                         viewHolder.binding.textTime.setText(message.time)
-                    }
+                    } **/
 
                 } else {
 
@@ -122,7 +125,7 @@ class MessageAdapter (
 
 
 
-            if (message.readed)
+            if (message.read)
                 viewHolder.binding.viewReadOrNot.visibility = View.INVISIBLE
             else
                 viewHolder.binding.viewReadOrNot.visibility = View.VISIBLE
@@ -141,7 +144,7 @@ class MessageAdapter (
                 viewHolder.binding.textDate.visibility = View.VISIBLE
                 viewHolder.binding.textDate.setText(message.date)
 
-                viewHolder.binding.textNickName.setText(message.sender.nickName)
+                viewHolder.binding.textNickName.setText()
 
                 Glide
                     .with(viewHolder.binding.root)
@@ -153,15 +156,18 @@ class MessageAdapter (
             } else {
 
                 // Date Visible (current message date != former message date)
+
+                /**
                 if (!message.date.equals(messageList.get(position-1).date))
                 {
                     viewHolder.binding.textDate.visibility = View.VISIBLE
                     viewHolder.binding.textDate.setText(message.date)
                 } else {
                     viewHolder.binding.textDate.visibility = View.GONE
-                }
+                } **/
 
                 // NickName and Image Invisible
+                /**
                 if (message.sender.uid.equals(messageList.get(position-1))) {
 
                     viewHolder.binding.textNickName.visibility = View.GONE
@@ -175,7 +181,7 @@ class MessageAdapter (
                         .with(viewHolder.binding.root)
                         .load(message.sender.profileUrl)
                         .into(viewHolder.binding.imageProfile)
-                }
+                } **/
 
 
             }
@@ -187,11 +193,13 @@ class MessageAdapter (
             // last message
             if (position == messageList.size -1 ) {
 
-                viewHolder.binding.textTime.setText(message.time)
+                viewHolder.binding.textTime.setText()
 
             } else {
 
                 // Check who send message
+
+                /**
                 if (message.sender.uid.equals(messageList.get(position+1).sender.uid)) {
 
                     // Time Invisible (current message time == next message time )
@@ -207,7 +215,7 @@ class MessageAdapter (
 
                     viewHolder.binding.textTime.visibility = View.VISIBLE
                     viewHolder.binding.textTime.setText(message.time)
-                }
+                } **/
 
             }
 

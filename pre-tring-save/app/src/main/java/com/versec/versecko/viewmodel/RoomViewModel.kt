@@ -1,7 +1,7 @@
 package com.versec.versecko.viewmodel
 
 import androidx.lifecycle.*
-import com.versec.versecko.data.entity.ChatRoomEntity
+import com.versec.versecko.data.entity.RoomEntity
 import com.versec.versecko.data.entity.MessageEntity
 import com.versec.versecko.data.repository.ChatRepository
 import com.versec.versecko.util.Response
@@ -16,11 +16,11 @@ class RoomViewModel (
             fun getMessages (roomUid : String) = repository.getMessages(roomUid).asLiveData()
 
 
-            private suspend fun _sendMessage (content : String, room : ChatRoomEntity) : Response<Int> {
+            private suspend fun _sendMessage (content : String, room : RoomEntity) : Response<Int> {
                 return repository.sendMessage(content, room)
             }
 
-            suspend fun sendMessage (content: String, room: ChatRoomEntity) : Response<Int> {
+            suspend fun sendMessage (content: String, room: RoomEntity) : Response<Int> {
                 return _sendMessage(content, room)
             }
 

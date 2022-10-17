@@ -1,7 +1,7 @@
 package com.versec.versecko.viewmodel
 
 import androidx.lifecycle.*
-import com.versec.versecko.data.entity.ChatRoomEntity
+import com.versec.versecko.data.entity.RoomEntity
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.data.repository.ChatRepository
 import com.versec.versecko.data.repository.UserRepository
@@ -22,7 +22,7 @@ class ChatViewModel (
     val matchingUsers : SharedFlow<Response<MutableList<UserEntity>>> =
         userRepository.getLoungeUsers(3).shareIn(viewModelScope, SharingStarted.WhileSubscribed(), 0)
 
-    val rooms : SharedFlow<Map<Int, Response<ChatRoomEntity>>> =
+    val rooms : SharedFlow<Map<Int, Response<RoomEntity>>> =
         repository.observeChatRoom().shareIn(viewModelScope, SharingStarted.WhileSubscribed(),0)
 
 

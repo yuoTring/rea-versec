@@ -8,14 +8,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
 import com.versec.versecko.R
-import com.versec.versecko.data.entity.ChatRoomEntity
+import com.versec.versecko.data.entity.RoomEntity
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.databinding.FragmentChatBinding
 import com.versec.versecko.util.Response
@@ -24,7 +23,6 @@ import com.versec.versecko.view.chat.adapter.LoungeAdapter
 import com.versec.versecko.view.matching.UserProfileActivity
 import com.versec.versecko.viewmodel.ChatViewModel
 import com.versec.versecko.viewmodel.MainViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -46,7 +44,7 @@ class ChatFragment : Fragment() {
 
 
     private lateinit var chatRoomAdapter: ChatRoomAdapter
-    private var roomList : MutableList<ChatRoomEntity> = mutableListOf()
+    private var roomList : MutableList<RoomEntity> = mutableListOf()
 
     private lateinit var ownUser : UserEntity
 
@@ -301,7 +299,7 @@ class ChatFragment : Fragment() {
                             var targetIndex = 0
 
                             roomList.forEachIndexed { index, chatRoomEntity ->
-                                if (chatRoomEntity.chatRoomUid.equals(response.data.chatRoomUid))
+                                if (chatRoomEntity.uid.equals(response.data.uid))
                                     targetIndex = index
                             }
 
@@ -326,7 +324,7 @@ class ChatFragment : Fragment() {
                             var targetIndex = 0
 
                             roomList.forEachIndexed { index, chatRoomEntity ->
-                                if (chatRoomEntity.chatRoomUid.equals(response.data.chatRoomUid))
+                                if (chatRoomEntity.uid.equals(response.data.uid))
                                     targetIndex = index
                             }
 

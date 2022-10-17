@@ -6,21 +6,21 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.versec.versecko.AppContext
-import com.versec.versecko.data.entity.ChatRoomEntity
+import com.versec.versecko.data.entity.RoomEntity
 import com.versec.versecko.data.entity.RoomMemberEntity
 import com.versec.versecko.databinding.ItemRecyclerChatroomBinding
 
 class ChatRoomAdapter (
 
-    private var chatRoomList : MutableList<ChatRoomEntity>,
-    private val onRoomClick : (ChatRoomEntity?) -> Unit
+    private var chatRoomList : MutableList<RoomEntity>,
+    private val onRoomClick : (RoomEntity?) -> Unit
 
         ) : RecyclerView.Adapter<ChatRoomAdapter.ViewHolder>() {
 
 
     inner class ViewHolder (val binding : ItemRecyclerChatroomBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind (room : ChatRoomEntity, onRoomClick: (ChatRoomEntity?) -> Unit) {
+        fun bind (room : RoomEntity, onRoomClick: (RoomEntity?) -> Unit) {
 
             binding.root.setOnClickListener {
                 onRoomClick(room)
@@ -43,19 +43,15 @@ class ChatRoomAdapter (
 
         holder.bind(room, onRoomClick)
 
-        room.memberMap.values.forEach {
 
-            if (it.uid != AppContext.uid)
-                member = it
-        }
 
         holder.binding.textNickName.setText(member.nickName)
-        holder.binding.textMessageSumnail.setText(room.lastMessageSent)
+        holder.binding.textMessageSumnail.setText(room.lastSent)
 
-        if (room.unreadMessageCounter > 0) {
+        if (room) {
 
             holder.binding.textUnreadMessageCounter.visibility = View.VISIBLE
-            holder.binding.textUnreadMessageCounter.setText(room.unreadMessageCounter.toString())
+            holder.binding.textUnreadMessageCounter.setText()
         }
         else {
             holder.binding.textUnreadMessageCounter.visibility = View.INVISIBLE
@@ -71,5 +67,5 @@ class ChatRoomAdapter (
     }
 
     override fun getItemCount(): Int { return chatRoomList.size }
-    fun changeRooms (chatRoomList: MutableList<ChatRoomEntity>) { this.chatRoomList = chatRoomList }
+    fun changeRooms (chatRoomList: MutableList<RoomEntity>) { this.chatRoomList = chatRoomList }
 }

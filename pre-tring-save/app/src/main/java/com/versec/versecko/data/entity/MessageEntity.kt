@@ -3,22 +3,21 @@ package com.versec.versecko.data.entity
 data class MessageEntity(
 
 
-    var messageUid : String = "...",
+    var uid : String = "...",
     var contents : String = "Hi this is error",
-    var chatRoomUid : String = "...",
 
     var sender : RoomMemberEntity = RoomMemberEntity(),
-    var receiver : RoomMemberEntity = RoomMemberEntity(),
 
     var date : String = "10",
     var time : String ="15:15",
-    var readed : Boolean = false
+    var read : Boolean = false
+
 ) {
 
     override fun equals(other: Any?): Boolean {
 
         val other = other as MessageEntity
-        if (messageUid.equals(other.messageUid))
+        if (uid.equals(other.uid))
             return true
         else
             return false

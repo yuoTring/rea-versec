@@ -4,7 +4,7 @@ import android.os.Build
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.versec.versecko.AppContext
-import com.versec.versecko.data.entity.ChatRoomEntity
+import com.versec.versecko.data.entity.RoomEntity
 import com.versec.versecko.data.entity.RoomMemberEntity
 import com.versec.versecko.data.entity.MessageEntity
 import com.versec.versecko.data.entity.UserEntity
@@ -14,8 +14,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 class ChatDataSourceImpl (
@@ -41,7 +39,7 @@ class ChatDataSourceImpl (
                         val roomId =
                                 databaseReference.child("chat").child("ChatRoomListByUser").child(ownUser.uid).push().key
 
-                        val room = ChatRoomEntity(
+                        val room = RoomEntity(
 
                                 roomId!!,
                                 mutableMapOf(
@@ -62,7 +60,7 @@ class ChatDataSourceImpl (
                 }
         }
 
-        override fun observeChatRoom(): Flow<Map<Int, Response<ChatRoomEntity>>> = callbackFlow {
+        override fun observeChatRoom(): Flow<Map<Int, Response<RoomEntity>>> = callbackFlow {
 
                 try {
 
@@ -77,19 +75,19 @@ class ChatDataSourceImpl (
                                                 snapshot: DataSnapshot,
                                                 previousChildName: String?
                                         ) {
-                                                snapshot.getValue(ChatRoomEntity::class.java)?.let { trySend(
+                                                snapshot.getValue(RoomEntity::class.java)?.let { trySend(
                                                         mapOf(1 to Response.Success(it))) }
                                         }
 
                                         override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                                                snapshot.getValue(ChatRoomEntity::class.java)?.let { trySend(
+                                                snapshot.getValue(RoomEntity::class.java)?.let { trySend(
                                                         mapOf(2 to Response.Success(it))
                                                 ) }
                                         }
 
                                         override fun onChildRemoved(snapshot: DataSnapshot) {
 
-                                                snapshot.getValue(ChatRoomEntity::class.java)?.let { trySend(
+                                                snapshot.getValue(RoomEntity::class.java)?.let { trySend(
                                                         mapOf(0 to Response.Success(it))) }
 
                                         }
@@ -115,11 +113,11 @@ class ChatDataSourceImpl (
 
         }
 
-        override suspend fun sendMessage(content: String, room: ChatRoomEntity): Response<Int> {
+        override suspend fun sendMessage(content: String, room: RoomEntity): Response<Int> {
 
                 try {
 
-                        val messageUid = databaseReference.child("chat").child("messageList").child(room.chatRoomUid).push().key
+                        val messageUid = databaseReference.child("chat").child("messageList").child(room.uid).push().key
 
 
                         lateinit var sender : RoomMemberEntity
@@ -241,8 +239,8 @@ class ChatDataSourceImpl (
         override suspend fun resetReadOrNot(message: MessageEntity): Response<Int> {
 
                 try {
-                        databaseReference.child("chat").child("messageList").child(message.chatRoomUid)
-                                .child(message.messageUid).child("readed").setValue(true)
+                        databaseReference.child("chat").child("messageList").child()
+                                .child(message.uid).child("readed").setValue(true)
 
                         return Response.Success(SUCCESS)
 
