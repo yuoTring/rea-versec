@@ -1,12 +1,10 @@
 package com.versec.versecko.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.data.repository.ChatRepository
 import com.versec.versecko.data.repository.UserRepository
 import com.versec.versecko.util.Response
-import kotlinx.coroutines.launch
 
 class DetailProfileViewModel (
 
@@ -31,7 +29,7 @@ class DetailProfileViewModel (
     private suspend fun _match(otherUser: UserEntity, ownUser: UserEntity) : Response<Int> { return userRepository.matchUser(otherUser, ownUser) }
 
     suspend fun openChat (otherUser: UserEntity, ownUser: UserEntity) : Response<Int> { return _openChat(otherUser, ownUser) }
-    private suspend fun _openChat (otherUser: UserEntity, ownUser: UserEntity) : Response<Int> { return repository.openChatRoom(otherUser, ownUser) }
+    private suspend fun _openChat (otherUser: UserEntity, ownUser: UserEntity) : Response<Int> { return repository.openRoom(otherUser, ownUser) }
 
     suspend fun deleteMatch (otherUid : String) : Response<Int> { return _deleteMatch(otherUid) }
     private suspend fun _deleteMatch(otherUid: String) : Response<Int> { return userRepository.deleteMatch(otherUid) }

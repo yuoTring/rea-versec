@@ -17,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.versec.versecko.AppContext
+import com.versec.versecko.data.entity.RoomMemberEntity
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.databinding.ActivityFillUserImageBinding
 import com.versec.versecko.util.Response
@@ -148,9 +149,9 @@ class FillUserImageActivity : AppCompatActivity()
 
             if (checkImageReadyOrNot){
 
-                for (x in 1000 .. 1000) {
 
 
+                    /**
                     val la = Random.nextDouble(-0.05, 0.05)
                     val lo = Random.nextDouble(-0.05,0.05)
 
@@ -161,7 +162,11 @@ class FillUserImageActivity : AppCompatActivity()
                     userEntity.latitude = userEntity.latitude + la
                     userEntity.longitude = userEntity.longitude + lo
 
-                    userEntity.phoneNumber = "010-0000-"+x
+                    userEntity.phoneNumber = "010-0000-"+x **/
+
+                    userEntity.uid = AppContext.uid
+                    userEntity.selfIntroduction = binding.editSelfIntroduction.text.toString()
+
 
 
                     val uriMap : MutableMap<String, Uri>
@@ -181,45 +186,115 @@ class FillUserImageActivity : AppCompatActivity()
 
                         val insertResponse_Remote = viewModel.insertUser_Remote(userEntity)
 
-                        val insertResponse_Local = viewModel.insertUser_Local(userEntity)
 
-
-
+                        //1. insert own user to FireStore without profile image url
                         when(insertResponse_Remote) {
                             is Response.Success -> {
 
-                                val uploadResult = viewModel.uploadImage(uriMap)
+                                Log.d("success-check", "success-insert-remote")
+                                val uploadResponse = viewModel.uploadImage(uriMap)
 
-                                when(uploadResult) {
+                                //2. upload profile images to Storage of Firebase and post their url to FireStore
+                                when(uploadResponse) {
                                     is Response.Success -> {
 
+                                        Log.d("success-check", "success-upload-image")
 
-                                        val fcmResponse = viewModel.saveFCMToken()
+                                        val getOwnUserResponse_WithUriMap = viewModel.getOwnUser()
 
-                                        when (fcmResponse) {
+                                        //3. get own user with profile images url from FireStore
+                                        when(getOwnUserResponse_WithUriMap) {
                                             is Response.Success -> {
 
-                                            }
-                                            is Response.Error -> {
+                                                Log.d("success-check", "success-get with uri")
 
-                                                Log.d("error-!!!", fcmResponse.errorMessage)
+                                                val user = getOwnUserResponse_WithUriMap.data!!
 
-                                            }
-                                            else -> {
 
-                                            }
-                                        }
+                                                val insertResponse_Local = viewModel.insertUser_Local(user)
 
-                                        val insertResponse_LocalWithUriMap = viewModel.getOwnUser()
+                                                // 4. insert own user with url to Local (Room SQL)
+                                                when(insertResponse_Local) {
+                                                    is Response.Error -> {
+                                                        show()
 
-                                        when(insertResponse_LocalWithUriMap) {
-                                            is Response.Success -> {
+                                                        Log.d("error-check", "error-insert-local: "+insertResponse_Local.errorMessage)
 
-                                                hide()
-                                                startActivity(Intent(this@FillUserImageActivity, CongratsActivity::class.java))
+                                                    }
+                                                    else -> {
+                                                        Log.d("success-check", "success-insert-local")
+
+
+                                                    }
+                                                }
+
+
+                                                val getFCMResponse =
+                                                    viewModel.getFCMToken()
+
+                                                //5. get FCM token from FireMessaging
+                                                when(getFCMResponse) {
+
+                                                    is Response.Success -> {
+                                                        Log.d("success-check", "success-get-fcm")
+
+                                                        val member = RoomMemberEntity(
+
+                                                            getFCMResponse.data,
+                                                            AppContext.uid,
+                                                            userEntity.nickName,
+                                                            user.uriMap.get("0").toString(),
+                                                            mutableListOf()
+
+                                                            )
+
+                                                        val insertMemberResponse = viewModel.insertMember(member)
+
+                                                        //6. insert member(own user) to Realtime Database
+                                                        when(insertMemberResponse) {
+
+                                                            is Response.Success -> {
+                                                                Log.d("success-check", "success-insert-member")
+
+                                                                hide()
+                                                                startActivity(Intent(this@FillUserImageActivity, CongratsActivity::class.java))
+
+                                                            }
+                                                            is Response.Error -> {
+
+                                                                show()
+
+                                                                Log.d("error-check", "error-insert-member: "+insertMemberResponse.errorMessage)
+
+                                                            }
+                                                            else -> {
+                                                                Log.d("else-check", "else-insert-member")
+
+                                                            }
+                                                        }
+
+                                                    }
+                                                    is Response.Error -> {
+
+                                                        show()
+
+                                                        Log.d("error-check", "error-get-fcm: "+ getFCMResponse.errorMessage)
+
+                                                    }
+                                                    else -> {
+
+                                                    }
+                                                }
+
+
+
+
                                             }
                                             is Response.Error -> {
                                                 show()
+
+                                                Log.d("error-check", "error-get-own-with-uri: "+ getOwnUserResponse_WithUriMap.errorMessage)
+
                                             }
                                             else -> {
 
@@ -232,6 +307,7 @@ class FillUserImageActivity : AppCompatActivity()
 
                                     is Response.Error -> {
 
+                                        Log.d("error-check", "error-upload-image: "+ uploadResponse.errorMessage)
 
                                         hide()
                                     }
@@ -244,6 +320,7 @@ class FillUserImageActivity : AppCompatActivity()
                             is Response.Error -> {
                                 hide()
 
+                                Log.d("error-check", "error-insert-remote: "+insertResponse_Remote.errorMessage)
 
                             }
                             else -> {
@@ -251,17 +328,10 @@ class FillUserImageActivity : AppCompatActivity()
                             }
                         }
 
-                        when(insertResponse_Local) {
-                            is Response.Error -> {
-                                hide()
-                            }
-                            else -> {
 
-                            }
-                        }
                     }
 
-                }
+
 
 
 

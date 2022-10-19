@@ -121,6 +121,8 @@ class MatchingFragment : Fragment(), CardStackListener {
 
         lifecycleScope.launch {
 
+            delay(1000)
+
             binding.progressBarUser.show()
 
             //val response =

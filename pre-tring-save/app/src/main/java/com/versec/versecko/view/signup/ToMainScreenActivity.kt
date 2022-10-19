@@ -25,6 +25,8 @@ class ToMainScreenActivity : AppCompatActivity() {
 
             delay(2500)
 
+
+
             startActivity(Intent(this@ToMainScreenActivity, MainScreenActivity::class.java))
         }
     }

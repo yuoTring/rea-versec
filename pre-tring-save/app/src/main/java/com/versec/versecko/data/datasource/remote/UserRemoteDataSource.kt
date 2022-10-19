@@ -43,8 +43,8 @@ interface UserRemoteDataSource {
     suspend fun rejectLiked (otherUser: UserEntity) : Response<Int>
     suspend fun rejectMatched (otherUser: UserEntity) : Response<Int>
 
-    suspend fun saveFCMToken () : Response<Int>
     suspend fun getFCMToken () : Response<String>
+    suspend fun saveFCMToken () : Response<Int>
     suspend fun postFCMToken (token : String) : Response<Int>
 
 

@@ -3,14 +3,17 @@ package com.versec.versecko.viewmodel
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.versec.versecko.data.entity.RoomMemberEntity
 import com.versec.versecko.data.entity.UserEntity
+import com.versec.versecko.data.repository.ChatRepository
 import com.versec.versecko.data.repository.UserRepository
 import com.versec.versecko.util.Response
 import kotlinx.coroutines.launch
 
 class FillUserImageViewModel (
 
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val repository: ChatRepository
 
         ) : ViewModel(){
 
@@ -53,14 +56,30 @@ class FillUserImageViewModel (
 
 
 
-
-            private suspend fun _saveFCMToken () : Response<Int> {
-                return userRepository.saveFCMToken()
+            private suspend fun _insertMember (member : RoomMemberEntity) : Response<Int> {
+                return repository.insertUser(member)
             }
 
-            suspend fun saveFCMToken () : Response<Int> {
-                return _saveFCMToken()
+            suspend fun insertMember (member: RoomMemberEntity) : Response<Int> {
+                return _insertMember(member)
             }
+
+            private suspend fun _getFCMToken () : Response<String> {
+                return userRepository.getFCMToken()
+            }
+
+            suspend fun getFCMToken () : Response<String> {
+                return _getFCMToken()
+            }
+
+            private suspend fun _saveFCMToken (token : String) : Response<Int> {
+                return repository.saveFCMToken(token)
+            }
+
+            suspend fun saveFCMToken (token: String) : Response<Int> {
+                return _saveFCMToken(token)
+            }
+
 
 
 

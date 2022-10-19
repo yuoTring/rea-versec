@@ -91,7 +91,7 @@ val viewModelModule = module {
     viewModel { ProfileModifyViewModel(get()) }
     viewModel { ImageModifyViewModel(get()) }
     viewModel { FillUserInfoViewModel(get()) }
-    viewModel { FillUserImageViewModel(get()) }
+    viewModel { FillUserImageViewModel(get(),get()) }
     viewModel { MatchingViewModel(get()) }
     viewModel { DiscoveryViewModel(get()) }
     viewModel { MainViewModel(get()) }
@@ -99,9 +99,9 @@ val viewModelModule = module {
     viewModel { SplashViewModel(get()) }
     viewModel { SettingViewModel(get()) }
 
-    viewModel { ChatViewModel(get(),get()) }
+    viewModel { RoomListViewModel(get(),get()) }
     viewModel { DetailProfileViewModel(get(),get()) }
-    viewModel { RoomViewModel(get()) }
+    viewModel { MessageViewModel(get()) }
 
 }
 

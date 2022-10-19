@@ -9,21 +9,20 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.versec.versecko.AppContext
 import com.versec.versecko.R
 import com.versec.versecko.data.entity.RoomEntity
 import com.versec.versecko.data.entity.MessageEntity
 import com.versec.versecko.databinding.ActivityRoomBinding
 import com.versec.versecko.util.Response
 import com.versec.versecko.view.chat.adapter.MessageAdapter
-import com.versec.versecko.viewmodel.RoomViewModel
+import com.versec.versecko.viewmodel.MessageViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RoomActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityRoomBinding
-    private val viewModel : RoomViewModel by viewModel<RoomViewModel>()
+    private val viewModel : MessageViewModel by viewModel<MessageViewModel>()
     private var room : RoomEntity? = RoomEntity()
 
     private val messageList = mutableListOf<MessageEntity>()

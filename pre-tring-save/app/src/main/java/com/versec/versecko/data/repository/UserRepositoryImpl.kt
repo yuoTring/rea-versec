@@ -222,17 +222,8 @@ class UserRepositoryImpl (
         return remoteDataSource.reuploadImage(index, uri)
     }
 
-
-    override suspend fun saveFCMToken(): Response<Int> {
-        return remoteDataSource.saveFCMToken()
-    }
-
     override suspend fun getFCMToken(): Response<String> {
         return remoteDataSource.getFCMToken()
-    }
-
-    override suspend fun postFCMToken(token: String): Response<Int> {
-        return remoteDataSource.postFCMToken(token)
     }
 
     override suspend fun likeUser(otherUser: UserEntity, ownUser: UserEntity): Response<Int> {

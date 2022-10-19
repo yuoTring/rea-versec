@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.lifecycleScope
 import com.versec.versecko.AppContext
 import com.versec.versecko.R
@@ -44,7 +45,10 @@ class SplashActivity : AppCompatActivity()
 
                             lifecycleScope.launch {
 
+                                delay(1000)
+
                                 AppContext.uid = uid.data
+                                Log.d("uid-check", uid.data)
 
                                 startActivity(Intent(this@SplashActivity, ToMainScreenActivity::class.java))
                             }
@@ -66,7 +70,7 @@ class SplashActivity : AppCompatActivity()
 
                                 val builder = AlertDialog.Builder(this@SplashActivity)
 
-                                builder.setTitle("~~~~~").create().show()
+                                builder.setTitle("로그인 오류가 발생했습니다. 잠시 기다렸다가 다시 시도하십시오").create().show()
 
 
 

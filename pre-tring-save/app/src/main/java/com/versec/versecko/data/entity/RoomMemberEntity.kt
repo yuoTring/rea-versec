@@ -19,5 +19,6 @@ data class RoomMemberEntity(
 ) : Serializable
 
 data class Room (
-    var lastRead : Date = Date()
+    var uid : String = "null",
+    var lastRead : Long = 0
 )

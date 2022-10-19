@@ -14,13 +14,12 @@ import com.versec.versecko.FilterActivity
 import com.versec.versecko.R
 import com.versec.versecko.SettingActivity
 import com.versec.versecko.databinding.ActivityMainScreenBinding
-import com.versec.versecko.view.chat.ChatFragment
+import com.versec.versecko.view.chat.RoomFragment
 import com.versec.versecko.view.discovery.DiscoveryFragment
 import com.versec.versecko.view.matching.MatchingFragment
 import com.versec.versecko.view.profile.ProfileFragment
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.ArrayList
 
 class MainScreenActivity : AppCompatActivity() {
 
@@ -37,7 +36,7 @@ class MainScreenActivity : AppCompatActivity() {
     private lateinit var view : View
     private lateinit var matchingFragment: MatchingFragment
     private lateinit var profileFragment: ProfileFragment
-    private lateinit var chatFragment : ChatFragment
+    private lateinit var roomFragment : RoomFragment
     private lateinit var discoveryFragment: DiscoveryFragment
 
     private var discoveryMatchingFragment : MatchingFragment? = null
@@ -64,7 +63,7 @@ class MainScreenActivity : AppCompatActivity() {
 
                 add(R.id.fragmentContainer, ProfileFragment.newInstance(), "profile")
                 addToBackStack(null)
-                add(R.id.fragmentContainer, ChatFragment.newInstance(), "chat")
+                add(R.id.fragmentContainer, RoomFragment.newInstance(), "chat")
                 addToBackStack(null)
                 add(R.id.fragmentContainer, DiscoveryFragment.newInstance(), "discovery")
                 addToBackStack(null)
@@ -121,7 +120,7 @@ class MainScreenActivity : AppCompatActivity() {
 
                             show(matchingFragment)
                             hide(discoveryFragment)
-                            hide(chatFragment)
+                            hide(roomFragment)
                             hide(profileFragment)
 
                             discoveryMatchingFragment?.let { hide(it) }
@@ -156,7 +155,7 @@ class MainScreenActivity : AppCompatActivity() {
                             }
 
                             hide(matchingFragment)
-                            hide(chatFragment)
+                            hide(roomFragment)
                             hide(profileFragment)
 
                         }
@@ -183,7 +182,7 @@ class MainScreenActivity : AppCompatActivity() {
                         supportFragmentManager.commit {
                             setReorderingAllowed(true)
 
-                            show(chatFragment)
+                            show(roomFragment)
                             hide(matchingFragment)
                             hide(discoveryFragment)
                             hide(profileFragment)
@@ -209,7 +208,7 @@ class MainScreenActivity : AppCompatActivity() {
                             show(profileFragment)
                             hide(matchingFragment)
                             hide(discoveryFragment)
-                            hide(chatFragment)
+                            hide(roomFragment)
 
                             discoveryMatchingFragment?.let { hide(it) }
                         }
@@ -232,7 +231,7 @@ class MainScreenActivity : AppCompatActivity() {
 
         matchingFragment = supportFragmentManager.findFragmentByTag("matching") as MatchingFragment
         profileFragment = supportFragmentManager.findFragmentByTag("profile") as ProfileFragment
-        chatFragment = supportFragmentManager.findFragmentByTag("chat") as ChatFragment
+        roomFragment = supportFragmentManager.findFragmentByTag("chat") as RoomFragment
         discoveryFragment = supportFragmentManager.findFragmentByTag("discovery") as DiscoveryFragment
 
         discoveryMatchingFragment = supportFragmentManager.findFragmentByTag("discoveryMatching") as MatchingFragment?
@@ -291,7 +290,7 @@ class MainScreenActivity : AppCompatActivity() {
 
                 hide(discoveryFragment)
 
-                hide(chatFragment)
+                hide(roomFragment)
 
                 hide(profileFragment)
 

@@ -68,13 +68,13 @@ class MessageAdapter (
 
             val viewHolder = holder as MeViewHolder
 
-            viewHolder.binding.textMessage.setText()
+            //viewHolder.binding.textMessage.setText()
 
             // first message
             if (position == 0 ) {
 
                 viewHolder.binding.textDate.visibility = View.VISIBLE
-                viewHolder.binding.textDate.setText()
+                //viewHolder.binding.textDate.setText()
 
 
 
@@ -97,7 +97,7 @@ class MessageAdapter (
             // last message
             if (position == messageList.size -1 ) {
 
-                viewHolder.binding.textTime.setText()
+                //viewHolder.binding.textTime.setText()
 
             } else {
 
@@ -144,7 +144,7 @@ class MessageAdapter (
                 viewHolder.binding.textDate.visibility = View.VISIBLE
                 viewHolder.binding.textDate.setText(message.date)
 
-                viewHolder.binding.textNickName.setText()
+                //viewHolder.binding.textNickName.setText()
 
                 Glide
                     .with(viewHolder.binding.root)
@@ -193,7 +193,7 @@ class MessageAdapter (
             // last message
             if (position == messageList.size -1 ) {
 
-                viewHolder.binding.textTime.setText()
+                //viewHolder.binding.textTime.setText()
 
             } else {
 

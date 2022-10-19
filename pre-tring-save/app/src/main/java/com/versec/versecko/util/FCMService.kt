@@ -71,15 +71,7 @@ class FCMServic : FirebaseMessagingService() {
 
         CoroutineScope(Dispatchers.IO).launch {
 
-            when(userRepository.postFCMToken(token)) {
-                is Response.Success -> {
-                    Log.d("fcm-log", "post success")
-                }
-                is Response.Error -> { Log.d("fcm-log", "post error") }
-                else -> {
 
-                }
-            }
         }
 
     }

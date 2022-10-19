@@ -66,10 +66,7 @@ interface UserRepository {
     suspend fun deleteImage (index: Int) : Response<Int>
     suspend fun reuploadImage (index: Int, uri: Uri) : Response<Int>
 
-    suspend fun saveFCMToken () : Response<Int>
     suspend fun getFCMToken () : Response<String>
-    suspend fun postFCMToken (token : String) : Response<Int>
-
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     suspend fun likeUser (otherUser: UserEntity, ownUser: UserEntity) : Response<Int>
     fun skipUser (otherUser : UserEntity)

@@ -1,47 +1,63 @@
 package com.versec.versecko.data.repository
 
 import com.versec.versecko.data.datasource.remote.ChatDataSource
-import com.versec.versecko.data.entity.RoomEntity
-import com.versec.versecko.data.entity.MessageEntity
-import com.versec.versecko.data.entity.UserEntity
+import com.versec.versecko.data.entity.*
 import com.versec.versecko.util.Response
 import kotlinx.coroutines.flow.Flow
 
 class ChatRepositoryImpl (
 
-    private val chatDataSource: ChatDataSource
+    private val dataSource: ChatDataSource
 
         ) : ChatRepository {
-    override suspend fun openChatRoom(otherUser: UserEntity, ownUser: UserEntity): Response<Int> {
-        return chatDataSource.openChatRoom(otherUser, ownUser)
+
+
+    override suspend fun insertUser(member: RoomMemberEntity): Response<Int> {
+        return dataSource.insertUser(member)
     }
 
-    override fun observeChatRoom(): Flow<Map<Int, Response<RoomEntity>>> {
-        return chatDataSource.observeChatRoom()
+    override suspend fun openRoom(otherUser: UserEntity, ownUser: UserEntity): Response<Int> {
+        return dataSource.openRoom(otherUser, ownUser)
+    }
+
+    override suspend fun getRoomForOneShot(roomUid: String): Response<RoomEntity?> {
+        return dataSource.getRoomForOneShot(roomUid)
+    }
+
+    override fun observeRoomUid(): Flow<Map<Int, Response<Room>>> {
+        return dataSource.observeRoomUid()
+    }
+
+    override fun observeRoom(roomUid: String): Flow<Response<RoomEntity>> {
+        return dataSource.observeRoom(roomUid)
     }
 
 
-    override fun deleteChatRoom(chatRoomUid: String, otherUid: String) {
+    override fun deleteRoom(chatRoomUid: String, otherUid: String) {
 
-        chatDataSource.deleteChatRoom(chatRoomUid, otherUid)
+        dataSource.deleteRoom(chatRoomUid, otherUid)
     }
 
     override suspend fun sendMessage(content: String, room: RoomEntity): Response<Int> {
-        return chatDataSource.sendMessage(content, room)
+        return dataSource.sendMessage(content, room)
     }
 
 
     override fun getMessages(chatRoomUid: String): Flow<MessageEntity> {
 
-        return chatDataSource.getMessages(chatRoomUid)
+        return dataSource.getMessages(chatRoomUid)
     }
 
     override suspend fun resetUnreadMessageCounter(chatRoomUid: String): Response<Int> {
-        return chatDataSource.resetUnreadMessageCounter(chatRoomUid)
+        return dataSource.resetUnreadMessageCounter(chatRoomUid)
     }
 
     override suspend fun resetReadOrNot(message: MessageEntity): Response<Int> {
-        return chatDataSource.resetReadOrNot(message)
+        return dataSource.resetReadOrNot(message)
+    }
+
+    override suspend fun saveFCMToken(token: String): Response<Int> {
+        return dataSource.saveFCMToken(token)
     }
 
 
