@@ -30,6 +30,7 @@ class MessageAdapter (
 
     override fun getItemViewType(position: Int): Int {
 
+        /**
         if (AppContext.uid.equals(messageList.get(position).sender.uid)) {
 
             return VIEW_TYPE_ME
@@ -38,7 +39,9 @@ class MessageAdapter (
         else {
 
             return VIEW_TYPE_OTHER
-        }
+        } **/
+
+        return VIEW_TYPE_OTHER
 
     }
 
@@ -102,6 +105,7 @@ class MessageAdapter (
             } else {
 
                 // Check who send message
+                /**
                 if (message.sender.uid.equals(messageList.get(position+1).sender.uid)) {
 
                     // Time Invisible (current message time == next message time )
@@ -118,7 +122,7 @@ class MessageAdapter (
 
                     viewHolder.binding.textTime.visibility = View.VISIBLE
                     viewHolder.binding.textTime.setText(message.time)
-                }
+                } **/
 
             }
 
@@ -142,14 +146,15 @@ class MessageAdapter (
             if (position == 0 ) {
 
                 viewHolder.binding.textDate.visibility = View.VISIBLE
-                viewHolder.binding.textDate.setText(message.date)
+                //viewHolder.binding.textDate.setText(message.date)
 
                 //viewHolder.binding.textNickName.setText()
 
+                /**
                 Glide
                     .with(viewHolder.binding.root)
                     .load(message.sender.profileUrl)
-                    .into(viewHolder.binding.imageProfile)
+                    .into(viewHolder.binding.imageProfile) **/
 
 
 

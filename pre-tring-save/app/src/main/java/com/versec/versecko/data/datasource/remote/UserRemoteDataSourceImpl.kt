@@ -690,11 +690,13 @@ class UserRemoteDataSourceImpl (
 
             }
 
+            awaitClose { subscription.remove() }
+
+
         } catch (exception : Exception) {
             trySend(Response.Error(exception.message.toString()))
         }
 
-        awaitClose { subscription.remove() }
     }
 
     override suspend fun matchUser(otherUser: UserEntity, ownUser: UserEntity): Response<Int> {

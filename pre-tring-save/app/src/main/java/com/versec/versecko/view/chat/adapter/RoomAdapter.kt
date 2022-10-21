@@ -7,17 +7,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.versec.versecko.data.entity.RoomEntity
 import com.versec.versecko.data.entity.RoomMemberEntity
-import com.versec.versecko.databinding.ItemRecyclerChatroomBinding
+import com.versec.versecko.databinding.ItemRecyclerRoomBinding
 
 class RoomAdapter (
 
     private var roomList : MutableList<RoomEntity>,
+    private var otherUserList : MutableList<RoomMemberEntity>,
+    private var notificationList : MutableList<Boolean>,
+
     private val onRoomClick : (RoomEntity?) -> Unit
 
         ) : RecyclerView.Adapter<RoomAdapter.ViewHolder>() {
 
 
-    inner class ViewHolder (val binding : ItemRecyclerChatroomBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder (val binding : ItemRecyclerRoomBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind (room : RoomEntity, onRoomClick: (RoomEntity?) -> Unit) {
 
@@ -29,45 +32,55 @@ class RoomAdapter (
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
-        val binding = ItemRecyclerChatroomBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemRecyclerRoomBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
         return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
+        holder.bind(roomList.get(position), onRoomClick)
 
-        val room = roomList.get(position)
-        lateinit var member : RoomMemberEntity
-
-        holder.bind(room, onRoomClick)
-
-
-
-        holder.binding.textNickName.setText(member.nickName)
-        holder.binding.textMessageSumnail.setText(room.lastSent)
-
-
-        /**
-
-        if (room) {
-
-            holder.binding.textUnreadMessageCounter.visibility = View.VISIBLE
-            holder.binding.textUnreadMessageCounter.setText()
-        }
-        else {
-            holder.binding.textUnreadMessageCounter.visibility = View.INVISIBLE
-        }**/
+        holder.binding.textNickName.setText(otherUserList.get(position).nickName)
 
         Glide
             .with(holder.binding.root)
-            .load(member.profileUrl)
+            .load(otherUserList.get(position).profileUrl)
             .into(holder.binding.imageProfile)
 
+        holder.binding.textMessageSumnail.setText(roomList.get(position).lastSent)
 
 
+        if (notificationList.size>position) {
+
+            if (notificationList.get(position))
+                holder.binding.textNewMessageNotification.visibility = View.VISIBLE
+            else
+                holder.binding.textNewMessageNotification.visibility = View.INVISIBLE
+
+        }
     }
 
     override fun getItemCount(): Int { return roomList.size }
+
     fun changeRooms (chatRoomList: MutableList<RoomEntity>) { this.roomList = chatRoomList }
+
+    fun changeOtherUsers (otherUserList: MutableList<RoomMemberEntity>) {
+        this.otherUserList = otherUserList
+    }
+
+    fun changeNotificationList (notificationList: MutableList<Boolean>) {
+        this.notificationList = notificationList
+    }
+
+    fun updateUserInfo (roomMember : RoomMemberEntity) {
+
+        otherUserList.forEachIndexed { index, otherUser ->
+
+            if (otherUser.uid.equals(roomMember.uid))
+                otherUserList.set(index,roomMember
+                )
+
+        }
+    }
 }

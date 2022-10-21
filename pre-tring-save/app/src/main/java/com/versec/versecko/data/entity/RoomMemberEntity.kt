@@ -11,14 +11,8 @@ data class RoomMemberEntity(
     var nickName : String = "...",
     var profileUrl : String = "...",
 
-    var rooms : MutableList<Room> = mutableListOf()
-
+    var rooms : MutableMap<String, RoomInUser> = mutableMapOf()
 
 
 
 ) : Serializable
-
-data class Room (
-    var uid : String = "null",
-    var lastRead : Long = 0
-)

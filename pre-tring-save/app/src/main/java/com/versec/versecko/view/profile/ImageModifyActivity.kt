@@ -239,6 +239,7 @@ class ImageModifyActivity : AppCompatActivity() {
                         }
                         is Response.Error -> {
                             binding.progressBar.hide()
+                            Log.d("reupload-image-check", response.errorMessage)
                             Toast.makeText(this@ImageModifyActivity, "인터넷 연결 오류로 인해 이미지가 업로드되지 않았습니다.", Toast.LENGTH_SHORT).show()
                         }
                         else -> {

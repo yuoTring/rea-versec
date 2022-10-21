@@ -13,16 +13,7 @@ class MessageViewModel (
         ) : ViewModel() {
 
 
-            fun getMessages (roomUid : String) = repository.getMessages(roomUid).asLiveData()
 
-
-            private suspend fun _sendMessage (content : String, room : RoomEntity) : Response<Int> {
-                return repository.sendMessage(content, room)
-            }
-
-            suspend fun sendMessage (content: String, room: RoomEntity) : Response<Int> {
-                return _sendMessage(content, room)
-            }
 
             private suspend fun _resetUnreadMessageCounter (chatRoomUid : String) : Response<Int>
                 = repository.resetUnreadMessageCounter(chatRoomUid)

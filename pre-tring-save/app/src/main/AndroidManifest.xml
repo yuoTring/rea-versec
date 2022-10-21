@@ -44,7 +44,7 @@
             android:name=".view.profile.ImageModifyActivity"
             android:exported="false" />
         <activity
-            android:name=".view.chat.RoomActivity"
+            android:name=".view.chat.MessageActivity"
             android:exported="false" />
         <activity
             android:name=".view.matching.UserProfileActivity"

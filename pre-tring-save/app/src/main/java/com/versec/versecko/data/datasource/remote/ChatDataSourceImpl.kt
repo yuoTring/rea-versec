@@ -1,11 +1,8 @@
 package com.versec.versecko.data.datasource.remote
 
-import android.os.Build
 import android.util.Log
-import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.database.ktx.getValue
 import com.versec.versecko.AppContext
 import com.versec.versecko.data.entity.*
 import com.versec.versecko.util.Response
@@ -31,7 +28,8 @@ class ChatDataSourceImpl (
                 const val REMOVED = 0
                 const val CHANGED = 2
                 const val ERROR = -1
-                const val R_NULL = -2
+                const val RESPONSE_NULL = -2
+                const val LONG_NULL : Long = 0
 
                 val CALENDAR = Calendar.getInstance()
                 val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd")
@@ -50,6 +48,30 @@ class ChatDataSourceImpl (
 
                 } catch (exception : Exception) {
 
+                        return Response.Error(exception.message.toString())
+                }
+        }
+
+        override suspend fun getUser(uid: String): Response<RoomMemberEntity> {
+
+                try {
+
+                        val dataSnapshot =
+                                databaseReference.child("users").child(uid).get().await()
+
+                        val user = dataSnapshot.getValue(RoomMemberEntity::class.java)
+
+
+
+
+
+                        if (user != null)
+                                return Response.Success(user)
+                        else
+                                return Response.No(RoomMemberEntity())
+
+
+                } catch (exception : Exception) {
                         return Response.Error(exception.message.toString())
                 }
         }
@@ -79,12 +101,12 @@ class ChatDataSourceImpl (
 
                         databaseReference.child("rooms").child(roomUid.toString()).setValue(room).await()
 
-                        databaseReference.child("users").child(AppContext.uid).child("rooms").child(roomUid.toString()).setValue(Room(
+                        databaseReference.child("users").child(AppContext.uid).child("rooms").child(roomUid.toString()).setValue(RoomInUser(
                                 roomUid.toString(),
                                 System.currentTimeMillis()
                         )).await()
 
-                        databaseReference.child("users").child(otherUser.uid).child("rooms").child(roomUid.toString()).setValue(Room(
+                        databaseReference.child("users").child(otherUser.uid).child("rooms").child(roomUid.toString()).setValue(RoomInUser(
                                 roomUid.toString(),
                                 System.currentTimeMillis()
                         )).await()
@@ -117,7 +139,53 @@ class ChatDataSourceImpl (
                 }
         }
 
-        override fun observeRoomUid(): Flow<Map<Int, Response<Room>>> = callbackFlow {
+        override suspend fun getAllRoomUidForOneShot(): Response<MutableList<RoomInUser>> {
+
+                try {
+
+                        val dataSnapshot = databaseReference.child("users").child(AppContext.uid).child("rooms").get().await()
+
+                        val uids = mutableListOf<RoomInUser>()
+
+                        dataSnapshot.children.forEach {
+
+                                Log.d("uids-check", it.toString())
+                        }
+
+                        return Response.Success(uids)
+
+                } catch (exception : Exception) {
+                        return Response.Error(exception.message.toString())
+                }
+        }
+
+        override suspend fun getLastMessage(roomUid: String): Response<MessageEntity> {
+
+                try {
+
+                        val dataSnapshot =
+                                databaseReference.child("messages").child(roomUid).get().await()
+
+                        val lastMessage =
+                                dataSnapshot.children.last()
+
+                        val message = lastMessage.getValue(MessageEntity::class.java)
+
+                        Log.d("last-message-check", message.toString())
+
+
+                        if (message != null)
+                                return Response.Success(message)
+                        else
+                                return Response.No(MessageEntity())
+                }
+                catch (exception : Exception) {
+                        return Response.Error(exception.message.toString())
+                }
+                TODO("Not yet implemented")
+        }
+
+        override fun observeRoomUid(): Flow<Map<Int, Response<RoomInUser>>> = callbackFlow {
 
                 try {
 
@@ -133,17 +201,19 @@ class ChatDataSourceImpl (
                                         ) {
                                                 /**
                                                 snapshot.getValue(RoomEntity::class.java)?.let { trySend(
-                                                        mapOf(1 to Response.Success(it))) } **/
+                                                mapOf(1 to Response.Success(it))) } **/
 
-                                                val room =
-                                                        snapshot.getValue(Room::class.java)
+                                                val roomInUser =
+                                                        snapshot.getValue(RoomInUser::class.java)
 
-                                                Log.d("room-check", room.toString())
+                                                Log.d("room-uid-check", roomInUser.toString())
 
-                                                if (room != null)
-                                                        trySend(mapOf(ADDED to Response.Success(room)))
+                                                Log.d("room-uid-check", roomInUser!!.uid)
+
+                                                if (roomInUser != null)
+                                                        trySend(mapOf(ADDED to Response.Success(roomInUser)))
                                                 else
-                                                        trySend(mapOf(R_NULL to Response.Success(Room())))
+                                                        trySend(mapOf(RESPONSE_NULL to Response.No(RoomInUser())))
 
                                         }
 
@@ -169,35 +239,39 @@ class ChatDataSourceImpl (
                 }
         }
 
-        override fun observeRoom(roomUid: String): Flow<Response<RoomEntity>> = callbackFlow {
 
+        override fun observeLastMessage(roomUid: String): Flow<Response<String>> = callbackFlow {
 
-                val reference =
-                        databaseReference.child("rooms").child(roomUid)
+                try {
 
-                val subscription =
-                        reference.addChildEventListener(object : ChildEventListener {
+                        val reference = databaseReference.child("rooms").child(roomUid)
+
+                        val subscription = reference.addChildEventListener(object : ChildEventListener {
 
                                 override fun onChildAdded(
+
                                         snapshot: DataSnapshot,
                                         previousChildName: String?
+
                                 ) {
 
 
-
-                                        val roomEntity =
-                                                snapshot.getValue(RoomEntity::class.java)
-
-
-                                        if (roomEntity != null)
-                                                trySend(Response.Success(roomEntity))
                                 }
 
                                 override fun onChildChanged(
+
+
                                         snapshot: DataSnapshot,
                                         previousChildName: String?
+
                                 ) {
 
+                                        val lastMessage = snapshot.getValue(String::class.java)
+
+                                        if (lastMessage != null)
+                                                trySend(Response.Success(lastMessage))
+                                        else
+                                                trySend(Response.No(NULL))
                                 }
 
                                 override fun onChildRemoved(snapshot: DataSnapshot) {
@@ -205,8 +279,10 @@ class ChatDataSourceImpl (
                                 }
 
                                 override fun onChildMoved(
+
                                         snapshot: DataSnapshot,
                                         previousChildName: String?
+
                                 ) {
                                 }
 
@@ -214,12 +290,41 @@ class ChatDataSourceImpl (
 
                                 }
 
-
                         } )
 
-                awaitClose { reference.removeEventListener(subscription) }
+
+                        awaitClose { reference.removeEventListener(subscription) }
 
 
+                } catch (exception : Exception) {
+                        trySend(Response.Error(exception.message.toString()))
+                }
+        }
+
+        override suspend fun getOwnLastRead(roomUid: String): Response<Long> {
+
+                try {
+
+                        val dataSnapshot =
+                                databaseReference.child("users").child(AppContext.uid).child(roomUid).get().await()
+
+                        Log.d("room-check-lastRead", dataSnapshot.getValue().toString())
+
+
+                        val roomInUser =
+                                dataSnapshot.getValue(RoomInUser::class.java)
+
+                        if (roomInUser != null)
+                                return Response.Success(roomInUser.lastRead)
+                        else
+                                return Response.No(LONG_NULL)
+
+
+
+
+                } catch (exception : Exception) {
+                        return Response.Error(exception.message.toString())
+                }
         }
 
 
@@ -229,121 +334,104 @@ class ChatDataSourceImpl (
 
         }
 
-        override suspend fun sendMessage(content: String, room: RoomEntity): Response<Int> {
+        override suspend fun sendMessage(contents: String, roomUid: String): Response<Int> {
 
                 try {
 
-                        val messageUid = databaseReference.child("chat").child("messageList").child(room.uid).push().key
+                        val uid =
+                                databaseReference.child("messages").child(roomUid).push().key
 
+                        val message = MessageEntity (
 
-                        lateinit var sender : RoomMemberEntity
+                                uid!!,
+                                contents,
+                                AppContext.uid,
+                                System.currentTimeMillis(),
+                                false
+                                )
 
+                        databaseReference.child("messages").child(roomUid).child(uid!!).setValue(message).await()
+                        databaseReference.child("rooms").child(roomUid).updateChildren(mapOf("lastSent" to contents)).await()
 
-
-                        val message = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                        {
-
-                                /**
-                                MessageEntity(
-                                        messageUid!!,
-                                        content,
-                                        room.chatRoomUid,
-                                        sender,
-                                        receiver,
-                                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
-                                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm")),
-                                        false
-                                )**/
-                        }
-                        else
-                        {
-                                val calendar = Calendar.getInstance()
-                                val dateFormat = SimpleDateFormat("yyyy-MM-dd")
-                                val timeFormat = SimpleDateFormat("HH:mm")
-
-                                /**
-                                MessageEntity(
-                                        messageUid!!,
-                                        content,
-                                        room.chatRoomUid,
-                                        sender,
-                                        receiver,
-                                        dateFormat.format(calendar.time),
-                                        timeFormat.format(calendar.time),
-                                        false
-                                )**/
-
-                        }
-
-
-
-
-
-
-                        // must edit in later to handle an error
                         return Response.Success(SUCCESS)
 
 
                 } catch (exception : Exception) {
-
-
                         return Response.Error(exception.message.toString())
                 }
-
         }
 
 
-        override fun getMessages(chatRoomUid: String): Flow<MessageEntity> = callbackFlow {
+        override fun getMessage(roomUid: String): Flow<Response<MessageEntity>> = callbackFlow {
 
-                val ref = databaseReference.child("chat").child("messageList").child(chatRoomUid)
-
-                val listener = ref.addChildEventListener(object : ChildEventListener {
-                        override fun onChildAdded(
-                                snapshot: DataSnapshot,
-                                previousChildName: String?
-                        ) {
-
-                                snapshot.getValue(MessageEntity::class.java)?.let { trySend(it) }
-                        }
-
-                        override fun onChildChanged(
-                                snapshot: DataSnapshot,
-                                previousChildName: String?
-                        ) {
-                                snapshot.getValue(MessageEntity::class.java)?.let { trySend(it) }
-                        }
-
-                        override fun onChildRemoved(snapshot: DataSnapshot) {
-
-                        }
-
-                        override fun onChildMoved(
-                                snapshot: DataSnapshot,
-                                previousChildName: String?
-                        ) {
+                try {
 
 
-                        }
+                        val reference = databaseReference.child("messages").child(roomUid)
 
-                        override fun onCancelled(error: DatabaseError) {
+                        val subscription = reference.addChildEventListener(object : ChildEventListener {
+
+                                override fun onChildAdded(
+
+                                        snapshot: DataSnapshot,
+                                        previousChildName: String?
+
+                                ) {
 
 
-                        }
+                                      val message = snapshot.getValue(MessageEntity::class.java)
+                                        Log.d("message-check", message!!.uid)
+
+
+                                        if (message != null)
+                                              trySend(Response.Success(message))
+                                      else
+                                              trySend(Response.No(MessageEntity(uid = NULL)))
+
+                                }
+
+                                override fun onChildChanged(
+
+                                        snapshot: DataSnapshot,
+                                        previousChildName: String?
+
+                                ) {
+
+                                }
+
+                                override fun onChildRemoved(snapshot: DataSnapshot) {
+
+                                }
+
+                                override fun onChildMoved(
+
+                                        snapshot: DataSnapshot,
+                                        previousChildName: String?
+
+                                ) {
+
+                                }
+
+                                override fun onCancelled(error: DatabaseError) {
+
+                                }
+
+
+                        } )
+
+                        awaitClose { reference.removeEventListener(subscription) }
 
 
 
-
-                        })
-
-                awaitClose { ref.removeEventListener(listener)  }
+                } catch (exception : Exception) {
+                        trySend(Response.Error(exception.message.toString()))
+                }
         }
+
 
         override suspend fun resetUnreadMessageCounter(chatRoomUid: String): Response<Int> {
 
                 try {
-                        databaseReference.child("chat").child("chatRoomListByUser").child(AppContext.uid)
-                                .child(chatRoomUid).child("unreadMessageCounter"
-                                ).setValue(0).await()
 
                         return Response.Success(SUCCESS)
 
@@ -363,6 +451,65 @@ class ChatDataSourceImpl (
                 }
                 catch (exception : Exception) {
                         return Response.Error(exception.message.toString())
+                }
+        }
+
+        override fun observeOtherLastRead(roomUid: String, otherUid: String): Flow<Response<Long>> = callbackFlow {
+
+                try {
+
+                        val reference = databaseReference.child("users").child(otherUid).child(roomUid)
+
+                        val subscription = reference.addChildEventListener(object : ChildEventListener {
+
+                                override fun onChildAdded(
+
+                                        snapshot: DataSnapshot,
+                                        previousChildName: String?
+
+                                ) {
+
+                                }
+
+                                override fun onChildChanged(
+
+                                        snapshot: DataSnapshot,
+                                        previousChildName: String?
+
+                                ) {
+
+                                        val lastRead = snapshot.getValue(Long::class.java)
+
+                                        if (lastRead != null) {
+                                                trySend(Response.Success(lastRead))
+                                        } else {
+                                                trySend(Response.Success(LONG_NULL))
+                                        }
+
+                                }
+
+                                override fun onChildRemoved(snapshot: DataSnapshot) {
+                                }
+
+                                override fun onChildMoved(
+
+                                        snapshot: DataSnapshot,
+                                        previousChildName: String?
+
+                                ) {
+
+                                }
+
+                                override fun onCancelled(error: DatabaseError) {
+
+                                }
+
+                        } )
+
+                        awaitClose { reference.removeEventListener(subscription) }
+
+                } catch (exception : Exception) {
+                        trySend(Response.Error(exception.message.toString()))
                 }
         }
 

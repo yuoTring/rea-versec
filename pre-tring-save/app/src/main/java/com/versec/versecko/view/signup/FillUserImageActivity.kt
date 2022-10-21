@@ -244,8 +244,7 @@ class FillUserImageActivity : AppCompatActivity()
                                                             AppContext.uid,
                                                             userEntity.nickName,
                                                             user.uriMap.get("0").toString(),
-                                                            mutableListOf()
-
+                                                            mutableMapOf()
                                                             )
 
                                                         val insertMemberResponse = viewModel.insertMember(member)

@@ -6,10 +6,9 @@ data class MessageEntity(
     var uid : String = "...",
     var contents : String = "Hi this is error",
 
-    var sender : RoomMemberEntity = RoomMemberEntity(),
+    var sender : String = "null",
 
-    var date : String = "10",
-    var time : String ="15:15",
+    var timestamp : Long = 0,
     var read : Boolean = false
 
 ) {
