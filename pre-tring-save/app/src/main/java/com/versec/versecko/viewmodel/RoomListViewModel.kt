@@ -2,7 +2,7 @@ package com.versec.versecko.viewmodel
 
 import androidx.lifecycle.*
 import com.versec.versecko.data.entity.*
-import com.versec.versecko.data.repository.ChatRepository
+import com.versec.versecko.data.repository.RoomRepository
 import com.versec.versecko.data.repository.UserRepository
 import com.versec.versecko.util.Response
 import kotlinx.coroutines.flow.*
@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.*
 class RoomListViewModel (
 
     private val userRepository: UserRepository,
-    private val repository: ChatRepository
+    private val repository: RoomRepository
 
     ) : ViewModel(){
 
@@ -47,6 +47,8 @@ class RoomListViewModel (
         return _getUser(uid)
     }
 
+
+
     private suspend fun _getOwnLastRead (roomUid: String) : Response<Long> {
         return repository.getOwnLastRead(roomUid)
     }
@@ -54,6 +56,8 @@ class RoomListViewModel (
     suspend fun getOwnLastRead (roomUid: String) : Response<Long> {
         return _getOwnLastRead(roomUid)
     }
+
+
 
     private fun _addListenerLastMessage (roomUid: String) : LiveData<Response<String>> {
         return repository.observeLastMessage(roomUid).asLiveData()
@@ -63,21 +67,13 @@ class RoomListViewModel (
         return _addListenerLastMessage(roomUid)
     }
 
-    private fun _addListenerMessageTimeStamp (roomUid: String) : Flow<Response<MessageEntity>> {
 
-        val listener =
-            repository.getMessage(roomUid).shareIn(viewModelScope, SharingStarted.WhileSubscribed(),0)
-
-        return listener
-    }
 
     fun getRoomUid () : Flow<Map<Int, Response<RoomInUser>>> {
         return repository.observeRoomUid().shareIn(viewModelScope, SharingStarted.WhileSubscribed(),0)
     }
 
-    fun addListenerMessageTimeStamp (roomUid: String) : Flow<Response<MessageEntity>> {
-        return _addListenerMessageTimeStamp(roomUid)
-    }
+
 
     private suspend fun _getRoomForOneShot (roomUid: String) : Response<RoomEntity?> {
         return repository.getRoomForOneShot(roomUid)
@@ -87,6 +83,8 @@ class RoomListViewModel (
         return _getRoomForOneShot(roomUid)
     }
 
+
+
     private fun _setCounter (status: Int, count : Int) {
         userRepository.setCounter(status, count)
     }
@@ -94,6 +92,8 @@ class RoomListViewModel (
     fun setCounter (status: Int, count: Int) {
         _setCounter(status, count)
     }
+
+
 
     private fun _getCounter (status : Int) : Int? {
         return userRepository.getCounter(status)
@@ -103,21 +103,29 @@ class RoomListViewModel (
         return _getCounter(status)
     }
 
+
+
     suspend fun send (contents : String, roomUid: String) {
 
         repository.sendMessage(contents, roomUid)
     }
 
-
-
-
-    suspend fun getAllRoomUids () : Response<MutableList<RoomInUser>> {
-        return repository.getAllRoomUidForOneShot()
-    }
-
     suspend fun getLastMessage (roomUid: String) : Response<MessageEntity> {
         return repository.getLastMessage(roomUid)
     }
+
+
+
+
+    private suspend fun _updateLastRead (roomUid: String) : Response<Int> {
+        return repository.updateLastRead(roomUid)
+    }
+
+    suspend fun updateLastRead (roomUid: String) : Response<Int> {
+        return _updateLastRead(roomUid)
+    }
+
+
 
 
 }

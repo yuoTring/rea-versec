@@ -16,7 +16,7 @@
         android:layout_height="match_parent"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:background="@color/white_cotton"
-        tools:context=".view.chat.RoomFragment">
+        tools:context=".view.room.RoomFragment">
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayout"
@@ -90,18 +90,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:visibility="invisible"
             />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/buttonTest"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_margin="16dp"
-            android:background="@drawable/button_corner_16_blue_gradient"
-            app:layout_constraintBottom_toBottomOf="parent"
-            />
-
-
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

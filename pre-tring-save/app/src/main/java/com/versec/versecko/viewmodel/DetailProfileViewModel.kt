@@ -2,14 +2,14 @@ package com.versec.versecko.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.versec.versecko.data.entity.UserEntity
-import com.versec.versecko.data.repository.ChatRepository
+import com.versec.versecko.data.repository.RoomRepository
 import com.versec.versecko.data.repository.UserRepository
 import com.versec.versecko.util.Response
 
 class DetailProfileViewModel (
 
     private val userRepository: UserRepository,
-    private val repository: ChatRepository
+    private val repository: RoomRepository
 
         ) : ViewModel() {
 

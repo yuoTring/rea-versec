@@ -1,7 +1,6 @@
 package com.versec.versecko.data.entity
 
 import java.io.Serializable
-import java.util.*
 
 data class RoomMemberEntity(
 

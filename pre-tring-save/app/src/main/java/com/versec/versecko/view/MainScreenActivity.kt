@@ -14,7 +14,7 @@ import com.versec.versecko.FilterActivity
 import com.versec.versecko.R
 import com.versec.versecko.SettingActivity
 import com.versec.versecko.databinding.ActivityMainScreenBinding
-import com.versec.versecko.view.chat.RoomFragment
+import com.versec.versecko.view.room.RoomFragment
 import com.versec.versecko.view.discovery.DiscoveryFragment
 import com.versec.versecko.view.matching.MatchingFragment
 import com.versec.versecko.view.profile.ProfileFragment
