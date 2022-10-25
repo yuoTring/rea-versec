@@ -23,8 +23,8 @@ interface RoomDataSource {
     suspend fun getOwnLastRead (roomUid: String) : Response<Long>
     suspend fun updateLastRead (roomUid: String) : Response<Int>
 
+    fun fetchMessage (roomUid: String) : Flow<Response<Map<Int, MessageEntity>>>
     suspend fun sendMessage (contents : String, roomUid: String) : Response<Int>
-    fun observeMessage (roomUid: String) : Flow<Map<Int, Response<MessageEntity>>>
     suspend fun readMessage (roomUid: String, messageUid : String) : Response<Int>
 
     fun observeOtherLastRead (roomUid: String, otherUid: String) : Flow<Response<Long>>

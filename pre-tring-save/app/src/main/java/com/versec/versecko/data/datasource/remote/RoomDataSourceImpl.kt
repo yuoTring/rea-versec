@@ -29,7 +29,6 @@ class RoomDataSourceImpl (
                 const val RESPONSE_NULL = -2
                 const val LONG_NULL : Long = 0
 
-                var count = 1
         }
 
         override suspend fun insertUser(member: RoomMemberEntity): Response<Int> {
@@ -226,7 +225,11 @@ class RoomDataSourceImpl (
                                 } )
 
 
-                        awaitClose { reference.removeEventListener(subscription) }
+                        awaitClose {
+
+                                reference.removeEventListener(subscription)
+                                channel.close()
+                        }
 
                 } catch (exception : Exception) {
                         trySend(mapOf(ERROR to Response.Error(exception.message.toString())))
@@ -287,8 +290,11 @@ class RoomDataSourceImpl (
                         } )
 
 
-                        awaitClose { reference.removeEventListener(subscription) }
+                        awaitClose {
 
+                                reference.removeEventListener(subscription)
+                                channel.close()
+                        }
 
                 } catch (exception : Exception) {
                         trySend(Response.Error(exception.message.toString()))
@@ -320,6 +326,7 @@ class RoomDataSourceImpl (
 
 
                 } catch (exception : Exception) {
+
                         return Response.Error(exception.message.toString())
                 }
         }
@@ -339,118 +346,114 @@ class RoomDataSourceImpl (
                 }
         }
 
-        override suspend fun sendMessage(contents: String, roomUid: String): Response<Int> {
+        override fun fetchMessage(roomUid: String): Flow<Response<Map<Int, MessageEntity>>> = callbackFlow {
+
 
                 try {
 
-                        val uid =
-                                databaseReference.child("messages").child(roomUid).push().key
+                        val reference =
+                                databaseReference.child("messages").child(roomUid)
 
-                        val message = MessageEntity (
-
-                                uid!!,
-                                contents,
-                                AppContext.uid,
-                                System.currentTimeMillis(),
-                                false
-                                )
-
-                        databaseReference.child("messages").child(roomUid).child(uid!!).setValue(message).await()
-                        databaseReference.child("rooms").child(roomUid).updateChildren(mapOf("lastSent" to contents)).await()
-
-                        return Response.Success(SUCCESS)
+                        val subscription =
+                                reference.addChildEventListener(object : ChildEventListener {
 
 
-                } catch (exception : Exception) {
-                        return Response.Error(exception.message.toString())
-                }
-        }
+                                        override fun onChildAdded(
+
+                                                snapshot: DataSnapshot,
+                                                previousChildName: String?
+
+                                        ) {
+
+                                                val message = snapshot.getValue(MessageEntity::class.java)
+
+                                                if (message != null)
+                                                        trySend(Response.Success(mapOf(ADDED to message )))
+                                                else
+                                                        trySend(Response.Success(mapOf(RESPONSE_NULL to MessageEntity())))
 
 
-        override fun observeMessage(roomUid: String): Flow<Map<Int, Response<MessageEntity>>> = callbackFlow {
+                                        }
 
-                try {
+                                        override fun onChildChanged(
 
+                                                snapshot: DataSnapshot,
+                                                previousChildName: String?
 
-                        val reference = databaseReference.child("messages").child(roomUid)
+                                        ) {
 
-                        val subscription = reference.addChildEventListener(object : ChildEventListener {
+                                                val message = snapshot.getValue(MessageEntity::class.java)
 
-                                override fun onChildAdded(
+                                                if (message != null)
+                                                        trySend(Response.Success(mapOf(CHANGED to message)))
+                                                else
+                                                        trySend(Response.Success(mapOf(RESPONSE_NULL to MessageEntity())))
+                                        }
 
-                                        snapshot: DataSnapshot,
-                                        previousChildName: String?
+                                        override fun onChildRemoved(snapshot: DataSnapshot) {
 
-                                ) {
+                                        }
 
-                                        Log.d("flow-check-added", "count: "+ count++)
+                                        override fun onChildMoved(
 
+                                                snapshot: DataSnapshot,
+                                                previousChildName: String?
 
-                                      val message = snapshot.getValue(MessageEntity::class.java)
+                                        ) {
 
+                                        }
 
-                                        if (message != null)
-                                              trySend(mapOf(ADDED to Response.Success(message)))
-                                      else
-                                              trySend(mapOf(RESPONSE_NULL to Response.No(MessageEntity(uid = NULL))))
+                                        override fun onCancelled(error: DatabaseError) {
 
-                                }
-
-                                override fun onChildChanged(
-
-                                        snapshot: DataSnapshot,
-                                        previousChildName: String?
-
-                                ) {
-                                        Log.d("flow-check-changed", "count: "+ count++)
+                                        }
 
 
-                                        val message = snapshot.getValue(MessageEntity::class.java)
-
-
-                                        if (message != null)
-                                                trySend(mapOf(CHANGED to Response.Success(message)))
-                                        else
-                                                trySend(mapOf(RESPONSE_NULL to Response.No(MessageEntity(uid = NULL))))
-
-                                }
-
-                                override fun onChildRemoved(snapshot: DataSnapshot) {
-                                        Log.d("flow-check-removed", "count: "+ count++)
-
-                                }
-
-                                override fun onChildMoved(
-
-                                        snapshot: DataSnapshot,
-                                        previousChildName: String?
-
-                                ) {
-                                        Log.d("flow-check-moved", "count: "+ count++)
-
-                                }
-
-                                override fun onCancelled(error: DatabaseError) {
-                                        Log.d("flow-check-canceled", "count: "+ count++)
-
-                                }
-
-
-                        } )
+                                } )
 
 
                         awaitClose {
 
-                                Log.d("flow-check-await", "count: "+ count++)
-
+                                reference.removeEventListener(subscription)
                                 channel.close()
                         }
 
+
+
+
+
                 } catch (exception : Exception) {
 
-                        Log.d("flow-check-await", "count: "+ count++)
+                        trySend(Response.Error(exception.message.toString()))
+                }
+        }
 
-                        trySend(mapOf(ERROR to Response.Error(exception.message.toString())))
+        override suspend fun sendMessage(contents: String, roomUid: String): Response<Int> {
+
+                try {
+
+
+                        val messageUid =
+                                databaseReference.child("messages").child(roomUid).push().key.toString()
+
+                        val ownUid = auth.currentUser?.uid.toString()
+
+                        val message = MessageEntity (
+                                messageUid,
+                                contents,
+                                ownUid,
+                                System.currentTimeMillis(),
+                                false
+                        )
+
+
+                        databaseReference.child("messages").child(roomUid).child(messageUid).setValue(message).await()
+                        databaseReference.child("rooms").child(roomUid).child("lastSent").setValue(contents).await()
+
+                        return Response.Success(SUCCESS)
+
+                } catch (exception : Exception) {
+
+                        return Response.Error(exception.message.toString())
                 }
         }
 
@@ -458,16 +461,18 @@ class RoomDataSourceImpl (
 
                 try {
 
-                        databaseReference.child("messages").child(roomUid).child(messageUid).child("read")
-                                .setValue(true).await()
-
+                        databaseReference.child("messages").child(roomUid).child(messageUid).child("read").setValue(true).await()
+                        databaseReference.child("users").child(auth.currentUser!!.uid).child(roomUid).child("lastRead").setValue(System.currentTimeMillis())
 
                         return Response.Success(SUCCESS)
 
                 } catch (exception : Exception) {
+
                         return Response.Error(exception.message.toString())
                 }
+
         }
+
 
         override fun observeOtherLastRead(roomUid: String, otherUid: String): Flow<Response<Long>> = callbackFlow {
 
@@ -524,6 +529,8 @@ class RoomDataSourceImpl (
                         awaitClose {
 
                                 reference.removeEventListener(subscription)
+                                channel.close()
+
                         }
 
                 } catch (exception : Exception) {

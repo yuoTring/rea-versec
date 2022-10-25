@@ -52,23 +52,17 @@ class RoomRepositoryImpl (
         return dataSource.updateLastRead(roomUid)
     }
 
+    override fun fetchMessage(roomUid: String): Flow<Response<Map<Int, MessageEntity>>> {
+        return dataSource.fetchMessage(roomUid)
+    }
+
     override suspend fun sendMessage(contents: String, roomUid: String): Response<Int> {
         return dataSource.sendMessage(contents, roomUid)
     }
 
-    override fun observeMessage(roomUid: String): Flow<Map<Int, Response<MessageEntity>>> {
-        return dataSource.observeMessage(roomUid)
-    }
-
-    override suspend fun readMessage(
-
-        roomUid: String,
-        messageUid : String
-
-    ): Response<Int> {
+    override suspend fun readMessage(roomUid: String, messageUid: String): Response<Int> {
         return dataSource.readMessage(roomUid, messageUid)
     }
-
 
     override fun observeOtherLastRead(roomUid: String, otherUid: String): Flow<Response<Long>> {
         return dataSource.observeOtherLastRead(roomUid, otherUid)

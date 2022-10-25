@@ -16,28 +16,31 @@ class MessageViewModel (
 
 
 
-            private suspend fun _readMessages (roomUid : String, messageUid : String) : Response<Int> {
-                return repository.readMessage(roomUid, messageUid)
-            }
 
-            suspend fun readMessage (roomUid: String, messageUid : String) : Response<Int> {
-                return _readMessages(roomUid, messageUid)
-            }
+            private fun _fetchMessage (roomUid : String) : Flow<Response<Map<Int, MessageEntity>>> {
 
-
-
-
-            private fun _observeMessage (roomUid: String) : Flow<Map<Int, Response<MessageEntity>>> {
-
-                val flow =
-                    repository.observeMessage(roomUid).shareIn(viewModelScope, SharingStarted.WhileSubscribed(),0)
+                val flow = repository.fetchMessage(roomUid).shareIn(viewModelScope, SharingStarted.WhileSubscribed(), 0)
 
                 return flow
             }
 
-            fun observeMessage (roomUid: String) : Flow<Map<Int, Response<MessageEntity>>> {
-                return _observeMessage(roomUid)
+            fun fetchMessage (roomUid: String) : Flow<Response<Map<Int, MessageEntity>>> {
+                return _fetchMessage(roomUid)
             }
+
+
+
+
+
+            private suspend fun _readMessage (roomUid: String, messageUid : String) : Response<Int> {
+                return repository.readMessage(roomUid, messageUid)
+            }
+
+            suspend fun readMessage (roomUid: String, messageUid: String) : Response<Int> {
+                return _readMessage(roomUid, messageUid)
+            }
+
+
 
 
 
@@ -45,15 +48,7 @@ class MessageViewModel (
                 return repository.sendMessage(contents, roomUid)
             }
 
-            suspend fun sendMessage (contents: String, roomUid: String) : Response<Int> {
-                return _sendMessage(contents, roomUid)
-            }
-
-
-
-
-
-
-
-
+    suspend fun sendMessage (contents: String, roomUid: String) : Response<Int> {
+        return _sendMessage(contents, roomUid)
+    }
 }

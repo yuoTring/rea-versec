@@ -17,9 +17,8 @@ import com.versec.versecko.databinding.ActivityMessageBinding
 import com.versec.versecko.util.Response
 import com.versec.versecko.view.room.adapter.MessageAdapter
 import com.versec.versecko.viewmodel.MessageViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MessageActivity : AppCompatActivity() {
@@ -35,6 +34,9 @@ class MessageActivity : AppCompatActivity() {
     private val messageList = mutableListOf<MessageEntity>()
     private lateinit var adapter: MessageAdapter
     private lateinit var layoutManager: LinearLayoutManager
+
+
+    private lateinit var fetchJob : Job
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -67,126 +69,17 @@ class MessageActivity : AppCompatActivity() {
         binding.recyclerMessages.adapter = adapter
 
 
-        lifecycleScope.launch(Dispatchers.IO) {
-
-
-            viewModel.observeMessage(roomUid).collect { map ->
-
-                val type = map.keys.first()
-
-                val messageResponse = map[type]
-
-                if (type == ADDED) {
-
-
-                    when(messageResponse) {
-
-                        is Response.Success -> {
-
-                            val message = messageResponse.data
-
-
-                            if (messageList.contains(message)) {
-
-
-                                val index = messageList.indexOf(message)
-
-                                messageList.set(index, message)
-
-                            } else {
-                                messageList.add(message)
-                            }
-
-
-                            // in case of other sent message and received it
-                            if (!message.read && !message.sender.equals(ownUid)) {
-
-
-                                val readMessageResponse = viewModel.readMessage(roomUid, message.uid)
-
-                                when(readMessageResponse) {
-
-                                    is Response.Success -> {
-
-                                    }
-                                    is Response.Error -> {
-
-                                    }
-                                    else -> {
-
-                                    }
-                                }
-
-
-                            } else {
-
-                                withContext(Dispatchers.Main) {
-
-                                    adapter.changeMessages(messageList)
-                                    adapter.notifyDataSetChanged()
-                                }
-                            }
-
-
-                        }
-                        is Response.Error -> {
-
-                        }
-                        else -> {
-
-                        }
-
-                    }
-
-
-                } else if (type == CHANGED) {
-
-                    when(messageResponse) {
-
-                        is Response.Success -> {
-
-                            val message = messageResponse.data
-
-
-                            val index = messageList.indexOf(message)
-
-                            messageList.set(index, message)
-
-                            withContext(Dispatchers.Main) {
-
-                                adapter.changeMessages(messageList)
-                                adapter.notifyDataSetChanged()
-                            }
-
-
-                        }
-                        is Response.Error -> {
-
-                        }
-                        else -> {
-
-                        }
-
-                    }
-
-                } else if (type == RESPONSE_NULL) {
-
-                }
-                else if (type == ERROR) {
-
-                }
 
 
 
-            }
 
-        }
 
         binding.buttonSend.setOnClickListener {
 
-            if (binding.editMessage.text!!.length > 0) {
+            lifecycleScope.launch(Dispatchers.IO) {
 
-                lifecycleScope.launch {
+                if (binding.editMessage.text!!.length > 0) {
+
 
                     val sendResponse = viewModel.sendMessage(binding.editMessage.text.toString(), roomUid)
 
@@ -194,20 +87,29 @@ class MessageActivity : AppCompatActivity() {
 
                         is Response.Success -> {
 
+                            withContext(Dispatchers.Main) {
+
+                                binding.editMessage.text!!.clear()
+                            }
                         }
+
                         is Response.Error -> {
 
-                            Toast.makeText(this@MessageActivity, "인터넷 연결 오류로 인해 메시지가 전송되지 않았습니다. 잠시 기다렸다가 다시 보내주세요",
-                                Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@MessageActivity, "인터넷 오류로 인해 메시지가 전송되지 않았습니다.", Toast.LENGTH_SHORT).show()
                         }
                         else -> {
 
                         }
                     }
 
+                } else {
+
                 }
             }
+
         }
+
+
 
         binding.editMessage.doAfterTextChanged { text ->
 
@@ -222,6 +124,99 @@ class MessageActivity : AppCompatActivity() {
 
 
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        fetchJob =
+            lifecycleScope.launch(Dispatchers.IO) {
+
+
+                viewModel.fetchMessage(roomUid).collect {  fetchResponse->
+
+
+                    when (fetchResponse) {
+
+
+                        is Response.Success -> {
+
+                            val map = fetchResponse.data
+
+                            val type = map.keys.first()
+
+                            val message = map.get(type)
+
+                            if (message != null) {
+
+
+                                if (messageList.contains(message)) {
+
+                                    val index = messageList.indexOf(message)
+                                    messageList.set(index, message)
+
+                                } else {
+
+                                    messageList.add(message)
+
+                                }
+
+
+                                if (type == ADDED) {
+
+                                    if (message.read == false && !message.sender.equals(ownUid)) {
+
+                                        val readResponse = viewModel.readMessage(roomUid, message.uid)
+
+                                        when(readResponse) {
+                                            is Response.Error -> {
+
+                                            }
+                                            else -> {
+
+                                            }
+                                        }
+                                    }
+
+
+
+
+
+
+                                }
+
+                                withContext(Dispatchers.Main) {
+
+                                    adapter.changeMessages(messageList)
+                                    adapter.notifyDataSetChanged()
+
+                                }
+
+                            } else {
+
+                            }
+
+                        }
+                        is Response.No -> {
+
+                        }
+                        is Response.Error -> {
+
+                        }
+                        else -> {
+
+                        }
+                    }
+
+
+                }
+            }
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        fetchJob.cancel()
     }
 
     companion object {
