@@ -45,6 +45,7 @@
         android:text="가가가가가가가가"
         android:textColor="@color/nero"
         android:textSize="8sp"
+        android:maxLines="2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

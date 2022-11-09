@@ -9,9 +9,9 @@
 
     <ImageView
         android:id="@+id/imageLogo"
-        android:layout_width="160dp"
-        android:layout_height="88dp"
-        android:layout_marginTop="24dp"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="64dp"
         android:background="@drawable/logo_large"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,7 +23,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="현지인 여행친구만들기, 트링!"
+        android:gravity="center"
+        android:text="우리 동네 놀러와! \n 가보고 싶었던 그곳, 새로운 친구와 함께"
         android:textColor="@color/white"
         android:textSize="10.8sp"
         android:textStyle="bold"

@@ -36,6 +36,48 @@ class MatchingViewModel (
                 return repository.getUsersWithGeoHash(latitude, longitude, radiusInMeter, gender, minAge, maxAge)
             }
 
+            private suspend fun _getUsersWithStyles (
+
+                styles : List<String>,
+                gender: String,
+                minAge: Int,
+                maxAge: Int
+
+            ) : Response<MutableList<UserEntity>> {
+                return repository.getUsersWithStyle(styles, gender, minAge, maxAge)
+            }
+
+            suspend fun getUsersWithStyles (
+                styles: List<String>,
+                gender: String,
+                minAge: Int,
+                maxAge: Int
+            ) : Response<MutableList<UserEntity>> {
+
+                return _getUsersWithStyles(styles, gender, minAge, maxAge)
+            }
+
+            private suspend fun _getUsersWithResidences (
+
+                residences : List<String>,
+                gender: String,
+                minAge: Int,
+                maxAge: Int
+            ) : Response<MutableList<UserEntity>> {
+
+                return repository.getUsersWithResidence(residences, gender, minAge, maxAge)
+            }
+
+            suspend fun getUsersWithResidences (
+                residences: List<String>,
+                gender: String,
+                minAge: Int,
+                maxAge: Int
+            ) : Response<MutableList<UserEntity>> {
+
+                return _getUsersWithResidences(residences, gender, minAge, maxAge)
+            }
+
             suspend fun getUsersWithPlaces (
                 places: List<String>,
                 gender: String,

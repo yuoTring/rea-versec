@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white_cotton">
+
+    <androidx.core.widget.ContentLoadingProgressBar
+        android:id="@+id/progressBarLoading"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:visibility="invisible"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/textSeeMore"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="더보기"
+        android:textColor="@color/charcoal"
+        android:textSize="14sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/textNoMoreStory"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="invisible"
+        android:text="해당 동네의 이야기 더 이상 없습니다 &#128549;"
+        android:textSize="12sp"
+        android:textColor="@color/charcoal"
+        android:textStyle="bold"/>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

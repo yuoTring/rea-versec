@@ -18,6 +18,7 @@ import com.versec.versecko.view.room.RoomFragment
 import com.versec.versecko.view.discovery.DiscoveryFragment
 import com.versec.versecko.view.matching.MatchingFragment
 import com.versec.versecko.view.profile.ProfileFragment
+import com.versec.versecko.view.story.StoryFeedFragment
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -38,6 +39,7 @@ class MainScreenActivity : AppCompatActivity() {
     private lateinit var profileFragment: ProfileFragment
     private lateinit var roomFragment : RoomFragment
     private lateinit var discoveryFragment: DiscoveryFragment
+    private lateinit var storyFeedFragment: StoryFeedFragment
 
     private var discoveryMatchingFragment : MatchingFragment? = null
     private var discoveryMatchingValue = 0
@@ -45,6 +47,8 @@ class MainScreenActivity : AppCompatActivity() {
 
     private var profileOnOrNot = false
     private var appClose = false
+
+    private var storyFeedVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,8 +58,6 @@ class MainScreenActivity : AppCompatActivity() {
         view = binding.root
         setContentView(view)
 
-
-
         supportFragmentManager.commit {
             setReorderingAllowed(true)
 
@@ -64,6 +66,8 @@ class MainScreenActivity : AppCompatActivity() {
                 add(R.id.fragmentContainer, ProfileFragment.newInstance(), "profile")
                 addToBackStack(null)
                 add(R.id.fragmentContainer, RoomFragment.newInstance(), "chat")
+                addToBackStack(null)
+                add(R.id.fragmentContainer, StoryFeedFragment.newInstance(), "story")
                 addToBackStack(null)
                 add(R.id.fragmentContainer, DiscoveryFragment.newInstance(), "discovery")
                 addToBackStack(null)
@@ -77,11 +81,11 @@ class MainScreenActivity : AppCompatActivity() {
         binding.buttonLeft.setOnClickListener {
 
             if (discoveryMatchingValue == DISCOVERY_STYLE)
-                startActivityForResult(Intent(this, ChooseStyleActivity::class.java).putExtra("requestCode", AGAIN), AGAIN)
+                startActivityForResult(Intent(this, ChooseStyleActivity::class.java).putExtra("requestCode", AGAIN_STYLE), AGAIN_STYLE)
             else if (discoveryMatchingValue == DISCOVERY_RESIDENCE)
-                startActivityForResult(Intent(this,ChoosePlaceActivity::class.java).putExtra("requestCode", AGAIN), AGAIN)
+                startActivityForResult(Intent(this,ChoosePlaceActivity::class.java).putExtra("requestCode", AGAIN_RESIDENCE), AGAIN_RESIDENCE)
             else if (discoveryMatchingValue == DISCOVERY_TRIP)
-                startActivityForResult(Intent(this, ChoosePlaceActivity::class.java).putExtra("requestCode", AGAIN), AGAIN)
+                startActivityForResult(Intent(this, ChoosePlaceActivity::class.java).putExtra("requestCode", AGAIN_TRIP), AGAIN_TRIP)
 
         }
 
@@ -105,6 +109,10 @@ class MainScreenActivity : AppCompatActivity() {
                 when(item.itemId) {
                     R.id.page_home -> {
 
+                        storyFeedVisible = false
+
+                        binding.textTopTitle.visibility = View.VISIBLE
+
                         profileOnOrNot = false
 
                         binding.buttonLeft.visibility = View.GONE
@@ -120,6 +128,7 @@ class MainScreenActivity : AppCompatActivity() {
 
                             show(matchingFragment)
                             hide(discoveryFragment)
+                            hide(storyFeedFragment)
                             hide(roomFragment)
                             hide(profileFragment)
 
@@ -130,6 +139,10 @@ class MainScreenActivity : AppCompatActivity() {
 
                     R.id.page_discovery -> {
 
+                        storyFeedVisible = false
+
+                        binding.textTopTitle.visibility = View.GONE
+
                         profileOnOrNot = false
 
                         supportFragmentManager.commit {
@@ -137,6 +150,8 @@ class MainScreenActivity : AppCompatActivity() {
 
 
                             if (discoveryMatchingFragment != null) {
+
+                                binding.textTopTitle.visibility = View.VISIBLE
 
                                 binding.buttonLeft.visibility = View.VISIBLE
                                 binding.buttonRight1.visibility = View.GONE
@@ -147,6 +162,8 @@ class MainScreenActivity : AppCompatActivity() {
 
                             } else {
 
+                                binding.textTopTitle.visibility = View.GONE
+
                                 binding.buttonLeft.visibility = View.GONE
                                 binding.buttonRight1.visibility = View.GONE
                                 binding.buttonRight2.visibility = View.GONE
@@ -155,6 +172,7 @@ class MainScreenActivity : AppCompatActivity() {
                             }
 
                             hide(matchingFragment)
+                            hide(storyFeedFragment)
                             hide(roomFragment)
                             hide(profileFragment)
 
@@ -162,16 +180,36 @@ class MainScreenActivity : AppCompatActivity() {
                     }
 
                     R.id.page_lounge -> {
-                        Toast.makeText(this@MainScreenActivity, "!!!", Toast.LENGTH_SHORT).show()
+
+                        storyFeedVisible = true
+
+                        binding.textTopTitle.visibility = View.GONE
 
                         profileOnOrNot = false
 
                         binding.buttonLeft.visibility = View.GONE
                         binding.buttonRight1.visibility = View.GONE
                         binding.buttonRight2.visibility = View.GONE
+
+                        supportFragmentManager.commit {
+
+                            setReorderingAllowed(true)
+
+                            show(storyFeedFragment)
+                            hide(matchingFragment)
+                            hide(discoveryFragment)
+                            hide(roomFragment)
+                            hide(profileFragment)
+
+                            discoveryMatchingFragment?.let { hide(it) }
+                        }
                     }
 
                     R.id.page_chat -> {
+
+                        storyFeedVisible = false
+
+                        binding.textTopTitle.visibility = View.GONE
 
                         profileOnOrNot = false
 
@@ -185,6 +223,7 @@ class MainScreenActivity : AppCompatActivity() {
                             show(roomFragment)
                             hide(matchingFragment)
                             hide(discoveryFragment)
+                            hide(storyFeedFragment)
                             hide(profileFragment)
 
                             discoveryMatchingFragment?.let { hide(it) }
@@ -193,6 +232,10 @@ class MainScreenActivity : AppCompatActivity() {
                     }
 
                     R.id.page_profile -> {
+
+                        storyFeedVisible = false
+
+                        binding.textTopTitle.visibility = View.VISIBLE
 
                         profileOnOrNot = true
 
@@ -208,6 +251,7 @@ class MainScreenActivity : AppCompatActivity() {
                             show(profileFragment)
                             hide(matchingFragment)
                             hide(discoveryFragment)
+                            hide(storyFeedFragment)
                             hide(roomFragment)
 
                             discoveryMatchingFragment?.let { hide(it) }
@@ -233,12 +277,19 @@ class MainScreenActivity : AppCompatActivity() {
         profileFragment = supportFragmentManager.findFragmentByTag("profile") as ProfileFragment
         roomFragment = supportFragmentManager.findFragmentByTag("chat") as RoomFragment
         discoveryFragment = supportFragmentManager.findFragmentByTag("discovery") as DiscoveryFragment
+        storyFeedFragment = supportFragmentManager.findFragmentByTag("story") as StoryFeedFragment
 
         discoveryMatchingFragment = supportFragmentManager.findFragmentByTag("discoveryMatching") as MatchingFragment?
         if (discoveryMatchingFragment == null)
+        {
             Log.d("fragment-check", "? : null")
-        else
+            binding.textTopTitle.visibility = View.VISIBLE
+            binding.buttonLeft.visibility = View.GONE
+        }
+        else {
             Log.d("fragment-check", "? : on")
+            binding.textTopTitle.visibility = View.GONE
+        }
 
 
     }
@@ -252,6 +303,8 @@ class MainScreenActivity : AppCompatActivity() {
             (requestCode == DISCOVERY_RESIDENCE && data != null) ||
             (requestCode == DISCOVERY_TRIP && data != null)
         ) {
+
+            binding.textTopTitle.visibility = View.VISIBLE
 
             supportFragmentManager.commit {
 
@@ -290,15 +343,30 @@ class MainScreenActivity : AppCompatActivity() {
 
                 hide(discoveryFragment)
 
+                hide(storyFeedFragment)
+
                 hide(roomFragment)
 
                 hide(profileFragment)
 
-                discoveryMatchingValue = DISCOVERY_STYLE
+                if (requestCode == DISCOVERY_STYLE)
+                    discoveryMatchingValue = DISCOVERY_STYLE
+                else if (requestCode == DISCOVERY_RESIDENCE)
+                    discoveryMatchingValue = DISCOVERY_RESIDENCE
+                else if (requestCode == DISCOVERY_TRIP)
+                    discoveryMatchingValue = DISCOVERY_TRIP
+
             }
 
 
-        } else if (resultCode == 1000) {
+        } else if (
+            requestCode == AGAIN_STYLE ||
+            requestCode == AGAIN_RESIDENCE ||
+            requestCode == AGAIN_TRIP
+        ) {
+
+            binding.textTopTitle.visibility = View.VISIBLE
+
 
             supportFragmentManager.commit {
 
@@ -313,6 +381,11 @@ class MainScreenActivity : AppCompatActivity() {
                 binding.buttonRight2.visibility = View.GONE
 
                 show(discoveryFragment)
+                hide(matchingFragment)
+                hide(storyFeedFragment)
+                hide(roomFragment)
+                hide(profileFragment)
+
             }
         }
     }
@@ -340,6 +413,8 @@ class MainScreenActivity : AppCompatActivity() {
         const val DISCOVERY_RESIDENCE = 501
         const val DISCOVERY_TRIP = 502
 
-        const val AGAIN = 1000
+        const val AGAIN_STYLE = 1000
+        const val AGAIN_RESIDENCE = 1001
+        const val AGAIN_TRIP = 1002
     }
 }

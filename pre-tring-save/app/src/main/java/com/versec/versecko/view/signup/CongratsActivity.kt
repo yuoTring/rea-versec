@@ -27,4 +27,9 @@ class CongratsActivity : AppCompatActivity()
 
         }
     }
+
+    override fun onBackPressed() {
+
+
+    }
 }

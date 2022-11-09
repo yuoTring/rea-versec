@@ -22,9 +22,10 @@
             android:gravity="center_vertical|start"
             android:paddingStart="16dp"
             android:background="@color/white"
-            android:text="#"
+            android:text="우와 디스커버리에서 여행 친구를 찾아보세요!"
             android:textColor="@color/black"
-            android:textSize="20sp"
+            android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
@@ -34,9 +35,10 @@
             android:gravity="center_vertical|start"
             android:paddingStart="16dp"
             android:background="@color/white"
-            android:text="#"
+            android:text="여행 컨셉에 맞는 친구를 찾을 수 있습니다."
             android:textColor="@color/charcoal"
             android:textSize="16sp"
+            android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@id/text000"/>
 
         <androidx.recyclerview.widget.RecyclerView

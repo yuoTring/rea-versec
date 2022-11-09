@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <shape>
+            <solid
+                android:color="@color/white"
+                />
+            <size
+                android:width="40dp"
+                android:height="40dp"
+                />
+
+            <corners
+                android:radius="64dp"
+                />
+        </shape>
+    </item>
+
+    <item
+        android:gravity="center"
+        android:drawable="@drawable/icon_add"
+        android:top="16dp"
+        android:bottom="16dp"
+        android:left="16dp"
+        android:right="16dp"
+        />
+
+</layer-list>

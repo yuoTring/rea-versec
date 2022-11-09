@@ -21,6 +21,7 @@ class RoomDataSourceImpl (
         companion object {
                 val SUCCESS = 1
                 val NULL = "null"
+                val EMPTY = " "
 
                 const val ADDED = 1
                 const val REMOVED = 0
@@ -87,7 +88,7 @@ class RoomDataSourceImpl (
                         val room = RoomEntity(
                                 roomUid.toString(),
                                 mutableListOf(AppContext.uid, otherUser.uid),
-                                NULL
+                                EMPTY
                         )
 
 
@@ -199,10 +200,6 @@ class RoomDataSourceImpl (
                                                 val roomInUser =
                                                         snapshot.getValue(RoomInUser::class.java)
 
-                                                Log.d("room-uid-check", roomInUser.toString())
-
-                                                Log.d("room-uid-check", roomInUser!!.uid)
-
                                                 if (roomInUser != null)
                                                         trySend(mapOf(ADDED to Response.Success(roomInUser)))
                                                 else
@@ -313,9 +310,6 @@ class RoomDataSourceImpl (
 
                         val roomInUser =
                                 dataSnapshot.getValue(RoomInUser::class.java)
-
-                        Log.d("room-check-lastRead", roomUid)
-                        Log.d("room-check-lastRead", roomInUser.toString())
 
                         if (roomInUser != null)
                                 return Response.Success(roomInUser.lastRead)
@@ -461,8 +455,11 @@ class RoomDataSourceImpl (
 
                 try {
 
-                        databaseReference.child("messages").child(roomUid).child(messageUid).child("read").setValue(true).await()
-                        databaseReference.child("users").child(auth.currentUser!!.uid).child(roomUid).child("lastRead").setValue(System.currentTimeMillis())
+                        databaseReference
+                                .child("messages").child(roomUid).child(messageUid).child("read").setValue(true).await()
+
+                        databaseReference
+                                .child("users").child(auth.currentUser!!.uid).child("rooms").child(roomUid).child("lastRead").setValue(System.currentTimeMillis())
 
                         return Response.Success(SUCCESS)
 

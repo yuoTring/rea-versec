@@ -64,7 +64,7 @@ val dataSourceModule = module {
     { UserLocalDataSourceImpl(get(), get(named("users")), get(named("filter")), get(named("lounge")), get(named("setting"))) }
     single<UserRemoteDataSource> { UserRemoteDataSourceImpl(get(), get(), get(), get()) }
     single<RoomDataSource> { RoomDataSourceImpl(get(),get()) }
-    single<StoryDataSource> { StoryDataSourceImpl(get(), get())}
+    single<StoryDataSource> { StoryDataSourceImpl(get(), get(), get())}
 }
 
 val repositoryModule = module {
@@ -102,6 +102,10 @@ val viewModelModule = module {
     viewModel { RoomListViewModel(get(),get()) }
     viewModel { DetailProfileViewModel(get(),get()) }
     viewModel { MessageViewModel(get()) }
+
+    viewModel { StoryUploadViewModel(get()) }
+    viewModel { StoryFeedViewModel(get()) }
+    viewModel { StoryDetailViewModel(get()) }
 
 }
 

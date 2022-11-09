@@ -16,6 +16,7 @@ import com.versec.versecko.databinding.ActivityProfileModifyBinding
 import com.versec.versecko.util.Response
 import com.versec.versecko.util.WindowEventManager
 import com.versec.versecko.view.ChoosePlaceActivity
+import com.versec.versecko.view.ChooseStyleActivity
 import com.versec.versecko.view.signup.FillUserInfoActivity
 import com.versec.versecko.view.signup.adapter.TagAdapter
 import com.versec.versecko.viewmodel.ProfileModifyViewModel
@@ -71,6 +72,13 @@ class ProfileModifyActivity : AppCompatActivity() {
             residenceList.add(userEntity.mainResidence)
             tripList.addAll(userEntity.tripWish)
             styleList.addAll(userEntity.tripStyle)
+
+            adapterResidence.updateTagList(residenceList)
+            adapterTrip.updateTagList(tripList)
+
+            adapterResidence.notifyDataSetChanged()
+            adapterTrip.notifyDataSetChanged()
+            adapterStyle.notifyDataSetChanged()
 
             binding.editSelfIntroduction.setText(userEntity.selfIntroduction)
 
@@ -156,6 +164,22 @@ class ProfileModifyActivity : AppCompatActivity() {
         binding.recyclerChosenTripWish.adapter = adapterTrip
 
         binding.recyclerChosenStyle.layoutManager = layoutManagerStyle
+
+        adapterStyle = TagAdapter(styleList) { style ->
+
+            if (style.equals("+")) {
+
+                startActivityForResult(Intent(this, ChooseStyleActivity::class.java), FillUserInfoActivity.STYLE)
+
+            } else {
+
+                styleList.remove(style)
+                adapterStyle.updateTagList(styleList)
+                adapterStyle.notifyDataSetChanged()
+            }
+
+
+        }
 
 
         binding.buttonComplete.setOnClickListener {

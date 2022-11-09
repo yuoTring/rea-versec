@@ -1,5 +1,6 @@
 package com.versec.versecko.view.room
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -47,64 +48,52 @@ class MessageActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
 
 
+        val intent = intent
 
-        val intent = getIntent()
-
-        room = intent.getSerializableExtra("room") as? RoomEntity
+        room = intent.getSerializableExtra("room") as RoomEntity
         roomUid = room!!.uid
 
-        ownUid = AppContext.uid
         other = intent.getSerializableExtra("other") as RoomMemberEntity
-
+        ownUid = AppContext.uid
 
         layoutManager = LinearLayoutManager(this)
-
-        binding.recyclerMessages.layoutManager = layoutManager
-        binding.recyclerMessages.recycledViewPool.setMaxRecycledViews(0,0)
         layoutManager.stackFromEnd = true
         layoutManager.isSmoothScrollbarEnabled = true
 
+        binding.recyclerMessages.recycledViewPool.setMaxRecycledViews(0,0)
+        binding.recyclerMessages.layoutManager = layoutManager
 
         adapter = MessageAdapter(messageList, ownUid, other)
         binding.recyclerMessages.adapter = adapter
 
-
-
-
-
-
-
         binding.buttonSend.setOnClickListener {
 
-            lifecycleScope.launch(Dispatchers.IO) {
+            val text = binding.editMessage.text.toString()
 
-                if (binding.editMessage.text!!.length > 0) {
+            if (text.length > 0) {
 
+                binding.editMessage.text!!.clear()
 
-                    val sendResponse = viewModel.sendMessage(binding.editMessage.text.toString(), roomUid)
+                lifecycleScope.launch(Dispatchers.IO) {
+
+                    val sendResponse = viewModel.sendMessage(text, roomUid)
 
                     when(sendResponse) {
 
-                        is Response.Success -> {
+                        is Response.Error -> {
 
                             withContext(Dispatchers.Main) {
 
-                                binding.editMessage.text!!.clear()
+                                Toast.makeText(this@MessageActivity,"인터넷 오류로 인해 메시지가 전송되지 않았습니다.",Toast.LENGTH_SHORT)
                             }
-                        }
 
-                        is Response.Error -> {
-
-                            Toast.makeText(this@MessageActivity, "인터넷 오류로 인해 메시지가 전송되지 않았습니다.", Toast.LENGTH_SHORT).show()
                         }
                         else -> {
 
                         }
                     }
-
-                } else {
-
                 }
+
             }
 
         }
@@ -177,12 +166,6 @@ class MessageActivity : AppCompatActivity() {
                                             }
                                         }
                                     }
-
-
-
-
-
-
                                 }
 
                                 withContext(Dispatchers.Main) {

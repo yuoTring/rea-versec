@@ -7,13 +7,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.versec.versecko.databinding.ActivityChoosePlaceBinding
 import com.versec.versecko.view.signup.adapter.PlaceAdapter
 import com.versec.versecko.view.signup.adapter.SubPlaceAdapter
-import java.util.function.Predicate
 
 class ChoosePlaceActivity : AppCompatActivity() {
 
@@ -42,6 +39,12 @@ class ChoosePlaceActivity : AppCompatActivity() {
 
         const val DISCOVERY_RESIDENCE = 501
         const val DISCOVERY_TRIP = 502
+        const val STORY_FEED = 503
+        private const val STORY_UPLOAD = 250
+
+
+        const val AGAIN_RESIDENCE = 1001
+        const val AGAIN_TRIP = 1002
     }
 
 
@@ -70,7 +73,6 @@ class ChoosePlaceActivity : AppCompatActivity() {
 
             selectedPlace = place!!
 
-            Log.d("place-check", selectedPlace)
 
             adapter.updatePlace(selectedPlace)
             adapter.notifyDataSetChanged()
@@ -80,28 +82,27 @@ class ChoosePlaceActivity : AppCompatActivity() {
 
             subPlaceList = resources.getStringArray(id).toMutableList()
 
-            Log.d("place-check", subPlaceList.toString())
 
 
-            if (requestCode == RESIDENCE || requestCode == DISCOVERY_RESIDENCE) {
+            if (requestCode == RESIDENCE || requestCode == DISCOVERY_RESIDENCE || requestCode == AGAIN_RESIDENCE ) {
 
                 subPlaceList.removeAt(0)
 
                 subAdapter = SubPlaceAdapter(this,subPlaceList, "null", chosenList) { subPlace ->
 
-                    chosenList.removeAll(chosenList)
+                    chosenList.clear()
                     chosenList.add(subPlace!!)
 
                     subAdapter.updateChosenList(chosenList)
                     subAdapter.notifyDataSetChanged()
                 }
 
-            } else if (requestCode == TRIP || requestCode == DISCOVERY_TRIP) {
+            } else if (requestCode == TRIP || requestCode == DISCOVERY_TRIP || requestCode == AGAIN_TRIP ) {
 
 
                 val one = subPlaceList.get(0)
 
-                subPlaceList.removeAll(subPlaceList)
+                subPlaceList.clear()
                 subPlaceList.add(one)
 
 
@@ -157,6 +158,33 @@ class ChoosePlaceActivity : AppCompatActivity() {
                     subAdapter.notifyDataSetChanged()
                 }
 
+            } else if (requestCode == STORY_FEED || requestCode == STORY_UPLOAD) {
+
+                if (requestCode == STORY_UPLOAD)
+                    subPlaceList.removeAt(0)
+
+                subAdapter = SubPlaceAdapter(this, subPlaceList,
+                    "null", chosenList) {
+
+                    if (it != null) {
+
+
+                        chosenList.clear()
+
+                        if (!chosenList.contains(it)) {
+
+                            chosenList.add(selectedPlace)
+                            chosenList.add(it)
+
+                        }
+
+                        subAdapter.updateChosenList(chosenList)
+                        subAdapter.notifyDataSetChanged()
+
+                    }
+
+                }
+
             }
 
 
@@ -191,22 +219,71 @@ class ChoosePlaceActivity : AppCompatActivity() {
 
                 setResult(100, intent)
 
+
+                finish()
+
             } else if (chosenList.size>0 && requestCode == TRIP) {
 
                 intent.putStringArrayListExtra("trip", ArrayList(chosenList))
                 setResult(200, intent)
+
+
+                finish()
+
             } else if (chosenList.size>0 && requestCode == DISCOVERY_RESIDENCE) {
 
                 intent.putStringArrayListExtra("condition", ArrayList(chosenList))
                 setResult(400, intent)
 
+
+                finish()
+
             } else if (chosenList.size>0 && requestCode == DISCOVERY_TRIP) {
 
                 intent.putStringArrayListExtra("condition", ArrayList(chosenList))
                 setResult(400, intent)
+
+
+                finish()
+
+            } else if (requestCode == STORY_FEED || requestCode == STORY_UPLOAD) {
+
+                if (chosenList.size > 0 ){
+
+                    if (chosenList.get(0).endsWith("전체")) {
+
+                        Log.d("story-confirm", chosenList.toString())
+
+                        intent.putStringArrayListExtra("story", ArrayList(chosenList))
+                        setResult(350, intent)
+
+
+                        finish()
+
+
+                    } else {
+
+
+                        Log.d("story-confirm", chosenList.toString())
+                        intent.putStringArrayListExtra("story", ArrayList(chosenList))
+                        setResult(300, intent)
+
+
+                        finish()
+
+
+                    }
+
+
+
+
+                } else {
+
+                    Toast.makeText(this, "동네 하나를 선택해주세요!", Toast.LENGTH_SHORT).show()
+                }
+
             }
 
-            finish()
 
         }
         binding.buttonBack.setOnClickListener { finish() }

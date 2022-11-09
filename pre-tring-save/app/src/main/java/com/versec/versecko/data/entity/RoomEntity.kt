@@ -6,6 +6,8 @@ data class RoomEntity(
 
     var uid : String = "...",
     var members : MutableList<String> = mutableListOf(),
-    var lastSent : String = "..."
+    var lastSent : String = "...",
+
+    var mission : String = "none"
 
 ) : Serializable

@@ -1,11 +1,33 @@
 <resources>
-    <string name="app_name">versecko</string>
+    <string name="app_name">우와</string>
 
     <string name="emoji_smile">Hi &#128072; </string>
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="emoji_embarrassedlaugh">&#128517; </string>
+    <string name="emoji_bottomtriangle">&#9660; </string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <string name="text_nomorestory">해당 동네의 이야기가 더 이상 없습니다 &#128549;</string>
+
     <string name="NULL">null</string>
+
+    <string name="FCM_TYPE">type</string>
+    <string name="FCM_TYPE_LIKED">liked</string>
+    <string name="FCM_TYPE_MATCHED">matched</string>
+    <string name="FCM_TYPE_CHAT">CHAT</string>
+    <string name="FCM_TYPE_STORY_LIKED">story_liked</string>
+    <string name="FCM_TYPE_OTHER">other</string>
+
+    <string name="FCM_NICKNAME">nickname</string>
+    <string name="FCM_UID">uid</string>
+    <string name="FCM_CONTENTS">contents</string>
+
+    <string name="FCM_CONTENTS_LIKED">님이 당신에게 \'좋아요\'를 보냈습니다!</string>
+    <string name="FCM_CONTENTS_MATCHED">님과 매칭되었습니다!</string>
+    <string name="FCM_CONTENTS_CHAT">새 메시지</string>
+    <string name="FCM_CONTENTS_STORY_LIKED">님이 당신 게시글에 \'좋아요\'를 눌렀습니다!</string>
+
+    <string name="HOWMANYLIKE_0">가장 먼저 \'좋아요\'를 눌러주세요.</string>
+    <string name="HOWMANYLIKE_MORETHAN0">명이 이 게시글을 좋아합니다</string>
 
 
     <string-array name="place_main">
@@ -376,15 +398,19 @@
         <item>사진 수정하기</item>
     </string-array>
 
+    <string-array name="story_more">
+        <item>삭제하기</item>
+    </string-array>
+
     <array name="slider_age">
         <item>20</item>
         <item>80</item>
     </array>
 
     <string-array name="banner_title">
-        <item>title0</item>
-        <item>title1</item>
-        <item>title2</item>
+        <item>#여행 스타일로 탐색</item>
+        <item>#현지인 탐색</item>
+        <item>#동행 찾기</item>
     </string-array>
 
     <string-array name="banner_image">
@@ -394,8 +420,9 @@
     </string-array>
 
     <string-array name="banner_content">
-        <item>content000</item>
-        <item>content002</item>
+        <item>같은 모양으로, 같은 여행을. \n 비슷한 여행러들을 찾아볼까요?</item>
+        <item>현지인 친구 미리 사귀기! \n 어디로 떠나볼까요?</item>
+        <item>우리 여행 같이가자! \n 어디로 떠나시나요?</item>
         <item>content001</item>
     </string-array>
 

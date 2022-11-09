@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item>
+        <shape>
+            <solid android:color="@color/white_cotton"/>
+            <size
+                android:width="4dp"
+                android:height="4dp"/>
+
+        </shape>
+    </item>
+
+    <item
+        android:gravity="center"
+        android:drawable="@drawable/icon_heart_empty_story"
+        />
+
+</layer-list>

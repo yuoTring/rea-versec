@@ -1,5 +1,7 @@
 package com.versec.versecko.data.entity
 
+import java.io.Serializable
+
 data class StoryEntity(
 
     var uid : String = "uid",
@@ -11,6 +13,8 @@ data class StoryEntity(
 
     var mainLocation : String = "???",
     var subLocation : String = "???",
-    var likes : Int = 0
+    var likes : MutableList<String> = mutableListOf(),
 
-)
+    var timestamp : Long = System.currentTimeMillis()
+
+) : Serializable

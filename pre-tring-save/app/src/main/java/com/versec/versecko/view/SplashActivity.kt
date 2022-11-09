@@ -45,7 +45,7 @@ class SplashActivity : AppCompatActivity()
 
                             lifecycleScope.launch {
 
-                                delay(1000)
+                                delay(250)
 
                                 AppContext.uid = uid.data
                                 Log.d("uid-check", uid.data)
@@ -56,7 +56,7 @@ class SplashActivity : AppCompatActivity()
                         is Response.No -> {
 
                             lifecycleScope.launch {
-                                delay(2500)
+                                delay(500)
 
                                 startActivity(Intent(this@SplashActivity, EntryActivity::class.java))
                             }
@@ -65,7 +65,7 @@ class SplashActivity : AppCompatActivity()
                         is Response.Error -> {
 
                             lifecycleScope.launch {
-                                delay(1000)
+                                delay(250)
 
 
                                 val builder = AlertDialog.Builder(this@SplashActivity)

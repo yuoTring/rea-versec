@@ -48,7 +48,7 @@ class MessageViewModel (
                 return repository.sendMessage(contents, roomUid)
             }
 
-    suspend fun sendMessage (contents: String, roomUid: String) : Response<Int> {
-        return _sendMessage(contents, roomUid)
-    }
+            suspend fun sendMessage (contents: String, roomUid: String) : Response<Int> {
+                return _sendMessage(contents, roomUid)
+            }
 }

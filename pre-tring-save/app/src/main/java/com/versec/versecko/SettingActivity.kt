@@ -2,6 +2,7 @@ package com.versec.versecko
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -111,9 +112,9 @@ class SettingActivity : AppCompatActivity() {
         }
 
 
-        binding.textToService.setOnClickListener {  }
-        binding.textToPI.setOnClickListener {  }
-        binding.textToLI.setOnClickListener {  }
+        binding.textToService.setOnClickListener { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://coursedesign.notion.site/ver-1-0-0-c7ff915f2e4946ba82ec99241baebb51"))) }
+        binding.textToPI.setOnClickListener { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://coursedesign.notion.site/Ver-1-0-0-fc7683ead4c04cbd96060dfecf8769e7"))) }
+        binding.textToLI.setOnClickListener { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://coursedesign.notion.site/Ver-1-0-6dda9ec63e5748bd801a8ccb73948d4e"))) }
 
         binding.textLogOut.setOnClickListener {
 

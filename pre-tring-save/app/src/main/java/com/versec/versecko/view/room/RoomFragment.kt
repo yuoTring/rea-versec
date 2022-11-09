@@ -24,6 +24,8 @@ import com.versec.versecko.view.room.adapter.LoungeAdapter
 import com.versec.versecko.view.matching.UserProfileActivity
 import com.versec.versecko.viewmodel.RoomListViewModel
 import com.versec.versecko.viewmodel.MainViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -53,6 +55,8 @@ class RoomFragment : Fragment() {
     private lateinit var otherUser : RoomMemberEntity
 
     private var roomUidList : MutableList<String> = mutableListOf()
+
+    private lateinit var roomJob : Job
 
 
 
@@ -299,15 +303,120 @@ class RoomFragment : Fragment() {
         binding.recyclerChatRoomList.adapter = roomAdapter
 
 
-        val jobRoomUid =
-            lifecycleScope.launch {
+
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+
+        roomUidList.clear()
+        roomList.clear()
+
+        updateRooms()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        reset()
+
+        roomJob.cancel()
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        reset()
+    }
+
+    private fun reset () {
+
+        if (viewLoungeStatus == 2) {
+
+            counterLiked = viewModel.getCounter(2)
+            loungeAdapter.changeAddedValue(0)
+            loungeAdapter.changeUsers(usersLiked)
+            loungeAdapter.notifyDataSetChanged()
+
+        } else {
+            counterMatching = viewModel.getCounter(3)
+            loungeAdapter.changeAddedValue(0)
+            loungeAdapter.changeUsers(usersMatched)
+            loungeAdapter.notifyDataSetChanged()
+        }
+    }
+
+    private fun checkNotification (roomUid : String) {
+
+
+        lifecycleScope.launch {
+
+            val getLastMessageResponse = viewModel.getLastMessage(roomUid)
+
+            when(getLastMessageResponse) {
+
+                is Response.Success -> {
+
+                    val lastMessage = getLastMessageResponse.data
+
+                    Log.d("last-message-check", lastMessage.toString())
+
+
+                    val getOwnLastRead = viewModel.getOwnLastRead(roomUid)
+
+                    when(getOwnLastRead) {
+
+                        is Response.Success -> {
+
+                            val ownLastRead = getOwnLastRead.data
+
+                            Log.d("room-check-ownLastRead", ownLastRead.toString())
+
+                            if (lastMessage.timestamp > ownLastRead) {
+
+                                notificationMap.set(roomUid, true)
+
+                            } else {
+                                notificationMap.set(roomUid, false)
+                            }
+
+                            Log.d("room-check-notification", notificationMap.size.toString())
+
+                            roomAdapter.changeNotificationMap(notificationMap)
+                            roomAdapter.notifyDataSetChanged()
+                        }
+                        is Response.No -> {
+
+                        }
+                        is Response.Error -> {
+                            Log.d("room-check-lastRead!!!", getOwnLastRead.errorMessage)
+                        }
+                        else -> {
+
+                        }
+                    }
+
+                }
+                is Response.Error -> {
+
+                }
+                else -> {
+
+                }
+            }
+
+        }
+
+    }
+
+    private fun updateRooms () {
+
+        roomJob = lifecycleScope.launch {
 
 
 
             viewModel.getRoomUid().collect {
 
-
-                Log.d("it-check", it.toString())
 
                 val key = it.keys.first()
 
@@ -365,7 +474,6 @@ class RoomFragment : Fragment() {
                                                 otherUid = uid
                                         }
 
-                                        Log.d("room-check-otherUid", otherUid)
 
 
 
@@ -377,7 +485,6 @@ class RoomFragment : Fragment() {
 
                                                 otherUser = getUserResponse.data
 
-                                                Log.d("room-check-other", otherUser.toString())
 
 
 
@@ -388,7 +495,6 @@ class RoomFragment : Fragment() {
                                                     if (!roomList.contains(roomEntity))
                                                         roomList.add(roomEntity)
 
-                                                    Log.d("room-check-roomList", "size: "+roomList.size)
                                                     roomAdapter.changeRooms(roomList)
                                                     roomAdapter.changeOtherUsers(otherUserList)
                                                     roomAdapter.notifyDataSetChanged()
@@ -400,7 +506,6 @@ class RoomFragment : Fragment() {
                                                     if (!roomList.contains(roomEntity))
                                                         roomList.add(roomEntity)
 
-                                                    Log.d("room-check-roomList", "size: "+roomList.size)
                                                     roomAdapter.changeRooms(roomList)
                                                     roomAdapter.changeOtherUsers(otherUserList)
                                                     roomAdapter.notifyDataSetChanged()
@@ -408,20 +513,22 @@ class RoomFragment : Fragment() {
                                                     /**
                                                     otherUserList.forEachIndexed { index, roomMember ->
 
-                                                        otherUserList.set(index, otherUser)
+                                                    otherUserList.set(index, otherUser)
 
 
-                                                        if (!roomList.contains(roomEntity))
-                                                            roomList.add(roomEntity)
+                                                    if (!roomList.contains(roomEntity))
+                                                    roomList.add(roomEntity)
 
 
-                                                        Log.d("room-check-roomList", "size: "+roomList.size)
-                                                        roomAdapter.changeRooms(roomList)
-                                                        roomAdapter.changeOtherUsers(otherUserList)
-                                                        roomAdapter.notifyDataSetChanged()
+                                                    Log.d("room-check-roomList", "size: "+roomList.size)
+                                                    roomAdapter.changeRooms(roomList)
+                                                    roomAdapter.changeOtherUsers(otherUserList)
+                                                    roomAdapter.notifyDataSetChanged()
                                                     } **/
 
                                                 }
+
+                                                checkNotification(roomEntity.uid)
 
 
 
@@ -443,61 +550,7 @@ class RoomFragment : Fragment() {
                                                                 roomAdapter.notifyDataSetChanged()
                                                             }
 
-                                                            lifecycleScope.launch {
-
-                                                                val getLastMessageResponse = viewModel.getLastMessage(roomEntity.uid)
-
-                                                                when(getLastMessageResponse) {
-
-                                                                    is Response.Success -> {
-
-                                                                        val lastMessage = getLastMessageResponse.data
-
-
-                                                                        val getOwnLastRead = viewModel.getOwnLastRead(roomEntity.uid)
-
-                                                                        when(getOwnLastRead) {
-
-                                                                            is Response.Success -> {
-
-                                                                                val ownLastRead = getOwnLastRead.data
-
-                                                                                Log.d("room-check-ownLastRead", ownLastRead.toString())
-
-                                                                                if (lastMessage.timestamp > ownLastRead) {
-
-                                                                                    notificationMap.set(roomEntity.uid, true)
-
-                                                                                } else {
-                                                                                    notificationMap.set(roomEntity.uid, false)
-                                                                                }
-
-                                                                                Log.d("room-check-notification", notificationMap.size.toString())
-
-                                                                                roomAdapter.changeNotificationMap(notificationMap)
-                                                                                roomAdapter.notifyDataSetChanged()
-                                                                            }
-                                                                            is Response.No -> {
-
-                                                                            }
-                                                                            is Response.Error -> {
-                                                                                Log.d("room-check-lastRead!!!", getOwnLastRead.errorMessage)
-                                                                            }
-                                                                            else -> {
-
-                                                                            }
-                                                                        }
-
-                                                                    }
-                                                                    is Response.Error -> {
-
-                                                                    }
-                                                                    else -> {
-
-                                                                    }
-                                                                }
-
-                                                            }
+                                                            checkNotification(roomEntity.uid)
                                                         }
                                                         is Response.Error -> {
 
@@ -578,34 +631,6 @@ class RoomFragment : Fragment() {
                 }
             }
 
-        }
-
-    }
-
-    override fun onStop() {
-        super.onStop()
-        reset()
-    }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        reset()
-    }
-
-    private fun reset () {
-
-        if (viewLoungeStatus == 2) {
-
-            counterLiked = viewModel.getCounter(2)
-            loungeAdapter.changeAddedValue(0)
-            loungeAdapter.changeUsers(usersLiked)
-            loungeAdapter.notifyDataSetChanged()
-
-        } else {
-            counterMatching = viewModel.getCounter(3)
-            loungeAdapter.changeAddedValue(0)
-            loungeAdapter.changeUsers(usersMatched)
-            loungeAdapter.notifyDataSetChanged()
         }
     }
 

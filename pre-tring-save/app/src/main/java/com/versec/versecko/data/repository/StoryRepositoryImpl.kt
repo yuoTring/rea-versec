@@ -10,25 +10,36 @@ class StoryRepositoryImpl (
         private val storyDataSource: StoryDataSource
 
         ) : StoryRepository {
+
+
+
         override suspend fun uploadStory(story: StoryEntity): Response<Int> {
                 return storyDataSource.uploadStory(story)
         }
 
-        override suspend fun editStory(story: StoryEntity): Response<Int> {
-                return storyDataSource.editStory(story)
+        override suspend fun deleteStory(uid: String, size: Int): Response<Int> {
+                return storyDataSource.deleteStory(uid, size)
         }
 
 
-
         override suspend fun getStoryList(
-
-                startUid: String,
+                startTimestamp: Long,
                 place: String?,
                 depth: Int
-
         ): Response<MutableList<StoryEntity>> {
 
-                return storyDataSource.getStoryList(startUid, place, depth)
+                return storyDataSource.getStoryList(startTimestamp, place, depth)
+        }
+
+        override suspend fun getOwnStory(uid: String): Response<StoryEntity> {
+
+                return storyDataSource.getOwnStory(uid)
+        }
+
+
+        override suspend fun getOwnStoryList(): Response<MutableList<StoryEntity>> {
+
+                return storyDataSource.getOwnStoryList()
         }
 
         override suspend fun uploadImage(
@@ -39,6 +50,14 @@ class StoryRepositoryImpl (
         ): Response<Int> {
 
                 return storyDataSource.uploadImage(uriMap, uid)
+        }
+
+        override suspend fun likeStory(uid: String): Response<StoryEntity> {
+                return storyDataSource.likeStory(uid)
+        }
+
+        override suspend fun cancelLike(uid: String): Response<StoryEntity> {
+                return storyDataSource.cancelLike(uid)
         }
 
 

@@ -41,9 +41,13 @@ class ProfileViewModel (
                 return _insertUser_Local(userEntity)
         }
 
+        private suspend fun _getOwnStories () : Response<MutableList<StoryEntity>> {
 
-        suspend fun getPath () : Response<Int> {
-                return storyRepository.uploadStory(StoryEntity())
+                return storyRepository.getOwnStoryList()
+        }
+
+        suspend fun getOwnStories () : Response<MutableList<StoryEntity>> {
+                return _getOwnStories()
         }
 
 

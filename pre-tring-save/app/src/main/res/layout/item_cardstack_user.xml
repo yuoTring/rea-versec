@@ -61,6 +61,7 @@
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
                 android:layout_marginLeft="16dp"
+                android:visibility="invisible"
                 android:background="@drawable/button_corner_16_charcoal"
                 android:text="매너 점수: 4.5"
                 android:textColor="@color/white"

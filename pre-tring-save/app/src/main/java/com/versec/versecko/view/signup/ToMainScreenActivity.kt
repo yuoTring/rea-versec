@@ -23,7 +23,7 @@ class ToMainScreenActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
 
-            delay(2500)
+            delay(1500)
 
 
 

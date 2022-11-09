@@ -112,6 +112,7 @@
                     android:paddingRight="12dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginLeft="16dp"
+                    android:visibility="invisible"
                     android:background="@drawable/button_corner_16_charcoal"
                     android:text="~~"
                     android:textColor="@color/white"

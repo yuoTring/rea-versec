@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white_cotton"
+    tools:context=".view.story.StoryDetailActivity">
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonBack"
+        android:layout_width="40dp"
+        android:layout_height="56dp"
+        android:background="@drawable/button_back"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/textNickName"
+        android:layout_width="wrap_content"
+        android:layout_height="56dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="20dp"
+        android:elevation="2dp"
+        android:text="NickName"
+        android:textColor="@color/nero"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/buttonBack"
+        />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonMore"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:background="@drawable/icon_more"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/textNickName"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewpagerStoryImage"
+        android:layout_width="match_parent"
+        android:layout_height="408dp"
+        android:background="@color/blue_azure"
+        app:layout_constraintTop_toBottomOf="@id/textNickName"/>
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        app:tabBackground="@drawable/tab_selector"
+        app:tabGravity="center"
+        app:layout_constraintBottom_toBottomOf="@id/viewpagerStoryImage"/>
+
+    <TextView
+        android:id="@+id/textStoryLocaton"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="16dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="8dp"
+        android:text="At Seoul, South Korea"
+        android:textColor="@color/blue_azure"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/tabLayout"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/textLikeCount"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_marginRight="0.8dp"
+        android:gravity="center_vertical"
+        android:text="20"
+        android:textColor="@color/gray"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="@id/textLikes"
+        app:layout_constraintBottom_toBottomOf="@id/textLikes"
+        app:layout_constraintEnd_toStartOf="@id/textLikes"
+        />
+    <TextView
+        android:id="@+id/textLikes"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_marginRight="8dp"
+        android:gravity="center_vertical"
+        android:textColor="@color/gray"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="@id/buttonLike"
+        app:layout_constraintBottom_toBottomOf="@id/buttonLike"
+        app:layout_constraintEnd_toStartOf="@id/buttonLike"
+        />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonLike"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginRight="16dp"
+        android:visibility="visible"
+        android:background="@drawable/icon_heart_empty_story"
+        app:layout_constraintTop_toTopOf="@id/textStoryLocaton"
+        app:layout_constraintEnd_toEndOf="@id/textStoryLocaton"
+        />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonComment"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:visibility="gone"
+        android:background="@drawable/icon_comment"
+        app:layout_constraintTop_toTopOf="@id/textStoryLocaton"
+        app:layout_constraintEnd_toStartOf="@id/buttonLike"
+        />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonKnock"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginRight="4dp"
+        android:visibility="gone"
+        android:background="@drawable/icon_knock"
+        app:layout_constraintTop_toTopOf="@id/textStoryLocaton"
+        app:layout_constraintBottom_toBottomOf="@id/textStoryLocaton"
+        app:layout_constraintEnd_toStartOf="@id/buttonComment"
+        />
+
+    <TextView
+        android:id="@+id/textStoryContents"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="16dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:text="~~~~~~~~~~~~~~~~~~~~~~~!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        android:textColor="@color/nero"
+        android:textSize="12sp"
+        android:maxLines="2"
+        app:layout_constraintTop_toBottomOf="@id/textStoryLocaton"/>
+
+    <TextView
+        android:id="@+id/textTime"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="16dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="8dp"
+        android:text="2022.12.12"
+        android:textColor="@color/gray_dark"
+        android:textSize="8sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/textStoryContents"/>
+
+
+    <View
+        android:id="@+id/view000"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        app:layout_constraintTop_toBottomOf="@id/textTime"/>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

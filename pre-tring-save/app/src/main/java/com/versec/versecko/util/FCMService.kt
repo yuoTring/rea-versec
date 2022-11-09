@@ -15,28 +15,30 @@ import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.versec.versecko.R
-import com.versec.versecko.data.repository.UserRepository
-import com.versec.versecko.view.MainScreenActivity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
+import com.versec.versecko.view.SplashActivity
 
-class FCMServic : FirebaseMessagingService() {
+class FCMService : FirebaseMessagingService() {
 
-    private val userRepository : UserRepository by inject<UserRepository>()
-    private val FCM_ID ="channel_fcm"
+    companion object {
+
+    }
+
+    private val FCM_ID = "channel_FCM"
 
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
 
-        val intent = Intent(this, MainScreenActivity::class.java)
 
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        Log.d("fcm-message", "message: "+ message.toString())
 
-        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.O)
-            setNotificationChannel(notificationManager)
+        val intent = Intent(this, SplashActivity::class.java)
+
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            createNotificationChannel(notificationManager)
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
 
@@ -47,19 +49,61 @@ class FCMServic : FirebaseMessagingService() {
             PendingIntent.FLAG_ONE_SHOT
         )
 
+        val fcmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
-        val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+        val notificationBuilder =
 
-        val notificationBuilder = NotificationCompat.Builder(this, FCM_ID)
-            .setSmallIcon(R.drawable.icon_chat)
-            .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.icon_chat))
-            .setContentTitle(message.data.get("title"))
-            .setContentText(message.data.get("content"))
-            .setAutoCancel(true)
-            .setSound(soundUri)
-            .setContentIntent(pendingIntent)
+            NotificationCompat.Builder(this, FCM_ID)
+                .setSmallIcon(R.drawable.logo__small)
+                .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.logo__small))
+                .setContentTitle(resources.getString(R.string.app_name))
+                .setSound(fcmSound)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
 
-        notificationManager.notify(1000, notificationBuilder.build())
+        val type = message.data.get(this.resources.getString(R.string.FCM_TYPE))
+
+        val nickname = message.data.get(resources.getString(R.string.FCM_NICKNAME))
+
+        if (type != null) {
+
+            if (type.equals(resources.getString(R.string.FCM_TYPE_LIKED))) {
+
+
+                notificationBuilder
+                    .setContentText(nickname+resources.getString(R.string.FCM_CONTENTS_LIKED))
+
+
+
+            } else if (type.equals(resources.getString(R.string.FCM_TYPE_MATCHED))) {
+
+                notificationBuilder
+                    .setContentText(nickname+resources.getString(R.string.FCM_CONTENTS_MATCHED))
+
+            } else if (type.equals((resources.getString(R.string.FCM_TYPE_CHAT)).lowercase())) {
+
+                notificationBuilder
+                    .setContentText(nickname+resources.getString(R.string.FCM_CONTENTS_CHAT))
+
+            } else if (type.equals(resources.getString(R.string.FCM_TYPE_STORY_LIKED))) {
+
+                notificationBuilder
+                    .setContentText(nickname+resources.getString(R.string.FCM_CONTENTS_STORY_LIKED))
+
+            } else if (type.equals(resources.getString(R.string.FCM_TYPE_OTHER))) {
+
+            }
+
+
+
+
+
+
+
+        }
+
+        notificationManager.notify(800,notificationBuilder.build())
+
     }
 
     override fun onMessageSent(msgId: String) {
@@ -69,28 +113,24 @@ class FCMServic : FirebaseMessagingService() {
     override fun onNewToken(token: String) {
         super.onNewToken(token)
 
-        CoroutineScope(Dispatchers.IO).launch {
-
-
-        }
 
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun setNotificationChannel (notificationManager: NotificationManager) {
+    private fun createNotificationChannel (notificationManager: NotificationManager) {
 
-        val fcmChannelName = "fcmNotification"
-        val description = "fcm_description"
+        val fcmChannelName = "FCM__Notification"
+        val description = "FCM__Description"
 
-        val fcmChannel = NotificationChannel(FCM_ID, fcmChannelName,NotificationManager.IMPORTANCE_HIGH)
+        val fcmChannel = NotificationChannel(FCM_ID, fcmChannelName, NotificationManager.IMPORTANCE_HIGH)
 
         fcmChannel.description = description
         fcmChannel.enableLights(true)
-        fcmChannel.lightColor = Color.RED
+        fcmChannel.lightColor = Color.BLUE
         fcmChannel.enableVibration(true)
 
         notificationManager.createNotificationChannel(fcmChannel)
 
-
     }
+
 }

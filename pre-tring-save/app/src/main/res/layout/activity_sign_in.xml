@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="56dp"
         android:layout_marginLeft="16dp"
-        android:text="더 안전한 트링! \n개인 정보 보호를 위해 \n전화번호 인증을 진행합니다."
+        android:text="더 안전한 우와! \n개인 정보 보호를 위해 \n전화번호 인증을 진행합니다."
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"

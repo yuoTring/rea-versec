@@ -1,6 +1,7 @@
 package com.versec.versecko.view.signup
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -46,15 +47,6 @@ class EntryActivity : AppCompatActivity()
 
 
         LocationPermission.requestLocationPermission(this)
-
-        lifecycleScope.launch {
-
-
-            viewModel.getPath()
-        }
-
-
-
 
         /**
         viewModel.userRemote.observe(this, Observer {
@@ -105,16 +97,15 @@ class EntryActivity : AppCompatActivity()
 
 
         binding.textServiceTerms.setOnClickListener {
-            Toast.makeText(this, "!!!", Toast.LENGTH_SHORT).show()
-
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://coursedesign.notion.site/ver-1-0-0-c7ff915f2e4946ba82ec99241baebb51")))
         }
 
         binding.textPersonalInfoTerms.setOnClickListener {
-            Toast.makeText(this, "!!!", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://coursedesign.notion.site/Ver-1-0-0-fc7683ead4c04cbd96060dfecf8769e7")))
         }
 
         binding.textLocationTerms.setOnClickListener {
-            Toast.makeText(this, "!!!", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://coursedesign.notion.site/Ver-1-0-6dda9ec63e5748bd801a8ccb73948d4e")))
         }
 
         binding.buttonAgreeAndStart.setOnClickListener {

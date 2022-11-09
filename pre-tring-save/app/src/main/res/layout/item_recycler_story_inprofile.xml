@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/white_cotton"
+    android:layout_marginLeft="12dp"
+    android:layout_marginRight="12dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/imageStory"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/test_profileimage"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
+        android:elevation="2dp"
+        app:shapeAppearanceOverlay="@style/round_image"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/textTitle"
+        android:layout_width="64dp"
+        android:layout_height="24dp"
+        android:gravity="center"
+        android:text="~~~~~~~~~~"
+        android:textColor="@color/charcoal"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        android:maxLines="1"
+        android:ellipsize="end"
+        app:layout_constraintTop_toBottomOf="@id/imageStory"
+        app:layout_constraintStart_toStartOf="@id/imageStory"
+        app:layout_constraintEnd_toEndOf="@id/imageStory"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

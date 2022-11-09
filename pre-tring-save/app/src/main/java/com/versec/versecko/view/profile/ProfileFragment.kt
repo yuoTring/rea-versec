@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -16,12 +17,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayoutMediator
 import com.versec.versecko.R
+import com.versec.versecko.view.story.StoryDetailActivity
+import com.versec.versecko.data.entity.StoryEntity
+import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.databinding.FragmentProfileBinding
 import com.versec.versecko.util.Response
+import com.versec.versecko.view.profile.adapter.StoryInProfileAdapter
 import com.versec.versecko.view.profile.adapter.ViewPagerAdapter
 import com.versec.versecko.view.signup.adapter.TagAdapter
+import com.versec.versecko.view.story.StoryUploadActivity
 import com.versec.versecko.viewmodel.ProfileViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
@@ -34,6 +42,11 @@ class ProfileFragment : Fragment() {
 
     private lateinit var tripAdapter : TagAdapter
     private lateinit var styleAdapter : TagAdapter
+
+    private lateinit var stories : MutableList<StoryEntity>
+    private lateinit var storyAdapter : StoryInProfileAdapter
+
+    private lateinit var ownUser : UserEntity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,18 +64,14 @@ class ProfileFragment : Fragment() {
 
         binding.viewModel = profileViewModel
 
-
-        val view = binding.root
-
-
-
-        return view
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        var uriList = mutableListOf<String>()
+
+        val uriList = mutableListOf<String>()
 
         adapter = ViewPagerAdapter(uriList)
 
@@ -109,7 +118,7 @@ class ProfileFragment : Fragment() {
 
             Log.d("profile-check", it.toString())
 
-            uriList.removeAll(uriList)
+            uriList.clear()
 
             it.uriMap.forEach { entry ->
 
@@ -172,9 +181,86 @@ class ProfileFragment : Fragment() {
 
             binding.textSelfIntroduction.setText(it.selfIntroduction)
             binding.textKnock.setText(it.knock.toString())
+
+            ownUser = it
         } )
 
 
+        stories = mutableListOf()
+        stories.add(0, StoryEntity())
+
+        storyAdapter = StoryInProfileAdapter(stories) { position ->
+
+            if (position == 0) {
+
+
+                startActivityForResult(
+
+                    Intent(requireActivity(), StoryUploadActivity::class.java)
+                        .putExtra("user", ownUser)
+                    , STORY_UPLOAD
+                )
+
+
+            } else {
+
+                startActivityForResult(
+
+                    Intent(requireActivity(), StoryDetailActivity::class.java).putExtra("story", stories.get(position)),
+                    STORY_DETAIL
+                )
+
+            }
+
+
+        }
+
+        binding.recyclerMyStory.layoutManager = LinearLayoutManager(requireActivity(), RecyclerView.HORIZONTAL, false)
+        binding.recyclerMyStory.adapter = storyAdapter
+
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        getOwnStories()
+    }
+
+    private fun getOwnStories () {
+
+        lifecycleScope.launch(Dispatchers.IO) {
+
+            val storyResponse = profileViewModel.getOwnStories()
+
+            when(storyResponse) {
+
+                is Response.Success -> {
+
+                    stories.clear()
+                    stories.add(0, StoryEntity())
+                    stories.addAll(storyResponse.data)
+
+                    storyAdapter.changeStories(stories)
+
+                    withContext(Dispatchers.Main) {
+                        storyAdapter.notifyDataSetChanged()
+                    }
+
+                }
+                is Response.No -> {
+
+                }
+                is Response.Error -> {
+
+                }
+                else -> {
+
+                }
+
+            }
+
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -222,14 +308,27 @@ class ProfileFragment : Fragment() {
                     }
                 }
             }
+
+
+        }
+        else if (requestCode == STORY_UPLOAD && resultCode == COMPLETE && resultCode != STORY_DETAIL) {
+            stories.clear()
+            getOwnStories()
+        }
+        else if (resultCode == STORY_DETAIL) {
+            stories.clear()
+            getOwnStories()
         }
     }
 
     companion object {
 
         private const val EDIT = 400
+        private const val STORY_UPLOAD = 250
+        private const val COMPLETE = 5000
+        private const val STORY_DETAIL = 255
 
-         @JvmStatic
+        @JvmStatic
         fun newInstance() =
             ProfileFragment().apply {
                 arguments = Bundle().apply {

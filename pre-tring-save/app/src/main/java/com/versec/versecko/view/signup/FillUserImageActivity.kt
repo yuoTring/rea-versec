@@ -45,7 +45,6 @@ class FillUserImageActivity : AppCompatActivity()
 
     private lateinit var imageList: MutableList<Uri>
 
-    private var onClickImagePosition : Int = 0
     private var imageCount : Int = 0
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -84,10 +83,10 @@ class FillUserImageActivity : AppCompatActivity()
 
                 val builder = AlertDialog.Builder(this)
 
-                builder.setItems(arrayOf("delete"), DialogInterface.OnClickListener { dialogInterface, index ->
+                builder.setItems(arrayOf("삭제"), DialogInterface.OnClickListener { dialogInterface, index ->
 
                     imageList.set(position, Uri.parse("---"))
-                    imageCount --
+                    imageCount = imageCount - 1
 
                     imageList.removeAt(position)
                     imageList.add(Uri.parse("---"))
@@ -116,11 +115,14 @@ class FillUserImageActivity : AppCompatActivity()
 
             var textCount = "0/200"
 
-            if (text.toString().length>20) {
+            if (text.toString().length> 199 ) {
+
+                binding.editSelfIntroduction.isEnabled = false
 
             }
             else
             {
+                binding.editSelfIntroduction.isEnabled = true
 
                 textCount=
                 text.toString().length.toString() + "/200"
@@ -215,6 +217,9 @@ class FillUserImageActivity : AppCompatActivity()
 
                                                 // 4. insert own user with url to Local (Room SQL)
                                                 when(insertResponse_Local) {
+                                                    is Response.Success -> {
+
+                                                    }
                                                     is Response.Error -> {
                                                         show()
 
@@ -222,7 +227,8 @@ class FillUserImageActivity : AppCompatActivity()
 
                                                     }
                                                     else -> {
-                                                        Log.d("success-check", "success-insert-local")
+
+                                                        Log.d("else-check", "success-insert-local")
 
 
                                                     }
@@ -267,7 +273,6 @@ class FillUserImageActivity : AppCompatActivity()
 
                                                             }
                                                             else -> {
-                                                                Log.d("else-check", "else-insert-member")
 
                                                             }
                                                         }
@@ -279,8 +284,10 @@ class FillUserImageActivity : AppCompatActivity()
 
                                                         Log.d("error-check", "error-get-fcm: "+ getFCMResponse.errorMessage)
 
+
                                                     }
                                                     else -> {
+
 
                                                     }
                                                 }
@@ -297,6 +304,7 @@ class FillUserImageActivity : AppCompatActivity()
                                             }
                                             else -> {
 
+
                                             }
                                         }
 
@@ -308,9 +316,11 @@ class FillUserImageActivity : AppCompatActivity()
 
                                         Log.d("error-check", "error-upload-image: "+ uploadResponse.errorMessage)
 
-                                        hide()
+
+
                                     }
                                     else -> {
+
 
                                     }
                                 }
@@ -323,6 +333,7 @@ class FillUserImageActivity : AppCompatActivity()
 
                             }
                             else -> {
+
 
                             }
                         }
@@ -361,11 +372,6 @@ class FillUserImageActivity : AppCompatActivity()
         WindowEventManager.openUserInteraction(this@FillUserImageActivity)
     }
 
-    private fun insertUser () {
-
-
-    }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -391,8 +397,6 @@ class FillUserImageActivity : AppCompatActivity()
             if (croppedImageUri != null) {
                 imageList.set(imageCount, croppedImageUri)
                 imageCount++
-
-                Log.d("image-get", "imageList: "+ imageList.toString())
 
                 imageAdapter.updateList(imageList)
                 imageAdapter.notifyDataSetChanged()

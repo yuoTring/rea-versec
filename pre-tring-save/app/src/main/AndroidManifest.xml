@@ -13,12 +13,15 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/app__icon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/app__icon__round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar"
         tools:targetApi="31">
+        <activity
+            android:name=".view.story.StoryDetailActivity"
+            android:exported="false" />
         <activity
             android:name=".view.story.StoryUploadActivity"
             android:exported="false" />
@@ -27,7 +30,7 @@
             android:exported="false" />
 
         <service
-            android:name=".util.FCMServic"
+            android:name=".util.FCMService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -87,9 +90,6 @@
             android:exported="false" />
         <activity
             android:name=".view.ChoosePlaceActivity"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
             android:exported="false" />
         <activity
             android:name=".view.SplashActivity"

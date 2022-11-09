@@ -133,10 +133,13 @@ class MatchingFragment : Fragment(), CardStackListener {
                     viewModel.getUsersWithGeoHash(AppContext.latitude, AppContext.longitude, radius, genderFilter, minAge, maxAge)
             } else if (whichFrag == RESIDENCE) {
                 response =
-                    viewModel.getUsersWithPlaces(conditionList, genderFilter, minAge, maxAge)
+                    viewModel.getUsersWithResidences(conditionList, genderFilter, minAge, maxAge)
             } else if (whichFrag == TRIP) {
                 response =
                     viewModel.getUsersWithPlaces(conditionList, genderFilter, minAge, maxAge)
+            } else if (whichFrag == STYLE) {
+                response =
+                    viewModel.getUsersWithStyles(conditionList, genderFilter, minAge, maxAge)
             }
 
             when(response) {
@@ -369,13 +372,6 @@ class MatchingFragment : Fragment(), CardStackListener {
                 Log.d("fragment-state", "fr: " +whichFrag +" - "+hidden)
 
 
-
-                Log.d("fragment-state", "wh: " +radius)
-                Log.d("fragment-state", "wh: " +genderFilter)
-                Log.d("fragment-state", "wh: " +minAge)
-                Log.d("fragment-state", "wh: " +maxAge)
-
-
                 lifecycleScope.launch {
 
                     binding.progressBarUser.show()
@@ -385,10 +381,13 @@ class MatchingFragment : Fragment(), CardStackListener {
                             viewModel.getUsersWithGeoHash(AppContext.latitude, AppContext.longitude, radius, genderFilter, minAge, maxAge)
                     } else if (whichFrag == RESIDENCE) {
                         response =
-                            viewModel.getUsersWithPlaces(conditionList, genderFilter, minAge, maxAge)
+                            viewModel.getUsersWithResidences(conditionList, genderFilter, minAge, maxAge)
                     } else if (whichFrag == TRIP) {
                         response =
                             viewModel.getUsersWithPlaces(conditionList, genderFilter, minAge, maxAge)
+                    } else if (whichFrag == STYLE) {
+                        response =
+                            viewModel.getUsersWithStyles(conditionList, genderFilter, minAge, maxAge)
                     }
 
                     when(response) {
@@ -401,6 +400,8 @@ class MatchingFragment : Fragment(), CardStackListener {
                                 otherUserList.removeAll(otherUserList)
 
                             otherUserList.addAll((response as Response.Success<MutableList<UserEntity>>).data)
+
+                            currentPosition = 0
 
                             Log.d("fragment-state", "size: " +otherUserList.size)
 
@@ -439,6 +440,15 @@ class MatchingFragment : Fragment(), CardStackListener {
 
             binding.containerUserOn.visibility = View.INVISIBLE
             binding.containerNoResult.visibility = View.VISIBLE
+
+            if (whichFrag != MAIN) {
+
+                val emoji = String(Character.toChars(0x1F605))
+
+                binding.buttonSetSearchCondition.visibility = View.GONE
+                binding.imageSearchIcon.visibility = View.GONE
+                binding.textNotice.setText(emoji+"검색된 여행 친구가 없습니다 \n 뒤로 가기 눌러 탐색조건을 재설정 해주세요.")
+            }
 
         } else {
 

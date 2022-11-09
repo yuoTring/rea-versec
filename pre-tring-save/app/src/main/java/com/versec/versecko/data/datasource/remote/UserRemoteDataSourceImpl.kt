@@ -16,6 +16,7 @@ import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
 import com.versec.versecko.AppContext
+import com.versec.versecko.data.entity.LoungeUser
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.util.Response
 import kotlinx.coroutines.CoroutineScope
@@ -461,7 +462,12 @@ class UserRemoteDataSourceImpl (
         try {
             fireStore.collection("database/user/userList/"+otherUser.uid+"/lounge/loungeInformation/likedUserList")
                 .document(uid)
-                .set(mapOf("uid" to uid))
+                .set(LoungeUser(
+
+                    uid = uid,
+                    timestamp = System.currentTimeMillis()
+
+                ))
                 .await()
 
                 likeHistory(otherUser, ownUser)
@@ -489,7 +495,14 @@ class UserRemoteDataSourceImpl (
 
             fireStore.collection("database/user/userList/"+AppContext.uid+"/lounge/loungeHistory/skipUserList")
                 .document(otherUser.uid)
-                .set(mapOf("uid" to otherUser.uid))
+                .set(
+                    LoungeUser(
+
+                        uid = otherUser.uid,
+                        timestamp = System.currentTimeMillis()
+
+                    )
+                )
         }
         catch (exception : Exception) {
 
@@ -612,11 +625,12 @@ class UserRemoteDataSourceImpl (
 
                         if (value != null) {
 
-                            val documentList = value.toObjects(UserEntity::class.java)
+                            val documentList = value.toObjects(LoungeUser::class.java)
 
                             val userList = mutableListOf<UserEntity>()
 
                             CoroutineScope(Dispatchers.IO).launch {
+
 
                                 documentList.forEach { user->
 
@@ -633,10 +647,12 @@ class UserRemoteDataSourceImpl (
                                         userList.add(userEntity)
 
                                     } else {
-                                         Log.d("liked-null", "null")
+
                                     }
 
                                 }
+
+
 
                                 trySend(Response.Success(userList))
 
@@ -656,7 +672,7 @@ class UserRemoteDataSourceImpl (
 
                             if (value != null) {
 
-                                val documentList = value.toObjects(UserEntity::class.java)
+                                val documentList = value.toObjects(LoungeUser::class.java)
 
                                 val userList = mutableListOf<UserEntity>()
 
@@ -681,6 +697,8 @@ class UserRemoteDataSourceImpl (
                                         }
 
                                     }
+
+
 
                                     trySend(Response.Success(userList))
 
@@ -717,12 +735,28 @@ class UserRemoteDataSourceImpl (
 
             fireStore.collection("database/user/userList/"+ownUser.uid+"/lounge/loungeInformation/matchingUserList")
                 .document(otherUser.uid)
-                .set(mapOf("uid" to otherUser.uid))
+                .set(
+
+                    LoungeUser(
+
+                        uid = otherUser.uid,
+                        timestamp = System.currentTimeMillis()
+                    )
+
+
+                )
                 .await()
 
             fireStore.collection("database/user/userList/"+otherUser.uid+"/lounge/loungeInformation/matchingUserList")
                 .document(ownUser.uid)
-                .set(mapOf("uid" to ownUser.uid))
+                .set(
+                    LoungeUser(
+
+                        uid = ownUser.uid,
+                        timestamp = System.currentTimeMillis()
+
+                    )
+                )
                 .await()
 
             matchHistory(otherUser, ownUser)

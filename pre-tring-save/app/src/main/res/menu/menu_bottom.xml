@@ -16,6 +16,7 @@
     <item
         android:id="@+id/page_lounge"
         android:enabled="true"
+        android:visible="true"
         android:icon="@drawable/icon_lounge"
         android:title="동네이야기"/>
 
