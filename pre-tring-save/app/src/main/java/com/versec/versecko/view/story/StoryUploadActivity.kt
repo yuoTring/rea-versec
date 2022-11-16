@@ -136,11 +136,10 @@ class StoryUploadActivity : AppCompatActivity() {
 
             var textCount = "0/200"
 
-            if (text.toString().length > 10 ) {
-                binding.editContents.isEnabled = false
-            } else {
+            if (text.toString().length > 200 ) {
 
-                binding.editContents.isEnabled = true
+                binding.editContents.text.delete(text!!.length-1, text.length)
+            } else {
 
                 textCount =
                     text.toString().length.toString() + "/200"

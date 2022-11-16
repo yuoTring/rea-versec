@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:gravity="center"
-        android:visibility="visible"
+        android:visibility="gone"
         android:background="@color/white_cotton"
         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -22,7 +22,7 @@
         android:layout_width="16dp"
         android:layout_height="20dp"
         android:layout_marginLeft="16dp"
-        android:visibility="visible"
+        android:visibility="gone"
         android:background="@drawable/icon_back"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/textTopTitle"
@@ -44,6 +44,7 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_marginRight="12dp"
+        android:visibility="gone"
         android:background="@drawable/icon_filter_black"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/textTopTitle"

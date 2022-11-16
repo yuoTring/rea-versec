@@ -45,6 +45,8 @@ class ChoosePlaceActivity : AppCompatActivity() {
 
         const val AGAIN_RESIDENCE = 1001
         const val AGAIN_TRIP = 1002
+
+        private const val CANCEL = -1000
     }
 
 
@@ -158,7 +160,7 @@ class ChoosePlaceActivity : AppCompatActivity() {
                     subAdapter.notifyDataSetChanged()
                 }
 
-            } else if (requestCode == STORY_FEED || requestCode == STORY_UPLOAD) {
+            } else if (requestCode == STORY_FEED || requestCode == STORY_UPLOAD ) {
 
                 if (requestCode == STORY_UPLOAD)
                     subPlaceList.removeAt(0)
@@ -230,7 +232,12 @@ class ChoosePlaceActivity : AppCompatActivity() {
 
                 finish()
 
-            } else if (chosenList.size>0 && requestCode == DISCOVERY_RESIDENCE) {
+            } else if (
+
+                (chosenList.size>0 && requestCode == DISCOVERY_RESIDENCE) ||
+                (chosenList.size>0 && requestCode == AGAIN_RESIDENCE)
+
+            ) {
 
                 intent.putStringArrayListExtra("condition", ArrayList(chosenList))
                 setResult(400, intent)
@@ -238,7 +245,12 @@ class ChoosePlaceActivity : AppCompatActivity() {
 
                 finish()
 
-            } else if (chosenList.size>0 && requestCode == DISCOVERY_TRIP) {
+            } else if (
+
+                (chosenList.size>0 && requestCode == DISCOVERY_TRIP) ||
+                (chosenList.size>0 && requestCode == AGAIN_TRIP)
+
+            ) {
 
                 intent.putStringArrayListExtra("condition", ArrayList(chosenList))
                 setResult(400, intent)
@@ -250,7 +262,7 @@ class ChoosePlaceActivity : AppCompatActivity() {
 
                 if (chosenList.size > 0 ){
 
-                    if (chosenList.get(0).endsWith("전체")) {
+                    if (chosenList.get(1).endsWith("전체")) {
 
                         Log.d("story-confirm", chosenList.toString())
 
@@ -286,7 +298,18 @@ class ChoosePlaceActivity : AppCompatActivity() {
 
 
         }
-        binding.buttonBack.setOnClickListener { finish() }
+        binding.buttonBack.setOnClickListener {
+
+            if (requestCode == AGAIN_RESIDENCE || requestCode == AGAIN_TRIP) {
+
+                setResult(CANCEL)
+                finish()
+
+            } else {
+
+                finish()
+            }
+        }
 
 
 

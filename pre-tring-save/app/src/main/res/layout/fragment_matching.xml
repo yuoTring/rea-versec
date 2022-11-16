@@ -14,6 +14,48 @@
         android:background="@color/white"
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
+        <TextView
+            android:id="@+id/textTopTitleBar"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@color/white_cotton"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonBack"
+            android:layout_width="40dp"
+            android:layout_height="48dp"
+            android:background="@drawable/button_back"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/textTopTitleBar"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonFilter"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginRight="12dp"
+            android:background="@drawable/icon_filter_black"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/textTopTitleBar"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonNotification"
+            android:layout_width="16dp"
+            android:layout_height="20dp"
+            android:layout_marginRight="12dp"
+            android:visibility="invisible"
+            android:background="@drawable/icon_notification"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/textTopTitleBar"
+            app:layout_constraintEnd_toStartOf="@id/buttonFilter"
+            />
+
+
+
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/containerUserOn"
             android:layout_width="match_parent"
@@ -36,7 +78,7 @@
                 android:id="@+id/cardUserList"
                 android:layout_width="360dp"
                 android:layout_height="360dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="56dp"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
                 android:layout_marginBottom="8dp"

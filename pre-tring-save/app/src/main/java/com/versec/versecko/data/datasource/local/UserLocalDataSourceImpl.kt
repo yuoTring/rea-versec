@@ -167,35 +167,22 @@ class UserLocalDataSourceImpl(
             return null
     }
 
-    override fun setLikedCounter(count: Int) {
+    override fun setTimestamp() {
 
-        val editor = loungePreferences.edit()
+        val editor =
+            loungePreferences.edit()
 
-        editor.putInt("likedCounter", count)
+        editor.putLong("timestamp", System.currentTimeMillis())
         editor.apply()
     }
 
-    override fun setMatchingCounter(count: Int) {
+    override fun getTimestamp(): Long {
 
-        val editor = loungePreferences.edit()
-
-        editor.putInt("matchingCounter", count)
-        editor.apply()
-    }
-
-    override fun getLikedCounter(): Int? {
-
-        if (loungePreferences.contains("likedCounter"))
-            return loungePreferences.getInt("likedCounter",0)
+        if (loungePreferences.contains("timestamp"))
+            return loungePreferences.getLong("timestamp", System.currentTimeMillis())
         else
-            return null
+            return System.currentTimeMillis()
     }
-
-    override fun getMatchingCounter(): Int? {
-        if (loungePreferences.contains("matchingCounter"))
-            return loungePreferences.getInt("matchingCounter",0)
-        else
-            return null    }
 
     override fun setMatchingNotification(on: Boolean) {
 

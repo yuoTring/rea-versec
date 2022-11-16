@@ -186,6 +186,7 @@ class MessageAdapter (
 
                 textDate.visibility = VISIBLE
                 textDate.setText(date)
+                textNickName.setText(nickName)
 
                 Glide
                     .with(viewHolder.binding.root)

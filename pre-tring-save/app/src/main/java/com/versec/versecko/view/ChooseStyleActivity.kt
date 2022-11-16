@@ -84,9 +84,9 @@ class ChooseStyleActivity : AppCompatActivity()
         binding.recyclerTemplate.adapter = adapter
 
         binding.buttonBack.setOnClickListener {
-            if (requestCode == 1000) {
+            if (requestCode == AGAIN_STYLE) {
 
-                setResult(1000)
+                setResult(CANCEL)
                 finish()
 
             } else {
@@ -103,13 +103,13 @@ class ChooseStyleActivity : AppCompatActivity()
                 setResult(300, intent)
                 finish()
 
-            } else if (chosenList.size>0 && requestCode == 500) {
+            } else if (chosenList.size>0 && requestCode == DISCOVERY_STYLE) {
 
                 intent.putStringArrayListExtra("condition", ArrayList(chosenList))
                 setResult(300, intent)
                 finish()
 
-            } else if (chosenList.size>0 && requestCode == 1000) {
+            } else if (chosenList.size>0 && requestCode == AGAIN_STYLE) {
 
                 intent.putStringArrayListExtra("condition", ArrayList(chosenList))
                 setResult(300, intent)
@@ -129,5 +129,13 @@ class ChooseStyleActivity : AppCompatActivity()
             binding.buttonSet.setBackgroundResource(R.color.gray_superlight)
             binding.buttonSet.isClickable = false
         }
+    }
+
+    companion object {
+
+        const val DISCOVERY_STYLE = 500
+        const val AGAIN_STYLE = 1000
+        private const val CANCEL = -1000
+
     }
 }

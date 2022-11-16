@@ -92,6 +92,7 @@
                 android:layout_height="24dp"
                 android:layout_marginLeft="16dp"
                 android:backgroundTint="@color/blue"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@id/textNickAndAge"
                 app:layout_constraintStart_toEndOf="@id/textNickAndAge"/>
 

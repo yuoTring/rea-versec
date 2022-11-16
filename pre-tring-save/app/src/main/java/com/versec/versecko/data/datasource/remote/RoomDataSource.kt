@@ -23,6 +23,7 @@ interface RoomDataSource {
     suspend fun getOwnLastRead (roomUid: String) : Response<Long>
     suspend fun updateLastRead (roomUid: String) : Response<Int>
 
+    suspend fun fetchAllMessagesOnce (roomUid: String) : Response<MutableList<MessageEntity>>
     fun fetchMessage (roomUid: String) : Flow<Response<Map<Int, MessageEntity>>>
     suspend fun sendMessage (contents : String, roomUid: String) : Response<Int>
     suspend fun readMessage (roomUid: String, messageUid : String) : Response<Int>
@@ -30,5 +31,4 @@ interface RoomDataSource {
     fun observeOtherLastRead (roomUid: String, otherUid: String) : Flow<Response<Long>>
 
     suspend fun saveFCMToken (token : String) : Response<Int>
-
 }

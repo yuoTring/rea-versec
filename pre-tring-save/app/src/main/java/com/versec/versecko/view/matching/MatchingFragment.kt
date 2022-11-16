@@ -7,14 +7,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AccelerateInterpolator
 import android.view.animation.LinearInterpolator
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.versec.versecko.AppContext
 import com.versec.versecko.FilterActivity
@@ -22,6 +19,8 @@ import com.versec.versecko.R
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.databinding.FragmentMatchingBinding
 import com.versec.versecko.util.Response
+import com.versec.versecko.view.ChoosePlaceActivity
+import com.versec.versecko.view.ChooseStyleActivity
 import com.versec.versecko.view.matching.adapter.CardStackAdapter
 import com.versec.versecko.viewmodel.MainViewModel
 import com.versec.versecko.viewmodel.MatchingViewModel
@@ -29,6 +28,7 @@ import com.yuyakaido.android.cardstackview.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.ArrayList
 import kotlin.properties.Delegates
@@ -58,6 +58,8 @@ class MatchingFragment : Fragment(), CardStackListener {
     private var minAge by Delegates.notNull<Int>()
     private var maxAge by Delegates.notNull<Int>()
     private var radius by Delegates.notNull<Int>()
+
+    private val overlappingUser = mutableListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -96,6 +98,7 @@ class MatchingFragment : Fragment(), CardStackListener {
         super.onViewCreated(view, savedInstanceState)
 
 
+
         otherUserList = mutableListOf()
 
 
@@ -113,6 +116,9 @@ class MatchingFragment : Fragment(), CardStackListener {
         mainViewModel.userLocal.observe(requireActivity(), Observer {
             ownUser = it
         })
+
+        if (viewModel.getOverlappingUsers() != null)
+            fetchOverlappingUsers()
 
         genderFilter = viewModel.getGender()!!
         minAge = viewModel.getAgeRange()!!.get(0)
@@ -149,12 +155,14 @@ class MatchingFragment : Fragment(), CardStackListener {
                     binding.progressBarUser.hide()
 
                     if (!otherUserList.isEmpty())
-                        otherUserList.removeAll(otherUserList)
+                        otherUserList.clear()
 
                     otherUserList.addAll((response as Response.Success<MutableList<UserEntity>>).data)
 
                     if (otherUserList.contains(ownUser))
                         otherUserList.remove(ownUser)
+
+                    removeOverlappingUsers(otherUserList)
 
 
                     if (otherUserList.size == 0)
@@ -182,10 +190,25 @@ class MatchingFragment : Fragment(), CardStackListener {
         binding.buttonLike.setOnClickListener { like(otherUserList.get(currentPosition), ownUser) }
         binding.buttonSkip.setOnClickListener { skip(otherUserList.get(currentPosition)) }
 
-        binding.buttonSetSearchCondition.setOnClickListener { requireActivity().startActivity(Intent(requireActivity(), FilterActivity::class.java)) }
 
+        binding.buttonFilter.setOnClickListener { startActivityForResult(Intent(requireActivity(),FilterActivity::class.java), FILTER) }
+        binding.buttonSetSearchCondition.setOnClickListener { startActivityForResult(Intent(requireActivity(),FilterActivity::class.java), FILTER) }
 
+        if (whichFrag == MAIN)
+            binding.buttonBack.visibility = View.GONE
+        else
+            binding.buttonBack.visibility = View.VISIBLE
 
+        binding.buttonBack.setOnClickListener {
+
+            if (whichFrag == STYLE)
+                requireActivity().startActivityForResult(Intent(requireActivity(), ChooseStyleActivity::class.java).putExtra("requestCode", AGAIN_STYLE), AGAIN_STYLE)
+            else if (whichFrag == RESIDENCE)
+                requireActivity().startActivityForResult(Intent(requireActivity(), ChoosePlaceActivity::class.java).putExtra("requestCode", AGAIN_RESIDENCE), AGAIN_RESIDENCE)
+            else if (whichFrag == TRIP)
+                requireActivity().startActivityForResult(Intent(requireActivity(), ChoosePlaceActivity::class.java).putExtra("requestCode", AGAIN_TRIP), AGAIN_TRIP)
+
+        }
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
@@ -198,22 +221,19 @@ class MatchingFragment : Fragment(), CardStackListener {
 
     }
 
-    override fun onStart() {
-        super.onStart()
-        getUsersAgain()
-    }
-
     companion object
     {
-        val MALE = "male"
-        val FEMALE = "female"
-        val BOTH = "both"
-
 
         const val MAIN = 10000
         const val STYLE = 10001
         const val RESIDENCE = 10002
         const val TRIP = 10003
+        private const val FILTER = 800
+        private const val FILTER_UPDATED = 805
+
+        const val AGAIN_STYLE = 1000
+        const val AGAIN_RESIDENCE = 1001
+        const val AGAIN_TRIP = 1002
 
         @JvmStatic
         fun newInstance(whichFrag : Int, list : ArrayList<String>) =
@@ -249,18 +269,26 @@ class MatchingFragment : Fragment(), CardStackListener {
     override fun onCardCanceled() {
     }
 
-    override fun onCardAppeared(view: View?, position: Int) { initInfo() }
+    override fun onCardAppeared(view: View?, position: Int) {
+
+        if (currentPosition < otherUserList.size)
+            initInfo()
+    }
 
     override fun onCardDisappeared(view: View?, position: Int) {
 
-        if (currentPosition<otherUserList.size - 1)
-            currentPosition++
+        viewModel.saveOverlappingUser(otherUserList.get(currentPosition).uid)
+
+        fetchOverlappingUsers()
+
+        currentPosition++
+
 
         lifecycleScope.launch(Dispatchers.Main) {
 
-            delay(950)
+            delay(670)
 
-            if (currentPosition == otherUserList.size - 1)
+            if (currentPosition == otherUserList.size)
                 noResultViewOn(true)
             else
                 noResultViewOn(false)
@@ -296,6 +324,7 @@ class MatchingFragment : Fragment(), CardStackListener {
     }
 
     private fun initInfo () {
+
         dragged = false
         if (otherUserList.get(currentPosition).tripWish.size>1)
             binding.textTripWish.setText(otherUserList.get(currentPosition).tripWish.get(0)+", "+ otherUserList.get(currentPosition).tripWish.get(1))
@@ -310,11 +339,10 @@ class MatchingFragment : Fragment(), CardStackListener {
 
     private fun like (otherUser : UserEntity, ownUser : UserEntity) {
 
-        Log.d("user-like", otherUser.toString())
-
         lifecycleScope.launch {
 
             when(viewModel.likeUser(otherUser, ownUser)) {
+
                 is Response.Success -> {
                     val setting = SwipeAnimationSetting.Builder()
                         .setDirection(Direction.Left)
@@ -354,56 +382,52 @@ class MatchingFragment : Fragment(), CardStackListener {
 
         if (!hidden) {
 
-
-            val newRadius = viewModel.getDistance()!!*1000
-            if (
-                radius != newRadius ||
-                !genderFilter.equals(viewModel.getGender()) ||
-                minAge != viewModel.getAgeRange()!!.get(0) ||
-                maxAge != viewModel.getAgeRange()!!.get(1)
-            ) {
+            Log.d("fragment-state", "fr: " +whichFrag +" - "+hidden)
 
 
-                radius = newRadius
-                genderFilter = viewModel.getGender()!!
-                minAge = viewModel.getAgeRange()!!.get(0)
-                maxAge = viewModel.getAgeRange()!!.get(1)
+            binding.progressBarUser.show()
 
-                Log.d("fragment-state", "fr: " +whichFrag +" - "+hidden)
+            lifecycleScope.launch(Dispatchers.IO) {
 
 
-                lifecycleScope.launch {
+                if (whichFrag == MAIN) {
+                    response =
+                        viewModel.getUsersWithGeoHash(AppContext.latitude, AppContext.longitude, radius, genderFilter, minAge, maxAge)
+                } else if (whichFrag == RESIDENCE) {
+                    response =
+                        viewModel.getUsersWithResidences(conditionList, genderFilter, minAge, maxAge)
+                } else if (whichFrag == TRIP) {
+                    response =
+                        viewModel.getUsersWithPlaces(conditionList, genderFilter, minAge, maxAge)
+                } else if (whichFrag == STYLE) {
+                    response =
+                        viewModel.getUsersWithStyles(conditionList, genderFilter, minAge, maxAge)
+                }
 
-                    binding.progressBarUser.show()
-
-                    if (whichFrag == MAIN) {
-                        response =
-                            viewModel.getUsersWithGeoHash(AppContext.latitude, AppContext.longitude, radius, genderFilter, minAge, maxAge)
-                    } else if (whichFrag == RESIDENCE) {
-                        response =
-                            viewModel.getUsersWithResidences(conditionList, genderFilter, minAge, maxAge)
-                    } else if (whichFrag == TRIP) {
-                        response =
-                            viewModel.getUsersWithPlaces(conditionList, genderFilter, minAge, maxAge)
-                    } else if (whichFrag == STYLE) {
-                        response =
-                            viewModel.getUsersWithStyles(conditionList, genderFilter, minAge, maxAge)
-                    }
-
-                    when(response) {
+                when(response) {
 
 
-                        is Response.Success -> {
+                    is Response.Success -> {
+
+                        withContext(Dispatchers.Main) {
+
+
                             binding.progressBarUser.hide()
 
                             if (!otherUserList.isEmpty())
-                                otherUserList.removeAll(otherUserList)
+                                otherUserList.clear()
 
                             otherUserList.addAll((response as Response.Success<MutableList<UserEntity>>).data)
 
                             currentPosition = 0
 
                             Log.d("fragment-state", "size: " +otherUserList.size)
+
+                            if (otherUserList.contains(ownUser))
+                                otherUserList.remove(ownUser)
+
+                            removeOverlappingUsers(otherUserList)
+
 
                             if (otherUserList.size == 0)
                                 noResultViewOn(true)
@@ -413,22 +437,18 @@ class MatchingFragment : Fragment(), CardStackListener {
                             cardStackAdapter.updateUserList(otherUserList)
                             cardStackAdapter.notifyDataSetChanged()
                         }
-                        is Response.Error -> {
-                            Log.d("TAG-LIFE", (response as Response.Error).errorMessage)
-                        }
-                        else -> {
-                            Log.d("TAG-LIFE", "else")
 
-                        }
                     }
+                    is Response.Error -> {
+                        Log.d("TAG-LIFE", (response as Response.Error).errorMessage)
+                    }
+                    else -> {
 
-                    radius = newRadius
-                    genderFilter = viewModel.getGender().toString()
-                    minAge = viewModel.getAgeRange()!!.get(0)
-                    maxAge = viewModel.getAgeRange()!!.get(1)
+                    }
                 }
 
             }
+
 
         }
 
@@ -462,9 +482,57 @@ class MatchingFragment : Fragment(), CardStackListener {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == 1) {
+
             binding.cardUserList.swipe()
+
+        } else if (requestCode == FILTER && resultCode == FILTER_UPDATED) {
+
+            radius = viewModel.getDistance()!!*1000
+            genderFilter = viewModel.getGender()!!.toString()
+            minAge = viewModel.getAgeRange()!!.get(0)
+            maxAge = viewModel.getAgeRange()!!.get(1)
+
+            getUsersAgain()
+
+        } else if (
+
+                    requestCode == AGAIN_STYLE ||
+                    requestCode == AGAIN_RESIDENCE ||
+                    requestCode == AGAIN_TRIP
+
+        ) {
+
+            getUsersAgain()
         }
 
+    }
+
+    private fun removeOverlappingUsers (otherUsers : MutableList<UserEntity>) {
+
+        val temp = mutableListOf<UserEntity>()
+        temp.addAll(otherUsers)
+
+        temp.forEach { user->
+
+            if (overlappingUser.contains(user.uid))
+                otherUserList.remove(user)
+        }
+    }
+
+    private fun fetchOverlappingUsers () {
+
+        overlappingUser.clear()
+        viewModel.getOverlappingUsers()?.let { overlappingUser.addAll(it) }
+    }
+
+    private fun checkOverlapping () : Boolean {
+
+        var overlappingOrNot = false
+
+        if (overlappingUser.contains(otherUserList.get(currentPosition).uid))
+            overlappingOrNot = true
+
+        return overlappingOrNot
     }
 
 

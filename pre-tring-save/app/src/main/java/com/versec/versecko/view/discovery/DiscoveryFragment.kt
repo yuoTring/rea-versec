@@ -80,8 +80,6 @@ class DiscoveryFragment : Fragment() {
         const val DISCOVERY_RESIDENCE = 501
         const val DISCOVERY_TRIP = 502
 
-        const val AGAIN = 1000
-
         @JvmStatic
         fun newInstance() =
             DiscoveryFragment().apply {

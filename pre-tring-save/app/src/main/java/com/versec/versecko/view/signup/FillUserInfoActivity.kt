@@ -5,6 +5,7 @@ import android.content.Intent
 import com.versec.versecko.R
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -26,6 +27,7 @@ import com.versec.versecko.viewmodel.FillUserInfoViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.time.LocalDate
 import java.util.*
+import java.util.regex.Pattern
 
 class FillUserInfoActivity : AppCompatActivity()
 {
@@ -48,6 +50,8 @@ class FillUserInfoActivity : AppCompatActivity()
     private var checkNickname : Boolean = false
     private var checkBirth : Boolean = false
     private var checkGender : Boolean = false
+
+    private val regex = Pattern.compile("[!@#$%^&*|/?,.:;{'\"<>}(=+)-]")
 
 
 
@@ -79,6 +83,18 @@ class FillUserInfoActivity : AppCompatActivity()
         residenceList = mutableListOf("+")
         tripList = mutableListOf("+")
         styleList = mutableListOf("+")
+
+        binding.editNickName.doAfterTextChanged { text ->
+
+            val length = text!!.length
+
+            if (length > 16) {
+
+                binding.editNickName.text.delete(length-1, length)
+                Toast.makeText(this, "최대 16자의 닉네임만 사용 가능합니다!", Toast.LENGTH_SHORT).show()
+
+            }
+        }
 
 
 
@@ -149,8 +165,6 @@ class FillUserInfoActivity : AppCompatActivity()
             adapterResidence.updateTagList(residenceList)
             adapterResidence.notifyDataSetChanged()
 
-
-
         }
 
         binding.recyclerChosenResidence.layoutManager = layoutManagerResidence
@@ -177,25 +191,40 @@ class FillUserInfoActivity : AppCompatActivity()
 
         binding.buttonCheckOverlap.setOnClickListener {
 
-            binding.textCheckNickNameOverlap.visibility = View.VISIBLE
+            if (regex.matcher(binding.editNickName.text.toString()).find()) {
 
-            viewModel.checkNickName(binding.editNickName.text.toString()).observe(this, androidx.lifecycle.Observer {
-                result ->
+                Toast.makeText(this, "특수 문자는 닉네임에 사용 불가능합니다!", Toast.LENGTH_SHORT).show()
 
-                if (result.equals(Response.Exist(1))) {
+                binding.textCheckNickNameOverlap.setText("사용 불가능한 닉네임입니다!")
+                binding.textCheckNickNameOverlap.setTextColor(ContextCompat.getColor(this, R.color.red))
+                checkNickname = false
 
-                    binding.textCheckNickNameOverlap.setText("이미 존재하는 닉네임입니다!")
-                    binding.textCheckNickNameOverlap.setTextColor(ContextCompat.getColor(this, R.color.red))
-                    checkNickname = false
-                }
-                else {
-                    binding.textCheckNickNameOverlap.setText("사용 가능한 닉네임입니다!")
-                    user.nickName = binding.editNickName.text.toString()
-                    binding.textCheckNickNameOverlap.setTextColor(ContextCompat.getColor(this, R.color.blue))
-                    checkNickname = true
+            } else {
 
-                }
-            })
+                binding.textCheckNickNameOverlap.visibility = View.VISIBLE
+
+
+                viewModel.checkNickName(binding.editNickName.text.toString()).observe(this, androidx.lifecycle.Observer {
+                        result ->
+
+                    if (result.equals(Response.Exist(1))) {
+
+                        binding.textCheckNickNameOverlap.setText("이미 존재하는 닉네임입니다!")
+                        binding.textCheckNickNameOverlap.setTextColor(ContextCompat.getColor(this, R.color.red))
+                        checkNickname = false
+                    }
+                    else {
+                        binding.textCheckNickNameOverlap.setText("사용 가능한 닉네임입니다!")
+                        user.nickName = binding.editNickName.text.toString()
+                        binding.textCheckNickNameOverlap.setTextColor(ContextCompat.getColor(this, R.color.blue))
+                        checkNickname = true
+
+                    }
+                })
+
+            }
+
+
         }
 
         adapterStyle = TagAdapter(styleList) { style ->
@@ -249,6 +278,26 @@ class FillUserInfoActivity : AppCompatActivity()
 
     }
 
+    override fun onStart() {
+        super.onStart()
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+        super.onSaveInstanceState(outState, outPersistentState)
+    }
+
     //0123 45 67
 
     private fun checkValidBirth (birth : String) : Boolean {
@@ -270,6 +319,8 @@ class FillUserInfoActivity : AppCompatActivity()
         }
     }
 
+    override fun onBackPressed() {}
+
     @SuppressLint("NotifyDataSetChanged")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -287,12 +338,17 @@ class FillUserInfoActivity : AppCompatActivity()
         }
         else if (requestCode == RESIDENCE && data == null) {
 
+            residenceList.clear()
+            residenceList.add("+")
+
+            adapterResidence.updateTagList(residenceList)
+            adapterResidence.notifyDataSetChanged()
 
         }
         else if (requestCode == TRIP && data != null) {
 
             tripList.clear()
-            tripList.add("+")
+            tripList.add("다시 설정")
             tripList.addAll(data.getStringArrayListExtra("trip")!!)
             adapterTrip.updateTagList(tripList)
             adapterTrip.notifyDataSetChanged()
@@ -301,15 +357,28 @@ class FillUserInfoActivity : AppCompatActivity()
         }
         else if (requestCode == TRIP && data == null) {
 
+            tripList.clear()
+            tripList.add("+")
+
+            adapterTrip.updateTagList(tripList)
+            adapterTrip.notifyDataSetChanged()
         }
         else if (requestCode == STYLE && data != null) {
 
             styleList.clear()
-            styleList.add("+")
+            styleList.add("다시 설정")
             styleList.addAll(data.getStringArrayListExtra("style")!!)
             adapterStyle.updateTagList(styleList)
             adapterStyle.notifyDataSetChanged()
 
+        }
+        else if (requestCode == STYLE && data == null) {
+
+            styleList.clear()
+            styleList.add("+")
+
+            adapterStyle.updateTagList(styleList)
+            adapterStyle.notifyDataSetChanged()
         }
 
 

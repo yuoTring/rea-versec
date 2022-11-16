@@ -178,6 +178,7 @@
                 android:layout_marginTop="4dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
+                android:inputType="number"
                 android:textColor="@color/black"
                 android:hint="생일을 입력해주세요 ex) 19990808"
                 android:textColorHint="@color/gray_light"

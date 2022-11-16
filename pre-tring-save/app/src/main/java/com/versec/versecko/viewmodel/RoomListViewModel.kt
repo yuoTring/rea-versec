@@ -16,10 +16,10 @@ class RoomListViewModel (
 
 
 
-    val likedUsers : SharedFlow<Response<MutableList<UserEntity>>> =
+    val likedUsers : SharedFlow<Response<MutableMap<Long, UserEntity>>> =
         userRepository.getLoungeUsers(2).shareIn(viewModelScope, SharingStarted.WhileSubscribed(), 0)
 
-    val matchingUsers : SharedFlow<Response<MutableList<UserEntity>>> =
+    val matchingUsers : SharedFlow<Response<MutableMap<Long, UserEntity>>> =
         userRepository.getLoungeUsers(3).shareIn(viewModelScope, SharingStarted.WhileSubscribed(), 0)
 
     val getRoomsUid : SharedFlow<Map<Int, Response<RoomInUser>>> =
@@ -83,27 +83,8 @@ class RoomListViewModel (
         return _getRoomForOneShot(roomUid)
     }
 
-
-
-    private fun _setCounter (status: Int, count : Int) {
-        userRepository.setCounter(status, count)
-    }
-
-    fun setCounter (status: Int, count: Int) {
-        _setCounter(status, count)
-    }
-
-
-
-    private fun _getCounter (status : Int) : Int? {
-        return userRepository.getCounter(status)
-    }
-
-    fun getCounter (status: Int) : Int? {
-        return _getCounter(status)
-    }
-
-
+    fun setTimestamp () = userRepository.setTimestamp()
+    fun getTimestamp () : Long = userRepository.getTimestamp()
 
     suspend fun send (contents : String, roomUid: String) {
 

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayoutMediator
 import com.versec.versecko.R
+import com.versec.versecko.SettingActivity
 import com.versec.versecko.view.story.StoryDetailActivity
 import com.versec.versecko.data.entity.StoryEntity
 import com.versec.versecko.data.entity.UserEntity
@@ -70,6 +71,8 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+        binding.buttonMore.setOnClickListener { startActivity(Intent(requireActivity(), SettingActivity::class.java))}
 
         val uriList = mutableListOf<String>()
 
@@ -218,16 +221,12 @@ class ProfileFragment : Fragment() {
         binding.recyclerMyStory.layoutManager = LinearLayoutManager(requireActivity(), RecyclerView.HORIZONTAL, false)
         binding.recyclerMyStory.adapter = storyAdapter
 
-
-    }
-
-    override fun onStart() {
-        super.onStart()
-
         getOwnStories()
     }
 
     private fun getOwnStories () {
+
+
 
         lifecycleScope.launch(Dispatchers.IO) {
 
@@ -237,18 +236,28 @@ class ProfileFragment : Fragment() {
 
                 is Response.Success -> {
 
-                    stories.clear()
-                    stories.add(0, StoryEntity())
-                    stories.addAll(storyResponse.data)
-
-                    storyAdapter.changeStories(stories)
-
                     withContext(Dispatchers.Main) {
+
+                        stories.clear()
+                        stories.add(0, StoryEntity())
+                        stories.addAll(storyResponse.data)
+
+                        storyAdapter.changeStories(stories)
                         storyAdapter.notifyDataSetChanged()
                     }
 
                 }
                 is Response.No -> {
+
+
+                    withContext(Dispatchers.Main) {
+
+                        stories.clear()
+                        stories.add(0, StoryEntity())
+
+                        storyAdapter.changeStories(stories)
+                        storyAdapter.notifyDataSetChanged()
+                    }
 
                 }
                 is Response.Error -> {
@@ -311,14 +320,8 @@ class ProfileFragment : Fragment() {
 
 
         }
-        else if (requestCode == STORY_UPLOAD && resultCode == COMPLETE && resultCode != STORY_DETAIL) {
-            stories.clear()
-            getOwnStories()
-        }
-        else if (resultCode == STORY_DETAIL) {
-            stories.clear()
-            getOwnStories()
-        }
+        else if (requestCode == STORY_UPLOAD && resultCode == COMPLETE && resultCode != STORY_DETAIL) { getOwnStories() }
+        else if (resultCode == STORY_DETAIL) { getOwnStories() }
     }
 
     companion object {

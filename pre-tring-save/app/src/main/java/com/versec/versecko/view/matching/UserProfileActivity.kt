@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayoutMediator
 import com.versec.versecko.R
+import com.versec.versecko.data.entity.LoungeUser
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.databinding.ActivityUserProfileBinding
 import com.versec.versecko.util.Response
@@ -51,7 +52,17 @@ class UserProfileActivity : AppCompatActivity() {
 
         val intent = intent
 
-        otherUser = intent.getSerializableExtra("otherUser") as UserEntity
+        if (intent.hasExtra("otherUser")) {
+            otherUser = intent.getSerializableExtra("otherUser") as UserEntity
+        }
+        else if (intent.hasExtra("loungeUser")) {
+
+            val loungeUser =
+                intent.getSerializableExtra("loungeUser") as LoungeUser
+
+            otherUser = mapLoungeUserToUserEntity(loungeUser)
+        }
+
         Log.d("error-check","other: "+otherUser.toString())
 
 
@@ -231,6 +242,38 @@ class UserProfileActivity : AppCompatActivity() {
         binding.recyclerTripStyle.adapter = styleAdapter
 
         binding.textSelfIntroduction.setText(otherUser.selfIntroduction)
+
+    }
+
+    private fun mapLoungeUserToUserEntity (loungeUser: LoungeUser) : UserEntity {
+
+        return UserEntity(
+
+            uid = loungeUser.uid,
+            nickName = loungeUser.nickName,
+            gender = loungeUser.gender,
+            birth = loungeUser.birth,
+            mainResidence = loungeUser.mainResidence,
+            subResidence = loungeUser.subResidence,
+            tripWish = loungeUser.tripWish,
+            tripStyle = loungeUser.tripStyle,
+            selfIntroduction = loungeUser.selfIntroduction,
+
+            uriMap = loungeUser.uriMap,
+            geohash = loungeUser.geohash,
+            latitude = loungeUser.latitude,
+            longitude = loungeUser.longitude,
+            languages = loungeUser.languages,
+            deletedAt = loungeUser.deletedAt,
+
+            mannerScore = loungeUser.mannerScore,
+            premiumOrNot = loungeUser.premiumOrNot,
+            knock = loungeUser.knock,
+
+            loungeStatus = loungeUser.loungeStatus,
+            phoneNumber = loungeUser.phoneNumber,
+
+        )
 
     }
 }

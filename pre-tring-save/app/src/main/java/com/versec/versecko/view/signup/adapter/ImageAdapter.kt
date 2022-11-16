@@ -1,6 +1,7 @@
 package com.versec.versecko.view.signup.adapter
 
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.RoundedCorner
 import android.view.View
@@ -44,7 +45,10 @@ class ImageAdapter (
         holder.bind(imageList.get(position).toString(), position, onClick)
         holder.binding.textSlotIndex.visibility = View.INVISIBLE
 
-        if (!imageList.get(position).toString().equals("---")) {
+        if (
+                !imageList.get(position).toString().equals("---") &&
+                !imageList.get(position).toString().equals("null")
+        ) {
 
             Glide
                 .with(holder.binding.root)
@@ -52,6 +56,18 @@ class ImageAdapter (
                 .apply(RequestOptions.bitmapTransform(RoundedCorners(16)))
                 .into(holder.binding.buttonAddImage)
 
+        }
+        else if (imageList.get(position).toString().equals("null")) {
+
+
+            holder.binding.buttonAddImage.setImageResource(resourceId)
+
+            if (modifyOrNot) {
+
+                holder.binding.textSlotIndex.visibility = View.VISIBLE
+                val index = position + 1
+                holder.binding.textSlotIndex.setText("SLOT "+index)
+            }
         }
         else {
 

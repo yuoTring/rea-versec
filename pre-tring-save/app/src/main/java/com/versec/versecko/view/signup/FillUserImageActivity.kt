@@ -115,14 +115,12 @@ class FillUserImageActivity : AppCompatActivity()
 
             var textCount = "0/200"
 
-            if (text.toString().length> 199 ) {
+            if (text.toString().length> 200 ) {
 
-                binding.editSelfIntroduction.isEnabled = false
-
+                binding.editSelfIntroduction.text.delete(text!!.length-1, text.length)
             }
             else
             {
-                binding.editSelfIntroduction.isEnabled = true
 
                 textCount=
                 text.toString().length.toString() + "/200"
@@ -363,12 +361,13 @@ class FillUserImageActivity : AppCompatActivity()
     }
 
     private fun show () {
-        binding.progressBar.show()
+        binding.layout.visibility = View.VISIBLE
+        binding.buttonComplete.visibility = View.INVISIBLE
         WindowEventManager.blockUserInteraction(this@FillUserImageActivity)
     }
 
     private fun hide () {
-        binding.progressBar.hide()
+        binding.layout.visibility = View.INVISIBLE
         WindowEventManager.openUserInteraction(this@FillUserImageActivity)
     }
 

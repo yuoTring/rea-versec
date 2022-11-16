@@ -152,7 +152,7 @@ class StoryDataSourceImpl (
                     collectionRef
                         .orderBy("timestamp", Query.Direction.DESCENDING)
                         .startAfter(startTimestamp)
-                        .limit(1)
+                        .limit(10)
                         .get()
                         .await()
 
@@ -167,7 +167,7 @@ class StoryDataSourceImpl (
                             .orderBy("timestamp", Query.Direction.DESCENDING)
                             .startAfter(startTimestamp)
                             .whereEqualTo("mainLocation", location)
-                            .limit(1)
+                            .limit(9)
                             .get()
                             .await()
 
@@ -180,7 +180,7 @@ class StoryDataSourceImpl (
                             .orderBy("timestamp", Query.Direction.DESCENDING)
                             .startAfter(startTimestamp)
                             .whereEqualTo("subLocation", location)
-                            .limit(1)
+                            .limit(5)
                             .get()
                             .await()
 
@@ -191,7 +191,7 @@ class StoryDataSourceImpl (
                         collectionRef
                             .orderBy("timestamp", Query.Direction.DESCENDING)
                             .startAfter(startTimestamp)
-                            .limit(1)
+                            .limit(10)
                             .get()
                             .await()
 
@@ -386,6 +386,11 @@ class StoryDataSourceImpl (
     override suspend fun reportStory(uid: String): Response<Int> {
 
         try {
+
+            fireStore.collection("database/story/reportList/")
+                .document(uid)
+                .set(mapOf(uid to System.currentTimeMillis()))
+                .await()
 
             return Response.Success(SUCCESS)
 

@@ -48,7 +48,6 @@ class SplashActivity : AppCompatActivity()
                                 delay(250)
 
                                 AppContext.uid = uid.data
-                                Log.d("uid-check", uid.data)
 
                                 startActivity(Intent(this@SplashActivity, ToMainScreenActivity::class.java))
                             }

@@ -35,7 +35,7 @@ interface UserRemoteDataSource {
     suspend fun deleteImage (index: Int) : Response<Int>
     suspend fun reuploadImage (index: Int, uri: Uri) : Response<Int>
 
-    fun getLoungeUsers (status: Int) : Flow<Response<MutableList<UserEntity>>>
+    fun getLoungeUsers (status: Int) : Flow<Response<MutableMap<Long, UserEntity>>>
 
     suspend fun matchUser (otherUser : UserEntity, ownUser: UserEntity) : Response<Int>
     suspend fun deleteMatch (otherUid : String) : Response<Int>

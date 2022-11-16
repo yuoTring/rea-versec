@@ -9,14 +9,12 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
-import com.google.firebase.database.ServerValue
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.toObject
-import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
 import com.versec.versecko.AppContext
-import com.versec.versecko.data.entity.LoungeUser
+import com.versec.versecko.data.entity.UserUidWithTimestamp
 import com.versec.versecko.data.entity.UserEntity
 import com.versec.versecko.util.Response
 import kotlinx.coroutines.CoroutineScope
@@ -24,7 +22,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.util.*
@@ -262,26 +259,35 @@ class UserRemoteDataSourceImpl (
             val tasks : MutableList<Task<QuerySnapshot>> = mutableListOf()
 
 
-            var docs = mutableListOf<DocumentSnapshot>()
-            var userList = mutableListOf<UserEntity>()
+            val docs = mutableListOf<DocumentSnapshot>()
+            val userList = mutableListOf<UserEntity>()
+
+
+            var query : Query
 
             bounds.forEach {
 
                     geoQueryBounds ->
 
-                var query = fireStore.collection("database/user/userList")
-                    .orderBy("geohash")
-                    .whereEqualTo("gender", gender)
-                    .startAt(geoQueryBounds.startHash)
-                    .endAt(geoQueryBounds.endHash)
-
                 if (gender.equals("both")) {
 
                     query =
+
                         fireStore.collection("database/user/userList")
                             .orderBy("geohash")
                             .startAt(geoQueryBounds.startHash)
                             .endAt(geoQueryBounds.endHash)
+
+                } else {
+
+                    query =
+
+                        fireStore.collection("database/user/userList")
+                            .orderBy("geohash")
+                            .whereEqualTo("gender", gender)
+                            .startAt(geoQueryBounds.startHash)
+                            .endAt(geoQueryBounds.endHash)
+
                 }
 
 
@@ -315,9 +321,6 @@ class UserRemoteDataSourceImpl (
 
 
 
-
-
-
             return Response.Success(userList)
 
 
@@ -342,33 +345,39 @@ class UserRemoteDataSourceImpl (
             val ref = fireStore.collection("database/user/userList/")
 
 
-            var querySnapshot =
-                ref
-                    .whereArrayContainsAny("tripWish", places)
-                    .whereEqualTo("gender", gender)
-                    .whereGreaterThanOrEqualTo("birth", maxYear.toString()+"0000")
-                    .whereLessThanOrEqualTo("birth", minYear.toString()+"0000")
-                    .get()
-                    .await()
+            val querySnapshot : QuerySnapshot
 
-            if (gender == "both") {
+            if (gender.equals("both")) {
 
                 querySnapshot =
+
                     ref
                         .whereArrayContainsAny("tripWish", places)
-                        .whereGreaterThanOrEqualTo("age", minAge)
-                        .whereLessThanOrEqualTo("age", maxAge)
+                        .whereGreaterThanOrEqualTo("birth", maxYear.toString()+"0000")
+                        .whereLessThanOrEqualTo("birth", minYear.toString()+"0000")
                         .get()
                         .await()
+
+            } else {
+
+                querySnapshot =
+
+                    ref
+                        .whereArrayContainsAny("tripWish", places)
+                        .whereEqualTo("gender", gender)
+                        .whereGreaterThanOrEqualTo("birth", maxYear.toString()+"0000")
+                        .whereLessThanOrEqualTo("birth", minYear.toString()+"0000")
+                        .get()
+                        .await()
+
             }
-
-
 
             val users = mutableListOf<UserEntity>()
 
             querySnapshot.documents.forEach { documentSnapshot ->
                 documentSnapshot.toObject(UserEntity::class.java)?.let { users.add(it) }
             }
+
 
             return Response.Success(users)
 
@@ -393,7 +402,23 @@ class UserRemoteDataSourceImpl (
 
             val ref = fireStore.collection("database/user/userList/")
 
-            val querySnapshot =
+            val querySnapshot : QuerySnapshot
+
+            if (gender.equals("both")) {
+
+                querySnapshot =
+
+                    ref
+                        .whereIn("subResidence", residences)
+                        .whereGreaterThanOrEqualTo("birth", maxYear.toString()+"0000")
+                        .whereLessThanOrEqualTo("birth", minYear.toString()+"0000")
+                        .get()
+                        .await()
+
+            } else {
+
+                querySnapshot =
+
                     ref
                         .whereIn("subResidence", residences)
                         .whereEqualTo("gender", gender)
@@ -401,6 +426,8 @@ class UserRemoteDataSourceImpl (
                         .whereLessThanOrEqualTo("birth", minYear.toString()+"0000")
                         .get()
                         .await()
+
+            }
 
             val users = mutableListOf<UserEntity>()
 
@@ -429,14 +456,32 @@ class UserRemoteDataSourceImpl (
 
             val ref = fireStore.collection("database/user/userList/")
 
-            val querySnapshot =
-                ref
-                    .whereArrayContainsAny("tripStyle", styles)
-                    .whereEqualTo("gender", gender)
-                    .whereGreaterThanOrEqualTo("birth", maxYear.toString()+"0000")
-                    .whereLessThanOrEqualTo("birth", minYear.toString()+"0000")
-                    .get()
-                    .await()
+            val querySnapshot : QuerySnapshot
+
+            if (gender.equals("both")) {
+
+                querySnapshot =
+
+                    ref
+                        .whereArrayContainsAny("tripStyle", styles)
+                        .whereGreaterThanOrEqualTo("birth", maxYear.toString()+"0000")
+                        .whereLessThanOrEqualTo("birth", minYear.toString()+"0000")
+                        .get()
+                        .await()
+
+            } else {
+
+                querySnapshot =
+
+                    ref
+                        .whereArrayContainsAny("tripStyle", styles)
+                        .whereEqualTo("gender", gender)
+                        .whereGreaterThanOrEqualTo("birth", maxYear.toString()+"0000")
+                        .whereLessThanOrEqualTo("birth", minYear.toString()+"0000")
+                        .get()
+                        .await()
+
+            }
 
             val users = mutableListOf<UserEntity>()
 
@@ -462,7 +507,7 @@ class UserRemoteDataSourceImpl (
         try {
             fireStore.collection("database/user/userList/"+otherUser.uid+"/lounge/loungeInformation/likedUserList")
                 .document(uid)
-                .set(LoungeUser(
+                .set(UserUidWithTimestamp(
 
                     uid = uid,
                     timestamp = System.currentTimeMillis()
@@ -496,7 +541,7 @@ class UserRemoteDataSourceImpl (
             fireStore.collection("database/user/userList/"+AppContext.uid+"/lounge/loungeHistory/skipUserList")
                 .document(otherUser.uid)
                 .set(
-                    LoungeUser(
+                    UserUidWithTimestamp(
 
                         uid = otherUser.uid,
                         timestamp = System.currentTimeMillis()
@@ -605,10 +650,7 @@ class UserRemoteDataSourceImpl (
     }
 
 
-    override fun getLoungeUsers(status: Int): Flow<Response<MutableList<UserEntity>>> = callbackFlow {
-
-
-        val uid = AppContext.uid
+    override fun getLoungeUsers(status: Int): Flow<Response<MutableMap<Long, UserEntity>>> = callbackFlow {
 
         lateinit var subscription : ListenerRegistration
 
@@ -620,14 +662,15 @@ class UserRemoteDataSourceImpl (
 
 
                 subscription =
-                fireStore.collection("database/user/userList/"+uid+"/lounge/loungeInformation/likedUserList")
+                fireStore.collection("database/user/userList/"+auth.uid+"/lounge/loungeInformation/likedUserList")
                     .addSnapshotListener { value, error ->
 
                         if (value != null) {
 
-                            val documentList = value.toObjects(LoungeUser::class.java)
+                            val documentList = value.toObjects(UserUidWithTimestamp::class.java)
 
-                            val userList = mutableListOf<UserEntity>()
+                            val userMap = mutableMapOf<Long, UserEntity>()
+
 
                             CoroutineScope(Dispatchers.IO).launch {
 
@@ -644,7 +687,7 @@ class UserRemoteDataSourceImpl (
                                         val userEntity = result.toObject(UserEntity::class.java)!!
                                         userEntity.loungeStatus = 2
 
-                                        userList.add(userEntity)
+                                        userMap.put(user.timestamp, userEntity)
 
                                     } else {
 
@@ -652,9 +695,9 @@ class UserRemoteDataSourceImpl (
 
                                 }
 
+                                Log.d("liked-confirm", userMap.toString())
 
-
-                                trySend(Response.Success(userList))
+                                trySend(Response.Success(userMap))
 
                             }
 
@@ -667,14 +710,15 @@ class UserRemoteDataSourceImpl (
             } else {
 
                 subscription =
-                    fireStore.collection("database/user/userList/"+uid+"/lounge/loungeInformation/matchingUserList")
+                    fireStore.collection("database/user/userList/"+auth.uid+"/lounge/loungeInformation/matchingUserList")
                         .addSnapshotListener { value, error ->
 
                             if (value != null) {
 
-                                val documentList = value.toObjects(LoungeUser::class.java)
+                                val documentList = value.toObjects(UserUidWithTimestamp::class.java)
 
-                                val userList = mutableListOf<UserEntity>()
+                                val userMap = mutableMapOf<Long, UserEntity>()
+
 
                                 CoroutineScope(Dispatchers.IO).launch {
 
@@ -690,7 +734,8 @@ class UserRemoteDataSourceImpl (
                                             val userEntity = result.toObject(UserEntity::class.java)!!
                                             userEntity.loungeStatus = 3
 
-                                            userList.add(userEntity)
+                                            userMap.put(user.timestamp, userEntity)
+
 
                                         } else {
                                             Log.d("matched-null", "null")
@@ -698,11 +743,10 @@ class UserRemoteDataSourceImpl (
 
                                     }
 
+                                    trySend(Response.Success(userMap))
 
-
-                                    trySend(Response.Success(userList))
-
-                                }                            }
+                                }
+                            }
 
                         }
 
@@ -737,7 +781,7 @@ class UserRemoteDataSourceImpl (
                 .document(otherUser.uid)
                 .set(
 
-                    LoungeUser(
+                    UserUidWithTimestamp(
 
                         uid = otherUser.uid,
                         timestamp = System.currentTimeMillis()
@@ -750,7 +794,7 @@ class UserRemoteDataSourceImpl (
             fireStore.collection("database/user/userList/"+otherUser.uid+"/lounge/loungeInformation/matchingUserList")
                 .document(ownUser.uid)
                 .set(
-                    LoungeUser(
+                    UserUidWithTimestamp(
 
                         uid = ownUser.uid,
                         timestamp = System.currentTimeMillis()

@@ -340,6 +340,28 @@ class RoomDataSourceImpl (
                 }
         }
 
+        override suspend fun fetchAllMessagesOnce(roomUid: String): Response<MutableList<MessageEntity>> {
+
+                try {
+                        val dataSnapshot =
+                                databaseReference.child("messages").child(roomUid).get().await()
+
+                        val messages = mutableListOf<MessageEntity>()
+
+
+                        dataSnapshot.children.forEach { message ->
+
+                                message.getValue(MessageEntity::class.java)?.let { messages.add(it) }
+                        }
+
+
+                        return Response.Success(messages)
+
+                } catch (exception : Exception) {
+                        return Response.Error(exception.message.toString())
+                }
+        }
+
         override fun fetchMessage(roomUid: String): Flow<Response<Map<Int, MessageEntity>>> = callbackFlow {
 
 

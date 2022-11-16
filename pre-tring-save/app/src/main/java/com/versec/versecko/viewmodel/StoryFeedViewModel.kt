@@ -41,4 +41,16 @@ class StoryFeedViewModel (
 
 
 
+
+
+            private suspend fun _reportStory (uid: String) : Response<Int> {
+                return storyRepository.reportStory(uid)
+            }
+
+            suspend fun reportStory (uid: String) : Response<Int> {
+                return _reportStory(uid)
+            }
+
+
+
 }

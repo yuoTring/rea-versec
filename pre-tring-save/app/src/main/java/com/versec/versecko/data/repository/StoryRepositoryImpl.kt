@@ -60,5 +60,10 @@ class StoryRepositoryImpl (
                 return storyDataSource.cancelLike(uid)
         }
 
+        override suspend fun reportStory(uid: String): Response<Int> {
+
+                return storyDataSource.reportStory(uid)
+        }
+
 
 }

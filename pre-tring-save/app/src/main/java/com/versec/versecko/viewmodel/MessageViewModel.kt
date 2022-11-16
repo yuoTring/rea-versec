@@ -17,6 +17,7 @@ class MessageViewModel (
 
 
 
+
             private fun _fetchMessage (roomUid : String) : Flow<Response<Map<Int, MessageEntity>>> {
 
                 val flow = repository.fetchMessage(roomUid).shareIn(viewModelScope, SharingStarted.WhileSubscribed(), 0)
@@ -40,15 +41,19 @@ class MessageViewModel (
                 return _readMessage(roomUid, messageUid)
             }
 
-
-
-
-
             private suspend fun _sendMessage (contents : String, roomUid: String) : Response<Int> {
                 return repository.sendMessage(contents, roomUid)
             }
 
             suspend fun sendMessage (contents: String, roomUid: String) : Response<Int> {
                 return _sendMessage(contents, roomUid)
+            }
+
+            private suspend fun _fetchAllMessagesOnce (roomUid: String) :Response<MutableList<MessageEntity>> {
+                return repository.fetchAllMessagesOnce(roomUid)
+            }
+
+            suspend fun fetchAllMessagesOnce (roomUid: String) : Response<MutableList<MessageEntity>> {
+                return _fetchAllMessagesOnce(roomUid)
             }
 }

@@ -38,6 +38,7 @@ class MessageActivity : AppCompatActivity() {
 
 
     private lateinit var fetchJob : Job
+    private lateinit var onceFetchJob : Job
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -58,13 +59,14 @@ class MessageActivity : AppCompatActivity() {
 
         layoutManager = LinearLayoutManager(this)
         layoutManager.stackFromEnd = true
-        layoutManager.isSmoothScrollbarEnabled = true
 
         binding.recyclerMessages.recycledViewPool.setMaxRecycledViews(0,0)
         binding.recyclerMessages.layoutManager = layoutManager
 
         adapter = MessageAdapter(messageList, ownUid, other)
         binding.recyclerMessages.adapter = adapter
+
+        fetchAllMessagesOnce(roomUid)
 
         binding.buttonSend.setOnClickListener {
 
@@ -109,6 +111,10 @@ class MessageActivity : AppCompatActivity() {
 
         }
 
+        binding.textTitle.setText(other.nickName +"님과의 채팅")
+
+        binding.buttonBack.setOnClickListener { finish() }
+
 
 
 
@@ -121,6 +127,7 @@ class MessageActivity : AppCompatActivity() {
         fetchJob =
             lifecycleScope.launch(Dispatchers.IO) {
 
+                onceFetchJob.join()
 
                 viewModel.fetchMessage(roomUid).collect {  fetchResponse->
 
@@ -173,6 +180,9 @@ class MessageActivity : AppCompatActivity() {
                                     adapter.changeMessages(messageList)
                                     adapter.notifyDataSetChanged()
 
+                                    if (type == ADDED)
+                                        layoutManager.scrollToPosition(messageList.size - 1)
+
                                 }
 
                             } else {
@@ -210,6 +220,43 @@ class MessageActivity : AppCompatActivity() {
         const val RESPONSE_NULL = -2
 
     }
+
+    private fun fetchAllMessagesOnce (roomUid : String) {
+
+
+
+        onceFetchJob =
+            lifecycleScope.launch(Dispatchers.IO) {
+
+
+            val fetchResponse = viewModel.fetchAllMessagesOnce(roomUid)
+
+            when(fetchResponse) {
+
+                is Response.Success -> {
+
+                    messageList.clear()
+                    messageList.addAll(fetchResponse.data)
+
+                    adapter.changeMessages(messageList)
+
+                    withContext(Dispatchers.Main) { adapter.notifyDataSetChanged() }
+
+                }
+                is Response.Error -> {
+
+                }
+                else -> {
+
+                }
+            }
+
+
+        }
+
+
+    }
+
 
 
 

@@ -52,6 +52,10 @@ class RoomRepositoryImpl (
         return dataSource.updateLastRead(roomUid)
     }
 
+    override suspend fun fetchAllMessagesOnce(roomUid: String): Response<MutableList<MessageEntity>> {
+        return dataSource.fetchAllMessagesOnce(roomUid)
+    }
+
     override fun fetchMessage(roomUid: String): Flow<Response<Map<Int, MessageEntity>>> {
         return dataSource.fetchMessage(roomUid)
     }

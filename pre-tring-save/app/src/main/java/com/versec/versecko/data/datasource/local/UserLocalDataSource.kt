@@ -21,11 +21,8 @@ interface UserLocalDataSource {
     fun getAgeRange() : List<Int>?
     fun getDistance() : Int?
 
-    fun setLikedCounter (count : Int)
-    fun setMatchingCounter (count: Int)
-
-    fun getLikedCounter () : Int?
-    fun getMatchingCounter () : Int?
+    fun setTimestamp ()
+    fun getTimestamp () : Long
 
     fun setMatchingNotification (on : Boolean)
     fun setLikedNotification (on : Boolean)

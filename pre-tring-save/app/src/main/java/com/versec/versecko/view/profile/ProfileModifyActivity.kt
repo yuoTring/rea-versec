@@ -3,6 +3,7 @@ package com.versec.versecko.view.profile
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.widget.doAfterTextChanged
@@ -58,9 +59,9 @@ class ProfileModifyActivity : AppCompatActivity() {
         setContentView(view)
 
 
-        residenceList = mutableListOf("+")
-        tripList = mutableListOf("+")
-        styleList = mutableListOf("+")
+        residenceList = mutableListOf("다시 설정")
+        tripList = mutableListOf("다시 설정")
+        styleList = mutableListOf("다시 설정")
 
 
         viewModel.user.observe(this, Observer { updatedUser ->
@@ -70,19 +71,20 @@ class ProfileModifyActivity : AppCompatActivity() {
 
 
             residenceList.add(userEntity.mainResidence)
+            residenceList.add(userEntity.subResidence)
+
             tripList.addAll(userEntity.tripWish)
             styleList.addAll(userEntity.tripStyle)
 
             adapterResidence.updateTagList(residenceList)
             adapterTrip.updateTagList(tripList)
+            adapterStyle.updateTagList(styleList)
 
             adapterResidence.notifyDataSetChanged()
             adapterTrip.notifyDataSetChanged()
             adapterStyle.notifyDataSetChanged()
 
             binding.editSelfIntroduction.setText(userEntity.selfIntroduction)
-
-
         })
 
 
@@ -108,16 +110,25 @@ class ProfileModifyActivity : AppCompatActivity() {
 
         adapterResidence = TagAdapter(residenceList) { place ->
 
-            if (place.equals("+"))
+            if (place.equals("다시 설정")) {
+
+                residenceList.clear()
+                residenceList.add("다시 설정")
+
                 startActivityForResult(Intent(this, ChoosePlaceActivity::class.java).putExtra("requestCode",
                     FillUserInfoActivity.RESIDENCE
                 ), FillUserInfoActivity.RESIDENCE
                 )
 
-            residenceList.removeAll(residenceList)
-            residenceList.add("+")
+            } else {
+
+                residenceList.remove(place)
+
+            }
+
             adapterResidence.updateTagList(residenceList)
             adapterResidence.notifyDataSetChanged()
+
 
 
 
@@ -128,8 +139,9 @@ class ProfileModifyActivity : AppCompatActivity() {
 
             var textCount = "0/200"
 
-            if (text.toString().length>20) {
+            if (text.toString().length>200) {
 
+                binding.editSelfIntroduction.text.delete(text!!.length-1, text.length)
             }
             else
             {
@@ -147,42 +159,75 @@ class ProfileModifyActivity : AppCompatActivity() {
 
         adapterTrip = TagAdapter(tripList) { trip ->
 
-            if (trip.equals("+"))
+            if (trip.equals("다시 설정")) {
+
+                tripList.clear()
+                tripList.add("다시 설정")
+
                 startActivityForResult(Intent(this, ChoosePlaceActivity::class.java).putExtra("requestCode",
                     FillUserInfoActivity.TRIP
                 ), FillUserInfoActivity.TRIP
                 )
+            }
             else {
                 tripList.remove(trip)
-                adapterTrip.updateTagList(tripList)
-                adapterTrip.notifyDataSetChanged()
+
             }
+
+            adapterTrip.updateTagList(tripList)
+            adapterTrip.notifyDataSetChanged()
 
         }
 
         binding.recyclerChosenTripWish.layoutManager = layoutManagerTrip
         binding.recyclerChosenTripWish.adapter = adapterTrip
 
-        binding.recyclerChosenStyle.layoutManager = layoutManagerStyle
-
         adapterStyle = TagAdapter(styleList) { style ->
 
-            if (style.equals("+")) {
+            if (style.equals("다시 설정")) {
 
-                startActivityForResult(Intent(this, ChooseStyleActivity::class.java), FillUserInfoActivity.STYLE)
+                styleList.clear()
+                styleList.add("다시 설정")
+
+                startActivityForResult(Intent(this, ChooseStyleActivity::class.java).putExtra("requestCode",
+                    FillUserInfoActivity.STYLE
+                ), FillUserInfoActivity.STYLE
+                )
 
             } else {
 
                 styleList.remove(style)
-                adapterStyle.updateTagList(styleList)
-                adapterStyle.notifyDataSetChanged()
+
             }
+
+            adapterStyle.updateTagList(styleList)
+            adapterStyle.notifyDataSetChanged()
 
 
         }
 
+        binding.recyclerChosenStyle.layoutManager = layoutManagerStyle
+        binding.recyclerChosenStyle.adapter = adapterStyle
+
 
         binding.buttonComplete.setOnClickListener {
+
+            userEntity.mainResidence = residenceList.get(1)
+
+            if (residenceList.size > 2)
+                userEntity.subResidence = residenceList.get(2)
+            else
+                userEntity.subResidence = residenceList.get(1)
+
+            if (tripList.contains("다시 설정"))
+                tripList.remove("다시 설정")
+
+            if (styleList.contains("다시 설정"))
+                styleList.remove("다시 설정")
+
+
+            userEntity.tripWish = tripList
+            userEntity.tripStyle = styleList
 
             userEntity.selfIntroduction = binding.editSelfIntroduction.text.toString()
 
@@ -192,29 +237,41 @@ class ProfileModifyActivity : AppCompatActivity() {
 
                 val insertResponse_Remote = viewModel.insertUser_Remote(userEntity)
 
-                val insertResponse_Local = viewModel.insertUser_Local(userEntity)
-
                 when(insertResponse_Remote) {
 
                     is Response.Success -> {
+
+
+                        val insertResponse_Local = viewModel.insertUser_Local(userEntity)
+
+                        when(insertResponse_Local) {
+
+                            is Response.Success -> {
+
+                                hide()
+                                finish()
+                            }
+                            is Response.Error -> {
+
+                                hide()
+                                finish()
+                                Toast.makeText(this@ProfileModifyActivity , "인터넷 연결 오류로 인해 프로필이 수정되지 않았습니다.", Toast.LENGTH_LONG).show()
+
+                            }
+                            else -> {
+
+                            }
+                        }
+
+
+
+
+                    }
+                    is Response.Error -> {
+
                         hide()
                         finish()
-                    }
-                    is Response.Error -> {
-                        hide()
-                    }
-                    else -> {
-
-                    }
-                }
-
-                when(insertResponse_Local) {
-
-                    is Response.Success -> {
-                        hide()
-                    }
-                    is Response.Error -> {
-                        hide()
+                        Toast.makeText(this@ProfileModifyActivity , "인터넷 연결 오류로 인해 프로필이 수정되지 않았습니다.", Toast.LENGTH_LONG).show()
                     }
                     else -> {
 
@@ -248,36 +305,50 @@ class ProfileModifyActivity : AppCompatActivity() {
 
 
         if (requestCode == FillUserInfoActivity.RESIDENCE && data != null) {
-            residenceList.removeAll(residenceList)
-            residenceList.add("+")
+            residenceList.clear()
+            residenceList.add("다시 설정")
             residenceList.addAll(data.getStringArrayListExtra("residence")!!)
             adapterResidence.updateTagList(residenceList)
             adapterResidence.notifyDataSetChanged()
 
             userEntity.mainResidence = residenceList.get(1)
+
+            if (residenceList.size>2)
+                userEntity.subResidence = residenceList.get(2)
         }
         else if (requestCode == FillUserInfoActivity.RESIDENCE && data == null) {
 
-            Toast.makeText(this, "1", Toast.LENGTH_SHORT).show()
 
         }
         else if (requestCode == FillUserInfoActivity.TRIP && data != null) {
 
-            tripList.removeAll(tripList)
-            tripList.add("+")
+            tripList.clear()
+            tripList.add("다시 설정")
             tripList.addAll(data.getStringArrayListExtra("trip")!!)
             adapterTrip.updateTagList(tripList)
             adapterTrip.notifyDataSetChanged()
 
+            userEntity.tripWish.clear()
             userEntity.tripWish.addAll(tripList)
 
         }
         else if (requestCode == FillUserInfoActivity.TRIP && data == null) {
-            Toast.makeText(this, "3", Toast.LENGTH_SHORT).show()
+
+            //tripList.add("다시 설정")
+            //adapterTrip.updateTagList(tripList)
+            //adapterTrip.notifyDataSetChanged()
 
         }
-        else {
-            Toast.makeText(this, "4", Toast.LENGTH_SHORT).show()
+        else if (requestCode == FillUserInfoActivity.STYLE && data != null) {
+
+            styleList.clear()
+            styleList.add("다시 설정")
+            styleList.addAll(data.getStringArrayListExtra("style")!!)
+            adapterStyle.updateTagList(styleList)
+            adapterStyle.notifyDataSetChanged()
+
+            userEntity.tripStyle.clear()
+            userEntity.tripStyle.addAll(styleList)
 
         }
 

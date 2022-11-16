@@ -126,36 +126,6 @@ class MatchingViewModel (
 
 
 
-
-            private fun _setGenderValue (gender : String) {
-                repository.setGenderValue(gender)
-            }
-
-            fun setGender (gender: String) {
-                _setGenderValue(gender)
-            }
-
-            private fun _setAgeRange (min : Int, max : Int) {
-                repository.setAgeRange(min, max)
-            }
-
-            fun setAgeRange (min: Int, max: Int) {
-                _setAgeRange(min, max)
-            }
-
-            private fun _setDistance (distance : Int) {
-                repository.setDistance(distance)
-            }
-
-            fun setDistance (distance: Int) {
-                _setDistance(distance)
-            }
-
-
-
-
-
-
             private fun _getGenderValue () : String? {
                 return repository.getGenderValue()
             }
@@ -179,6 +149,9 @@ class MatchingViewModel (
             fun getDistance () : Int? {
                 return _getDistance()
             }
+
+            fun getOverlappingUsers () = repository.getDuplicateUsers()
+            fun saveOverlappingUser (uid : String) = repository.saveDuplicateUser(uid)
 
 
 

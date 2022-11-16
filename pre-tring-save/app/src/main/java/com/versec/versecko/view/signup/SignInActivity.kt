@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
@@ -161,13 +162,11 @@ class SignInActivity
 
             override fun onVerificationCompleted(credential: PhoneAuthCredential) {
 
-
                 Log.d("sms-auto", "smsCode: "+ credential.smsCode)
 
             }
 
             override fun onVerificationFailed(exception: FirebaseException) {
-                Log.d("sms-test", "onVerificationFailed: "+ exception.toString())
 
             }
 
@@ -211,6 +210,7 @@ class SignInActivity
                 .setActivity(this) // Activity (for callback binding)
                 .setCallbacks(callbacks) // OnVerificationStateChangedCallbacks
                 .build()
+
             PhoneAuthProvider.verifyPhoneNumber(options)
 
             pinView.visibility=View.VISIBLE

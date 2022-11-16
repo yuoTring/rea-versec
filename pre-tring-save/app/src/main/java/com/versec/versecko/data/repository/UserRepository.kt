@@ -23,8 +23,8 @@ interface UserRepository {
     fun getAgeRange() : List<Int>?
     fun getDistance() : Int?
 
-    fun setCounter (status: Int, count : Int)
-    fun getCounter (status: Int) : Int?
+    fun setTimestamp ()
+    fun getTimestamp () : Long
 
     fun setMatchingNotification (on : Boolean)
     fun setLikedNotification (on : Boolean)
@@ -71,7 +71,7 @@ interface UserRepository {
     suspend fun likeUser (otherUser: UserEntity, ownUser: UserEntity) : Response<Int>
     fun skipUser (otherUser : UserEntity)
 
-    fun getLoungeUsers (status: Int) : Flow<Response<MutableList<UserEntity>>>
+    fun getLoungeUsers (status: Int) : Flow<Response<MutableMap<Long, UserEntity>>>
 
     suspend fun matchUser (otherUser : UserEntity, ownUser: UserEntity) : Response<Int>
     suspend fun deleteMatch (otherUid : String) : Response<Int>

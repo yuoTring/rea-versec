@@ -30,7 +30,8 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class RoomFragment : Fragment() {
+class
+RoomFragment : Fragment() {
 
     private lateinit var binding : FragmentRoomBinding
     private val viewModel : RoomListViewModel by viewModel<RoomListViewModel>()
@@ -38,13 +39,11 @@ class RoomFragment : Fragment() {
 
     private lateinit var loungeAdapter: LoungeAdapter
     private var viewLoungeStatus : Int = 2
-    private var usersLiked : MutableList<UserEntity> = mutableListOf()
-    private var usersMatched : MutableList<UserEntity> = mutableListOf()
 
-    private var counterLiked : Int? = 0
-    private var counterMatching : Int? = 0
+    private var timestamp : Long = 0
 
-
+    private val usersLiked : MutableList<LoungeUser> = mutableListOf()
+    private val usersMatched : MutableList<LoungeUser> = mutableListOf()
 
     private lateinit var roomAdapter: RoomAdapter
     private var roomList : MutableList<RoomEntity> = mutableListOf()
@@ -58,8 +57,6 @@ class RoomFragment : Fragment() {
 
     private lateinit var roomJob : Job
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -68,8 +65,10 @@ class RoomFragment : Fragment() {
     }
 
     override fun onCreateView(
+
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
+
     ): View? {
 
 
@@ -80,23 +79,21 @@ class RoomFragment : Fragment() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        timestamp = viewModel.getTimestamp()
+
 
         mainViewModel.userLocal.observe(viewLifecycleOwner, Observer {
             ownUser = it
         })
 
-        viewModel.setCounter(2,0)
-        viewModel.setCounter(3,0)
-        // get a former lounge counter
-        counterLiked = viewModel.getCounter(2)
-        counterMatching = viewModel.getCounter(3)
-
-        loungeAdapter = LoungeAdapter(usersLiked,0) {
+        loungeAdapter = LoungeAdapter(userList = usersLiked, timestamp) {
 
             var intent = Intent(requireActivity(), UserProfileActivity::class.java)
-            intent.putExtra("otherUser", it)
+            intent.putExtra("loungeUser", it)
             startActivity(intent)
         }
 
@@ -108,23 +105,20 @@ class RoomFragment : Fragment() {
 
                     is Response.Loading -> binding.progressBarLounge.show()
                     is Response.Success -> {
+
                         binding.progressBarLounge.hide()
 
+                        val sortedMap = response.data.toSortedMap(compareByDescending { it })
+
                         usersLiked.clear()
-                        usersLiked.addAll(response.data)
+                        sortedMap.forEach { entry -> usersLiked.add(mapUserEntityToLoungeUser(entry.value, entry.key)) }
+
+                        Log.d("liked-confirm", "liked: "+usersLiked.toString())
+
+
 
                         // check which tab is selected
                         if (viewLoungeStatus == 2 ) {
-
-                            // initialize added value
-                            loungeAdapter.changeAddedValue(0)
-
-                            //show new added users more apparently (stroke will be seen)
-                            if (usersLiked.size > counterLiked!!)
-                            {
-                                viewModel.setCounter(2, usersLiked.size)
-                                loungeAdapter.changeAddedValue(usersLiked.size - counterLiked!!)
-                            }
 
                             loungeAdapter.changeUsers(usersLiked)
                             loungeAdapter.notifyDataSetChanged()
@@ -132,15 +126,17 @@ class RoomFragment : Fragment() {
                         } else {
 
                             // check new liked users and if yes, set badge on tab to notify user it
-                            if (usersLiked.size > counterLiked!!) {
-                                binding.tabLayout.getTabAt(0)?.orCreateBadge!!.number
-                            }
+                            if (usersLiked.size > 0 )
+                                if (usersLiked.get(0).timestamp > timestamp)
+                                    binding.tabLayout.getTabAt(0)?.orCreateBadge!!.number
 
                         }
 
                     }
                     is Response.Error -> {
                         binding.progressBarLounge.show()
+
+                        Log.d("lounge-confirm", response.errorMessage)
                     }
                     else -> {
                     }
@@ -157,23 +153,16 @@ class RoomFragment : Fragment() {
 
                     is Response.Loading -> binding.progressBarLounge.show()
                     is Response.Success -> {
+
                         binding.progressBarLounge.hide()
 
+                        val sortedMap = response.data.toSortedMap(compareByDescending { it })
+
                         usersMatched.clear()
-                        usersMatched.addAll(response.data)
+                        sortedMap.forEach { entry ->  usersMatched.add(mapUserEntityToLoungeUser(entry.value, entry.key)) }
 
                         // check which tab is selected
                         if (viewLoungeStatus == 3 ) {
-
-                            // initialize added value
-                            loungeAdapter.changeAddedValue(0)
-
-                            //show new added users more apparently
-                            if (usersMatched.size > counterLiked!!)
-                            {
-                                viewModel.setCounter(3, usersMatched.size)
-                                loungeAdapter.changeAddedValue(usersMatched.size - counterLiked!!)
-                            }
 
                             loungeAdapter.changeUsers(usersMatched)
                             loungeAdapter.notifyDataSetChanged()
@@ -181,18 +170,17 @@ class RoomFragment : Fragment() {
                         } else {
 
                             // check new matched users and if yes, set badge on tab to notify user it
-                            Log.d("lounge-check", "um: "+usersMatched.size)
-                            Log.d("lounge-check", "cm: "+counterMatching)
+                            if (usersMatched.size > 0 )
+                                if (usersMatched.get(0).timestamp > timestamp)
+                                    binding.tabLayout.getTabAt(1)?.orCreateBadge!!.number
 
-                            if (usersMatched.size > counterMatching!!) {
-                                binding.tabLayout.getTabAt(1)?.orCreateBadge!!.number
-                            }
+
 
                         }
-
                     }
                     is Response.Error -> {
                         binding.progressBarLounge.show()
+                        Log.d("lounge-confirm", response.errorMessage)
                     }
                     else -> {
 
@@ -217,7 +205,6 @@ class RoomFragment : Fragment() {
                     if (tab.position == 0) {
 
                         if (viewLoungeStatus == 3) {
-                            viewModel.setCounter(3, usersMatched.size)
                         }
 
                         viewLoungeStatus = 2
@@ -230,7 +217,6 @@ class RoomFragment : Fragment() {
                     } else {
 
                         if (viewLoungeStatus ==2) {
-                            viewModel.setCounter(2, usersLiked.size)
                         }
 
                         viewLoungeStatus = 3
@@ -310,6 +296,8 @@ class RoomFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
+        fetchTimestamp()
+
 
         roomUidList.clear()
         roomList.clear()
@@ -319,32 +307,23 @@ class RoomFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        reset()
 
+        updateTimestamp()
         roomJob.cancel()
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
-        reset()
+
+        if (hidden)
+            updateTimestamp()
+        else
+            fetchTimestamp()
+
     }
 
-    private fun reset () {
-
-        if (viewLoungeStatus == 2) {
-
-            counterLiked = viewModel.getCounter(2)
-            loungeAdapter.changeAddedValue(0)
-            loungeAdapter.changeUsers(usersLiked)
-            loungeAdapter.notifyDataSetChanged()
-
-        } else {
-            counterMatching = viewModel.getCounter(3)
-            loungeAdapter.changeAddedValue(0)
-            loungeAdapter.changeUsers(usersMatched)
-            loungeAdapter.notifyDataSetChanged()
-        }
-    }
+    private fun updateTimestamp () { viewModel.setTimestamp() }
+    private fun fetchTimestamp () { this.timestamp = viewModel.getTimestamp() }
 
     private fun checkNotification (roomUid : String) {
 
@@ -629,10 +608,13 @@ class RoomFragment : Fragment() {
                 else if (key == ERROR) {
                     binding.progressBarChatRoom.show()
                 }
+
             }
 
         }
     }
+
+
 
     companion object {
 
@@ -650,5 +632,40 @@ class RoomFragment : Fragment() {
 
                 }
             }
+    }
+
+    private fun mapUserEntityToLoungeUser ( userEntity: UserEntity, timestamp : Long ) : LoungeUser {
+
+        val loungeUser = LoungeUser (
+
+            uid = userEntity.uid,
+            nickName = userEntity.nickName,
+            gender = userEntity.gender,
+            birth = userEntity.birth,
+            mainResidence = userEntity.mainResidence,
+            subResidence = userEntity.subResidence,
+            tripWish = userEntity.tripWish,
+            tripStyle = userEntity.tripStyle,
+            selfIntroduction = userEntity.selfIntroduction,
+
+            uriMap = userEntity.uriMap,
+            geohash = userEntity.geohash,
+            latitude = userEntity.latitude,
+            longitude = userEntity.longitude,
+            languages = userEntity.languages,
+            deletedAt = userEntity.deletedAt,
+
+            mannerScore = userEntity.mannerScore,
+            premiumOrNot = userEntity.premiumOrNot,
+            knock = userEntity.knock,
+
+            loungeStatus = userEntity.loungeStatus,
+            phoneNumber = userEntity.phoneNumber,
+
+            timestamp = timestamp
+
+                )
+
+        return loungeUser
     }
 }

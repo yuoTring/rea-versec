@@ -32,7 +32,9 @@ class StoryFeedAdapter (
         private const val EXIST = 1
 
         private const val TYPE_LOADING_SEEMORE = 40000
+
         private const val TYPE_EXIST_LIKE = 40020
+        private const val TYPE_REPORT = 40030
     }
 
 
@@ -57,6 +59,11 @@ class StoryFeedAdapter (
             binding.buttonLike.setOnClickListener {
 
                 onClick(position, TYPE_EXIST_LIKE, binding.buttonLike)
+            }
+
+            binding.buttonMore.setOnClickListener {
+
+                onClick(position, TYPE_REPORT, binding.buttonMore)
             }
 
 

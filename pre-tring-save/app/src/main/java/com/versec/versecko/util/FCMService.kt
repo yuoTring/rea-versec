@@ -94,12 +94,6 @@ class FCMService : FirebaseMessagingService() {
 
             }
 
-
-
-
-
-
-
         }
 
         notificationManager.notify(800,notificationBuilder.build())

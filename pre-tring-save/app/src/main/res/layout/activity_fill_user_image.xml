@@ -132,17 +132,67 @@
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-
-    <androidx.core.widget.ContentLoadingProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="104dp"
-        android:layout_height="104dp"
-        style="@style/Widget.AppCompat.ProgressBar"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:visibility="invisible"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:background="@color/white">
+
+
+        <androidx.core.widget.ContentLoadingProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="104dp"
+            android:layout_height="104dp"
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_marginBottom="32dp"
+            app:layout_constraintBottom_toTopOf="@id/textNoticeAbove"
+            app:layout_constraintStart_toStartOf="@id/textNoticeAbove"
+            app:layout_constraintEnd_toEndOf="@id/textNoticeAbove"/>
+
+        <TextView
+            android:id="@+id/textNoticeAbove"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:text="인증이 진행중입니다."
+            android:textColor="@color/charcoal"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
+            android:id="@+id/textNoticeMid"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:text="잠시 어떤 동네로 떠나볼지 고민해 보세요!"
+            android:textColor="@color/blue_azure"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/textNoticeAbove"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
+            android:id="@+id/textNoticeBelow"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:gravity="center"
+            android:text="인증이 완료되기까지 약 15초정도 걸립니다."
+            android:textColor="@color/gray"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/textNoticeMid"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 

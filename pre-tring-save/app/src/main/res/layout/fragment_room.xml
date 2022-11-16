@@ -29,12 +29,13 @@
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Liked"/>
+                android:text="받은 좋아요"
+                />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Matched"/>
+                android:text="매칭 성공"/>
 
         </com.google.android.material.tabs.TabLayout>
 
@@ -65,7 +66,7 @@
             android:layout_height="48dp"
             android:gravity="center_vertical"
             android:paddingLeft="16dp"
-            android:text="Chat List"
+            android:text="채팅방"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold"

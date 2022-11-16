@@ -1,5 +1,7 @@
 package com.versec.versecko.view.story
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -52,8 +54,10 @@ class StoryFeedFragment : Fragment() {
     }
 
     override fun onCreateView(
+
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
+
     ): View? {
 
         binding = FragmentStoryFeedBinding.inflate(layoutInflater)
@@ -220,22 +224,17 @@ class StoryFeedFragment : Fragment() {
                             } else {
 
 
+                                stories.forEach { story ->
+
+                                    if (fetchedAdditionalStoriesResponse.data.contains(story))
+                                        fetchedAdditionalStoriesResponse.data.remove(story)
+
+                                }
+
                                 stories.remove(null)
                                 stories.addAll(fetchedAdditionalStoriesResponse.data)
                                 setLastItemTimestamp(stories)
                                 stories.add(null)
-
-
-
-
-
-
-
-
-
-
-
-
 
                                 adapter.changeStoris(stories)
 
@@ -272,8 +271,62 @@ class StoryFeedFragment : Fragment() {
 
 
 
-            } else {
+            } else if (type == TYPE_REPORT) {
 
+                val builder = AlertDialog.Builder(requireActivity())
+
+                builder.setItems(R.array.story_report, DialogInterface.OnClickListener { dialogInterface, index ->
+
+                    when(index) {
+                        0 -> {
+
+                            lifecycleScope.launch(Dispatchers.IO) {
+
+
+                                val reportStoryResponse = viewModel.reportStory(stories.get(position)!!.uid)
+
+                                when(reportStoryResponse) {
+
+                                    is Response.Success -> {
+
+                                        withContext(Dispatchers.Main) {
+
+                                            stories.remove(stories.get(position))
+
+                                            if (stories.size == 1) {
+
+                                                stories.clear()
+                                                binding.layout.visibility = View.VISIBLE
+
+                                            }
+
+                                            adapter.changeStoris(stories)
+                                            adapter.notifyDataSetChanged()
+
+                                            Toast.makeText(requireActivity(), "신고가 완료되었습니다!", Toast.LENGTH_SHORT).show()
+                                        }
+
+                                    }
+                                    is Response.Error -> {
+
+                                        withContext(Dispatchers.Main) {
+
+                                            Toast.makeText(requireActivity(), "인터넷 연결 오류로 인해, 해당 작업이 수행되지 않았습니다", Toast.LENGTH_SHORT).show()
+                                        }
+
+                                    }
+                                    else -> {
+
+                                    }
+                                }
+
+                            }
+
+
+                        }
+                    }
+
+                } ).create().show()
 
             }
 
@@ -366,7 +419,9 @@ class StoryFeedFragment : Fragment() {
 
 
             selectedPlace =
-                data.getStringArrayListExtra("story")?.get(0).toString()
+                data.getStringArrayListExtra("story")?.get(1).toString()
+
+            Log.d("result-code", resultCode.toString())
 
             if (resultCode == 350) {
 
@@ -412,6 +467,7 @@ class StoryFeedFragment : Fragment() {
         private const val TYPE_LOADING_SEEMORE = 40000
 
         private const val TYPE_EXIST_LIKE = 40020
+        private const val TYPE_REPORT = 40030
 
         @JvmStatic
         fun newInstance() =

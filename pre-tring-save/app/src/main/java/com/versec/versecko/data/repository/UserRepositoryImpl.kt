@@ -63,22 +63,14 @@ class UserRepositoryImpl (
         return localDataSource.getDistance()
     }
 
-    override fun setCounter(status: Int, count: Int) {
-
-        if (status == 2) {
-            localDataSource.setLikedCounter(count)
-        }else {
-            localDataSource.setMatchingCounter(count)
-        }
+    override fun setTimestamp() {
+        localDataSource.setTimestamp()
     }
 
-    override fun getCounter(status: Int): Int? {
-        if (status == 2) {
-            return localDataSource.getLikedCounter()
-        }else {
-            return localDataSource.getMatchingCounter()
-        }
+    override fun getTimestamp(): Long {
+        return localDataSource.getTimestamp()
     }
+
 
     override fun setMatchingNotification(on: Boolean) {
 
@@ -238,7 +230,7 @@ class UserRepositoryImpl (
         remoteDataSource.skipUser(otherUser)
     }
 
-    override fun getLoungeUsers(status: Int): Flow<Response<MutableList<UserEntity>>> {
+    override fun getLoungeUsers(status: Int): Flow<Response<MutableMap<Long, UserEntity>>> {
 
         return remoteDataSource.getLoungeUsers(status)
     }

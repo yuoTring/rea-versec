@@ -19,4 +19,7 @@ interface StoryRepository {
     suspend fun likeStory (uid: String) : Response<StoryEntity>
     suspend fun cancelLike (uid: String) : Response<StoryEntity>
 
+    suspend fun reportStory (uid: String) : Response<Int>
+
+
 }

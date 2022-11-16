@@ -22,11 +22,23 @@ class FilterActivity : AppCompatActivity() {
     private val viewModel : FilterViewModel by viewModel<FilterViewModel>()
 
     private lateinit var binding : ActivityFilterBinding
+
+
     private lateinit var genderValue : String
 
     private lateinit var minAgeValue: String
     private lateinit var maxAgeValue: String
     private lateinit var distanceValue : String
+
+    private lateinit var genderValueOld : String
+    private lateinit var minAgeValueOld : String
+    private lateinit var maxAgeValueOld : String
+    private lateinit var distanceValueOld : String
+
+    companion object {
+
+        private const val FILTER_UPDATED = 805
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,6 +63,8 @@ class FilterActivity : AppCompatActivity() {
         if (viewModel.getGender().isNullOrBlank()) {
 
             genderValue = "both"
+            genderValueOld = genderValue
+
             viewModel.setGender(genderValue)
 
             setGenderUI(genderValue)
@@ -59,7 +73,9 @@ class FilterActivity : AppCompatActivity() {
 
 
         } else {
+
             genderValue = viewModel.getGender()!!
+            genderValueOld = genderValue
 
             setGenderUI(genderValue)
         }
@@ -71,9 +87,13 @@ class FilterActivity : AppCompatActivity() {
             minAgeValue = "20"
             maxAgeValue = "80"
 
+            minAgeValueOld = minAgeValue
+            maxAgeValueOld = maxAgeValue
+
             viewModel.setAgeRange(minAgeValue.toInt(), maxAgeValue.toInt())
 
             setAgeRangeUI(minAgeValue, maxAgeValue)
+
         } else {
 
             val list =
@@ -82,6 +102,9 @@ class FilterActivity : AppCompatActivity() {
             minAgeValue = list!!.get(0).toString()
             maxAgeValue = list!!.get(1).toString()
 
+            minAgeValueOld = minAgeValue
+            maxAgeValueOld = maxAgeValue
+
             setAgeRangeUI(minAgeValue, maxAgeValue)
 
         }
@@ -89,12 +112,15 @@ class FilterActivity : AppCompatActivity() {
         if (viewModel.getDistance() == null) {
 
             distanceValue = "20"
+            distanceValueOld = distanceValue
+
             viewModel.setDistance(distanceValue.toInt())
 
             setDistanceUI(distanceValue)
         } else {
 
             distanceValue = viewModel.getDistance().toString()
+            distanceValueOld = distanceValue
 
             setDistanceUI(distanceValue)
         }
@@ -156,9 +182,25 @@ class FilterActivity : AppCompatActivity() {
 
         binding.buttonSet.setOnClickListener {
 
-            viewModel.setGender(genderValue)
-            viewModel.setAgeRange(minAgeValue.toInt(), maxAgeValue.toInt())
-            viewModel.setDistance(distanceValue.toInt())
+
+            if (
+                        genderValueOld.equals(genderValue) &&
+                        minAgeValueOld.equals(minAgeValue) &&
+                        maxAgeValueOld.equals(maxAgeValue) &&
+                        distanceValueOld.equals(distanceValue)
+            ) {
+                finish()
+
+            } else {
+
+                viewModel.setGender(genderValue)
+                viewModel.setAgeRange(minAgeValue.toInt(), maxAgeValue.toInt())
+                viewModel.setDistance(distanceValue.toInt())
+
+                setResult(FILTER_UPDATED)
+                finish()
+
+            }
 
             finish()
         }

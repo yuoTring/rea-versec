@@ -402,6 +402,10 @@
         <item>삭제하기</item>
     </string-array>
 
+    <string-array name="story_report">
+        <item>신고하기</item>
+    </string-array>
+
     <array name="slider_age">
         <item>20</item>
         <item>80</item>
